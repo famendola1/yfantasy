@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -105,3 +106,20 @@ func (y *YFantasy) GetTeamRosterWeekRaw(teamKey string, weekNum int) (string, er
 func (y *YFantasy) GetTeamRosterDayRaw(teamKey string, day string) (string, error) {
 	return y.get(fmt.Sprintf("team/%v/roster;date=%v", teamKey, day))
 }
+
+// GetPlayerRaw queries the /league//players endpoint for player data and
+// returns the raw response as a string.
+// playerKey is formatted as: <game_key>.p.<player_id>
+func (y *YFantasy) GetPlayerRaw(leageuKey string, playerKey string) (string, error) {
+	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v", leageuKey, playerKey))
+}
+
+// GetPlayersRaw queries the /league//players endpoint for player data for
+// multiple players and returns the raw response as a string.
+func (y *YFantasy) GetPlayersRaw(leagueKey string, playerKeys []string) (string, error) {
+	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v", leagueKey, strings.Join(playerKeys, ",")))
+}
+
+// TODO(famendola1): Query /league//players//stats endpoint
+
+// TODO(famendola1): Query /league//players using filters
