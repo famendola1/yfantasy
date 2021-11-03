@@ -123,3 +123,26 @@ func (y *YFantasy) GetPlayersRaw(leagueKey string, playerKeys []string) (string,
 // TODO(famendola1): Query /league//players//stats endpoint
 
 // TODO(famendola1): Query /league//players using filters
+
+// GetTransactionsRaw queries the /league//transactions endpoint for league
+// transactions of the given type and returns the raw response as a string.
+// Valid transactionTypes are: add, drop, commish, trade
+func (y *YFantasy) GetTransactionsRaw(leagueKey string, transactionType string) (string, error) {
+	return y.get(fmt.Sprintf("league/%v/transactions;type=%v", leagueKey, transactionType))
+}
+
+// GetTeamTransactionsRaw queries the /league//transactions endpoint for league
+// transactions of the given type for the given team and returns the raw
+// response as a string.
+// Valid transactionTypes are: pending_trade, waiver
+func (y *YFantasy) GetTeamTransactionsRaw(leagueKey string, teamKey string, transactionType string) (string, error) {
+	return y.get(fmt.Sprintf("league/%v/transactions;team_key=%v;type=%v", leagueKey, teamKey, transactionType))
+}
+
+// TODO(famendola1): Implement more filters for transactions.
+
+// GetUserTeams queries the /users endpoint to get all the teams for the logged
+// in user and returns the raw response as a string.
+func (y *YFantasy) GetUserTeams() (string, error) {
+	return y.get(fmt.Sprintf("users;use_login=1;/games/teams"))
+}
