@@ -75,12 +75,33 @@ func (y *YFantasy) GetTeamMatchupsRaw(teamKey string, startWeek int, numWeeks in
 	if numWeeks == 1 {
 		return y.get(fmt.Sprintf("team/%v/matchups;weeks=%v", teamKey, startWeek))
 	}
-	return y.get(fmt.Sprintf("team/%v/matchups;weeks=%v,%v", teamKey, startWeek, startWeek+numWeeks-1))
+	return y.get(fmt.Sprintf("team/%v/matchups;weeks=%v,%v", teamKey, startWeek,
+		startWeek+numWeeks-1))
 }
 
-// GetTeamStatsRaw queries the /team//stats endpoint for team stats of the given duration.
+// GetTeamStatsRaw queries the /team//stats endpoint for team stats of the given
+// duration.
 // Valid durations are: season, average_season, date, last_week, last_month.
 // TODO(famendola1): Add support to specify a season or date to fetch data for.
 func (y *YFantasy) GetTeamStatsRaw(teamKey string, duration string) (string, error) {
 	return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration))
+}
+
+// GetTeamRosterRaw queries the /team//roster endpoint for the team's current
+// day roster and returns the raw response as a string.
+func (y *YFantasy) GetTeamRosterRaw(teamKey string) (string, error) {
+	return y.get(fmt.Sprintf("team/%v/roster", teamKey))
+}
+
+// GetTeamRosterWeekRaw queries the /team//roster endpoint for the team's roster
+// for the given week and returns the raw response as a string.
+func (y *YFantasy) GetTeamRosterWeekRaw(teamKey string, weekNum int) (string, error) {
+	return y.get(fmt.Sprintf("team/%v/roster;week=%v", teamKey, weekNum))
+}
+
+// GetTeamRosterDayRaw queries the /team//roster endpoint for the team's roster
+// for the given day and returns the raw response as a string.
+// day is formatted as: yyyy-mm-dd
+func (y *YFantasy) GetTeamRosterDayRaw(teamKey string, day string) (string, error) {
+	return y.get(fmt.Sprintf("team/%v/roster;date=%v", teamKey, day))
 }
