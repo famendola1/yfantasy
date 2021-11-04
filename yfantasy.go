@@ -8,13 +8,18 @@ import (
 	"strings"
 )
 
-var (
+const (
 	endpoint string = "https://fantasysports.yahooapis.com/fantasy/v2"
 )
 
 // YFantasy holds a client for interacting with the Yahoo Fantasy API.
 type YFantasy struct {
 	client *http.Client
+}
+
+// New returns a new YFantasy object.
+func New(client *http.Client) *YFantasy {
+	return &YFantasy{client: client}
 }
 
 // sendGet sends a GET request to the provided URI and returns the repsone as a
