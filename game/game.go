@@ -30,7 +30,7 @@ func (g *Game) GameID() (string, error) {
 	return extractGameID(rawResp)
 }
 
-// extractGameID parsed the raw XML response for a the game id.
+// extractGameID parses the raw XML response for a the game id.
 func extractGameID(rawResp string) (string, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
@@ -45,6 +45,7 @@ func extractGameID(rawResp string) (string, error) {
 	return node.InnerText(), err
 }
 
+// Leagues returns all the active leagues the user is in for the game.
 func (g *Game) Leagues() ([]*league.League, error) {
 	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
 	if err != nil {
@@ -54,6 +55,7 @@ func (g *Game) Leagues() ([]*league.League, error) {
 	return g.extractLeagues(rawResp)
 }
 
+// extractLeagues parses the raw XML response for leagues.
 func (g *Game) extractLeagues(rawResp string) ([]*league.League, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
@@ -76,7 +78,9 @@ func (g *Game) extractLeagues(rawResp string) ([]*league.League, error) {
 	return leagues, nil
 }
 
-func (g *Game) LeageKeys() ([]string, error) {
+// LeagueKeys returns all the active league keys of the leagues the user is in
+// for the game.
+func (g *Game) LeagueKeys() ([]string, error) {
 	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
 	if err != nil {
 		return nil, err
@@ -85,6 +89,7 @@ func (g *Game) LeageKeys() ([]string, error) {
 	return extractLeagueKeys(rawResp)
 }
 
+// extractLeagueKeys parses the raw XML response for all the league keys.
 func extractLeagueKeys(rawResp string) ([]string, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
