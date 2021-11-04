@@ -75,3 +75,30 @@ func (g *Game) extractLeagues(rawResp string) ([]*league.League, error) {
 	}
 	return leagues, nil
 }
+
+func (g *Game) LeageKeys() ([]string, error) {
+	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
+	if err != nil {
+		return nil, err
+	}
+
+	return extractLeagueKeys(rawResp)
+}
+
+func extractLeagueKeys(rawResp string) ([]string, error) {
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := xmlquery.QueryAll(doc, "//league_key")
+	if err != nil {
+		return nil, err
+	}
+
+	leagueKeys := make([]string, len(nodes))
+	for i, node := range nodes {
+		leagueKeys[i] = node.InnerText()
+	}
+	return leagueKeys, nil
+}
