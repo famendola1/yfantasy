@@ -58,3 +58,14 @@ func TestLeagueKeys(t *testing.T) {
 		t.Errorf("unexpected league keys: got %v, want %v", got, want)
 	}
 }
+
+func TestMakeLeague(t *testing.T) {
+	game := New(nil, "nba")
+
+	want := league.New(nil, "nba.l.1234")
+	got := game.MakeLeague("1234")
+
+	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
+		t.Errorf("unexpected League built: got %+v, want %+v", *got, *want)
+	}
+}

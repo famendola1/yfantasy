@@ -2,6 +2,7 @@
 package game
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/antchfx/xmlquery"
@@ -106,4 +107,9 @@ func extractLeagueKeys(rawResp string) ([]string, error) {
 		leagueKeys[i] = node.InnerText()
 	}
 	return leagueKeys, nil
+}
+
+// MakeLeague creates a League object from the given league id.
+func (g *Game) MakeLeague(leagueID string) *league.League {
+	return league.New(g.yf, fmt.Sprintf("%v.l.%v", g.Sport, leagueID))
 }
