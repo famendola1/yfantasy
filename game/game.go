@@ -6,6 +6,7 @@ import (
 
 	"github.com/antchfx/xmlquery"
 	"github.com/famendola1/yfantasy"
+	"github.com/famendola1/yfantasy/league"
 )
 
 // Game represents a Yahoo game
@@ -36,10 +37,41 @@ func extractGameID(rawResp string) (string, error) {
 		return "", err
 	}
 
-	node, err := xmlquery.Query(doc, "//fantasy_content/game/game_id")
+	node, err := xmlquery.Query(doc, "/fantasy_content/game/game_id")
 	if err != nil {
 		return "", err
 	}
 
 	return node.InnerText(), err
+}
+
+func (g *Game) Leagues() ([]*league.League, error) {
+	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
+	if err != nil {
+		return nil, err
+	}
+
+	return g.extractLeagues(rawResp)
+}
+
+func (g *Game) extractLeagues(rawResp string) ([]*league.League, error) {
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := xmlquery.QueryAll(doc, "//league")
+	if err != nil {
+		return nil, err
+	}
+
+	leagues := make([]*league.League, len(nodes))
+	for i, node := range nodes {
+		leagueKey, err := xmlquery.Query(node, "/league_key")
+		if err != nil {
+			return nil, err
+		}
+		leagues[i] = league.New(g.yf, leagueKey.InnerText())
+	}
+	return leagues, nil
 }
