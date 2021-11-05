@@ -22,10 +22,24 @@ func New(client *http.Client) *YFantasy {
 	return &YFantasy{client: client}
 }
 
-// sendGet sends a GET request to the provided URI and returns the repsone as a
+// get sends a GET request to the provided URI and returns the repsone as a
 // string.
 func (y *YFantasy) get(uri string) (string, error) {
 	resp, err := y.client.Get(fmt.Sprintf("%v/%v", endpoint, uri))
+	if err != nil {
+		return "", err
+	}
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(resp.Body)
+	return buf.String(), nil
+}
+
+// post sends a POST request to the provided URI and returns the response as a
+// string.
+func (y *YFantasy) post(uri string, data string) (string, error) {
+	resp, err := y.client.Post(fmt.Sprintf("%v/%v", endpoint, uri),
+		"application/xml", strings.NewReader(data))
 	if err != nil {
 		return "", err
 	}
@@ -116,13 +130,15 @@ func (y *YFantasy) GetTeamRosterDayRaw(teamKey string, day string) (string, erro
 // returns the raw response as a string.
 // playerKey is formatted as: <game_key>.p.<player_id>
 func (y *YFantasy) GetPlayerRaw(leageuKey string, playerKey string) (string, error) {
-	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v", leageuKey, playerKey))
+	return y.get(
+		fmt.Sprintf("league/%v/players;player_keys=%v", leageuKey, playerKey))
 }
 
 // GetPlayersRaw queries the /league//players endpoint for player data for
 // multiple players and returns the raw response as a string.
 func (y *YFantasy) GetPlayersRaw(leagueKey string, playerKeys []string) (string, error) {
-	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v", leagueKey, strings.Join(playerKeys, ",")))
+	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v",
+		leagueKey, strings.Join(playerKeys, ",")))
 }
 
 // TODO(famendola1): Query /league//players//stats endpoint
@@ -133,7 +149,8 @@ func (y *YFantasy) GetPlayersRaw(leagueKey string, playerKeys []string) (string,
 // transactions of the given type and returns the raw response as a string.
 // Valid transactionTypes are: add, drop, commish, trade
 func (y *YFantasy) GetTransactionsRaw(leagueKey string, transactionType string) (string, error) {
-	return y.get(fmt.Sprintf("league/%v/transactions;type=%v", leagueKey, transactionType))
+	return y.get(
+		fmt.Sprintf("league/%v/transactions;type=%v", leagueKey, transactionType))
 }
 
 // GetTeamTransactionsRaw queries the /league//transactions endpoint for league
@@ -141,7 +158,8 @@ func (y *YFantasy) GetTransactionsRaw(leagueKey string, transactionType string) 
 // response as a string.
 // Valid transactionTypes are: pending_trade, waiver
 func (y *YFantasy) GetTeamTransactionsRaw(leagueKey string, teamKey string, transactionType string) (string, error) {
-	return y.get(fmt.Sprintf("league/%v/transactions;team_key=%v;type=%v", leagueKey, teamKey, transactionType))
+	return y.get(fmt.Sprintf("league/%v/transactions;team_key=%v;type=%v",
+		leagueKey, teamKey, transactionType))
 }
 
 // TODO(famendola1): Implement more filters for transactions.
@@ -167,5 +185,36 @@ func (y *YFantasy) GetUserLeagues() (string, error) {
 // GetUserLeaguesForSport is the same as GetUserLeagues except the leagues
 // restricted to the given sport and only active leagues are returned.
 func (y *YFantasy) GetUserLeaguesForSport(sport string) (string, error) {
-	return y.get(fmt.Sprintf("users;use_login=1/games;game_keys=%v/leagues", sport))
+	return y.get(
+		fmt.Sprintf("users;use_login=1/games;game_keys=%v/leagues", sport))
+}
+
+// PostAddDropTransaction sends a POST request to the /league//transactions
+// endpoint to add and drop the selected player for the given team. The raw
+// response is returned as a string.
+func (y *YFantasy) PostAddDropTransaction(leagueKey string, teamKey string, addPlayerKey string, dropPlayerKey string) (string, error) {
+	data := `
+  <fantasy_content>
+    <transaction>
+      <type>add/drop</type>
+      <players>
+        <player>
+          <player_key>%v</player_key>
+          <transaction_data>
+            <type>add</type>
+            <destination_team_key>%v</destination_team_key>
+          </transaction_data>
+        </player>
+        <player>
+          <player_key>%v</player_key>
+          <transaction_data>
+            <type>drop</type>
+            <source_team_key>%v</source_team_key>
+          </transaction_data>
+        </player>
+      </players>
+    </transaction>
+  </fantasy_content>`
+	data = fmt.Sprintf(data, addPlayerKey, teamKey, dropPlayerKey, teamKey)
+	return y.post(fmt.Sprintf("league/%v/transactions", leagueKey), data)
 }
