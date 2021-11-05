@@ -20,6 +20,7 @@ func New(yf *yfantasy.YFantasy, teamKey string) *Team {
 	return &Team{yf: yf, TeamKey: teamKey}
 }
 
+// Roster returns the list of players on this team.
 func (t *Team) Roster() ([]*player.Player, error) {
 	rawResp, err := t.yf.GetTeamRosterRaw(t.TeamKey)
 	if err != nil {
@@ -28,6 +29,8 @@ func (t *Team) Roster() ([]*player.Player, error) {
 	return t.extractPlayersFromRoster(rawResp)
 }
 
+// extractPlayersFromRoster parses the raw XML response from the /team//roster
+// endpoint for players.
 func (t *Team) extractPlayersFromRoster(rawResp string) ([]*player.Player, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
