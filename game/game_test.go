@@ -14,7 +14,7 @@ func TestNew(t *testing.T) {
 	got := New(nil, "nba")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("unexpected Game built: got %+v, want %+v", *got, *want)
+		t.Errorf("unexpected game: got %+v, want %+v", *got, *want)
 	}
 }
 

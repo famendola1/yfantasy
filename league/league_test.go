@@ -29,11 +29,11 @@ func TestExtractTeams(t *testing.T) {
 
 	got, err := lg.extractTeamsFromStandings(standingsResp)
 	if err != nil {
-		t.Errorf("extractLeagues failed, expected success")
+		t.Errorf("extractTeams failed, expected success")
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("unexpected leagues extracted: got %v, want %v", got, want)
+		t.Errorf("unexpected teams extracted: got %v, want %v", got, want)
 	}
 
 }
