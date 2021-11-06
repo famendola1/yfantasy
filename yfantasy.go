@@ -71,7 +71,7 @@ func handleError(resp *http.Response) error {
 		return err
 	}
 
-	return fmt.Errorf("%q: %q", resp.Status, node.InnerText())
+	return fmt.Errorf("%v: %v", resp.Status, node.InnerText())
 }
 
 // GetGameRaw queries the /game endpoint for game data and returns the raw
