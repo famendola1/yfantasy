@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/antchfx/xmlquery"
 )
 
 const (
@@ -30,6 +32,10 @@ func (y *YFantasy) get(uri string) (string, error) {
 		return "", err
 	}
 
+	if resp.StatusCode != 200 {
+		return "", handleError(resp)
+	}
+
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
 	return buf.String(), nil
@@ -37,16 +43,35 @@ func (y *YFantasy) get(uri string) (string, error) {
 
 // post sends a POST request to the provided URI and returns the response as a
 // string.
-func (y *YFantasy) post(uri string, data string) (string, error) {
+func (y *YFantasy) post(uri string, data string) error {
 	resp, err := y.client.Post(fmt.Sprintf("%v/%v", endpoint, uri),
 		"application/xml", strings.NewReader(data))
 	if err != nil {
-		return "", err
+		return err
+	}
+
+	if resp.StatusCode != 200 {
+		return handleError(resp)
 	}
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
-	return buf.String(), nil
+	return nil
+}
+
+// handleError returns an error containing the error message in the response.
+func handleError(resp *http.Response) error {
+	doc, err := xmlquery.Parse(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	node, err := xmlquery.Query(doc, "//description")
+	if err != nil {
+		return err
+	}
+
+	return fmt.Errorf("%q: %q", resp.Status, node.InnerText())
 }
 
 // GetGameRaw queries the /game endpoint for game data and returns the raw
@@ -192,29 +217,7 @@ func (y *YFantasy) GetUserLeaguesForSport(sport string) (string, error) {
 // PostAddDropTransaction sends a POST request to the /league//transactions
 // endpoint to add and drop the selected player for the given team. The raw
 // response is returned as a string.
-func (y *YFantasy) PostAddDropTransaction(leagueKey string, teamKey string, addPlayerKey string, dropPlayerKey string) (string, error) {
-	data := `
-  <fantasy_content>
-    <transaction>
-      <type>add/drop</type>
-      <players>
-        <player>
-          <player_key>%v</player_key>
-          <transaction_data>
-            <type>add</type>
-            <destination_team_key>%v</destination_team_key>
-          </transaction_data>
-        </player>
-        <player>
-          <player_key>%v</player_key>
-          <transaction_data>
-            <type>drop</type>
-            <source_team_key>%v</source_team_key>
-          </transaction_data>
-        </player>
-      </players>
-    </transaction>
-  </fantasy_content>`
-	data = fmt.Sprintf(data, addPlayerKey, teamKey, dropPlayerKey, teamKey)
+func (y *YFantasy) PostAddDropTransaction(leagueKey string, teamKey string, addPlayerKey string, dropPlayerKey string) error {
+	data := fmt.Sprintf(addDropTransaction, addPlayerKey, teamKey, dropPlayerKey, teamKey)
 	return y.post(fmt.Sprintf("league/%v/transactions", leagueKey), data)
 }

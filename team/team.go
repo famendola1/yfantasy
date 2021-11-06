@@ -11,13 +11,14 @@ import (
 
 // Team represents a Yahoo team.
 type Team struct {
-	yf      *yfantasy.YFantasy
-	TeamKey string
+	yf        *yfantasy.YFantasy
+	TeamKey   string
+	LeagueKey string
 }
 
 // New returns a new Team
-func New(yf *yfantasy.YFantasy, teamKey string) *Team {
-	return &Team{yf: yf, TeamKey: teamKey}
+func New(yf *yfantasy.YFantasy, teamKey string, leagueKey string) *Team {
+	return &Team{yf: yf, TeamKey: teamKey, LeagueKey: leagueKey}
 }
 
 // Roster returns the list of players on this team.
@@ -52,4 +53,10 @@ func (t *Team) extractPlayersFromRoster(rawResp string) ([]*player.Player, error
 	}
 
 	return players, nil
+}
+
+// AddDrop adds the specified player to the team and drops the specified player
+// from the team in a single transaction.
+func (t *Team) AddDrop(addPlayerKey string, dropPlayerKey string) error {
+	return t.yf.PostAddDropTransaction(t.LeagueKey, t.TeamKey, addPlayerKey, dropPlayerKey)
 }
