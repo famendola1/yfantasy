@@ -19,12 +19,12 @@ func TestNew(t *testing.T) {
 }
 
 func TestExtractTeams(t *testing.T) {
-	lg := New(nil, "12345")
+	lg := New(nil, "223.l.431")
 	want := []*team.Team{
-		team.New(nil, "223.l.431.t.10"),
-		team.New(nil, "223.l.431.t.5"),
-		team.New(nil, "223.l.431.t.8"),
-		team.New(nil, "223.l.431.t.12"),
+		team.New(nil, "223.l.431.t.10", "223.l.431"),
+		team.New(nil, "223.l.431.t.5", "223.l.431"),
+		team.New(nil, "223.l.431.t.8", "223.l.431"),
+		team.New(nil, "223.l.431.t.12", "223.l.431"),
 	}
 
 	got, err := lg.extractTeamsFromStandings(standingsResp)
