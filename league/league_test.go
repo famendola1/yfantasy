@@ -15,7 +15,7 @@ func TestNew(t *testing.T) {
 	got := New(nil, "789.l.456")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("unexpected league: got %+v, want %+v", *got, *want)
+		t.Errorf("New() = %+v, want %+v", *got, *want)
 	}
 }
 
@@ -34,7 +34,7 @@ func TestExtractTeams(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("unexpected teams extracted: got %v, want %v", got, want)
+		t.Errorf("extractTeamsFromStandings(%q) = %v, want %v", standingsResp, got, want)
 	}
 }
 
@@ -43,10 +43,10 @@ func TestExtractPlayers(t *testing.T) {
 	want := []*player.Player{player.New(nil, "410.p.6513")}
 	got, err := lg.extractPlayersFromSearch(searchResp)
 	if err != nil {
-		t.Errorf("extractPlayersFromSearch failed, expected success")
+		t.Errorf("extractPlayersFromSearch(%q) failed, want success", searchResp)
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("unexpected players extracted: got %v, want %v", got, want)
+		t.Errorf("extractPlayersFromSearch(%q) = %+v, want %+v", searchResp, got, want)
 	}
 }

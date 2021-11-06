@@ -14,7 +14,7 @@ func TestNew(t *testing.T) {
 	got := New(nil, "123.l.456.t.789", "123.1.456")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("unexpected team: got %+v, want %+v", *got, *want)
+		t.Errorf("New() %+v, want %+v", *got, *want)
 	}
 }
 
@@ -27,10 +27,10 @@ func TestExtractPlayers(t *testing.T) {
 	}
 	got, err := team.extractPlayersFromRoster(rosterResp)
 	if err != nil {
-		t.Errorf("extractPlayersFromRoster failed, expected success")
+		t.Errorf("extractPlayersFromRoster(%q) failed, want success", rosterResp)
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("unexpected players extracted: got %v, want %v", got, want)
+		t.Errorf("extractPlayersFromRoster(%q) = %+v, want %+v", rosterResp, got, want)
 	}
 }
