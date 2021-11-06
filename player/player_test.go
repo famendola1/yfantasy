@@ -12,6 +12,6 @@ func TestNew(t *testing.T) {
 	got := New(nil, "123.p.789")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("unexpected player: got %+v, want %+v", *got, *want)
+		t.Errorf("New() = %+v, want %+v", *got, *want)
 	}
 }

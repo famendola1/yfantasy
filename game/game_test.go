@@ -14,19 +14,20 @@ func TestNew(t *testing.T) {
 	got := New(nil, "nba")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("unexpected game: got %+v, want %+v", *got, *want)
+		t.Errorf("New() = %+v, want %+v", *got, *want)
 	}
 }
 
 func TestExtractGameId(t *testing.T) {
-	want := "257"
-	got, err := extractGameID(gameTestResp)
+	game := New(nil, "nba")
+	want := "410"
+	got, err := game.extractGameID(gameTestResp)
 	if err != nil {
-		t.Errorf("extractGameID failed, expected success")
+		t.Errorf("extractGameID(%q) failed, want success", gameTestResp)
 	}
 
 	if got != want {
-		t.Errorf("unexpected game id: got %q, want %q", got, want)
+		t.Errorf("extractGameID(%q) = %q, want %q", gameTestResp, got, want)
 	}
 }
 
@@ -39,11 +40,11 @@ func TestExtractLeagues(t *testing.T) {
 	}
 	got, err := game.extractLeagues(leagueTestResp)
 	if err != nil {
-		t.Errorf("extractLeagues failed, expected success")
+		t.Errorf("extractLeagues(%q) failed, want success", leagueTestResp)
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("unexpected leagues extracted: got %v, want %v", got, want)
+		t.Errorf("extractLeagues(%q) = %+v, want %+v", leagueTestResp, got, want)
 	}
 }
 
@@ -51,21 +52,26 @@ func TestLeagueKeys(t *testing.T) {
 	want := []string{"410.l.16883", "410.l.61777", "410.l.159928"}
 	got, err := extractLeagueKeys(leagueTestResp)
 	if err != nil {
-		t.Errorf("extractLeagueKeys failed, expected success")
+		t.Errorf("extractLeagueKeys(%q) failed, want success", leagueTestResp)
 	}
 
 	if !cmp.Equal(got, want) {
-		t.Errorf("unexpected league keys: got %v, want %v", got, want)
+		t.Errorf("extractLeagueKeys(%q) = %v, want %v", leagueTestResp, got, want)
 	}
 }
 
 func TestMakeLeague(t *testing.T) {
 	game := New(nil, "nba")
+	game.GameID = "410"
 
-	want := league.New(nil, "nba.l.1234")
-	got := game.MakeLeague("1234")
+	leagueID := "1234"
+	want := league.New(nil, "410.l.1234")
+	got, err := game.MakeLeague(leagueID)
+	if err != nil {
+		t.Errorf("MakeLeague(%q) failed, want success", leagueID)
+	}
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("unexpected League built: got %+v, want %+v", *got, *want)
+		t.Errorf("MakeLeague(%q) = %+v, want %+v", "1234", *got, *want)
 	}
 }

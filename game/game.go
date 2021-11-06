@@ -12,8 +12,9 @@ import (
 
 // Game represents a Yahoo game
 type Game struct {
-	yf    *yfantasy.YFantasy
-	Sport string
+	yf     *yfantasy.YFantasy
+	Sport  string
+	GameID string
 }
 
 // New returns a new Game object.
@@ -21,18 +22,23 @@ func New(yf *yfantasy.YFantasy, sport string) *Game {
 	return &Game{yf: yf, Sport: sport}
 }
 
-// GameID queries the Yahoo fantasy API for the ID of the game.
-func (g *Game) GameID() (string, error) {
+// GetGameID queries the Yahoo fantasy API for the ID of the game and sets
+// GameID in the Game.
+func (g *Game) GetGameID() (string, error) {
+	if g.GameID != "" {
+		return g.GameID, nil
+	}
+
 	rawResp, err := g.yf.GetGameRaw(g.Sport)
 	if err != nil {
 		return "", nil
 	}
 
-	return extractGameID(rawResp)
+	return g.extractGameID(rawResp)
 }
 
 // extractGameID parses the raw XML response for a the game id.
-func extractGameID(rawResp string) (string, error) {
+func (g *Game) extractGameID(rawResp string) (string, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
 		return "", err
@@ -43,7 +49,8 @@ func extractGameID(rawResp string) (string, error) {
 		return "", err
 	}
 
-	return node.InnerText(), err
+	g.GameID = node.InnerText()
+	return g.GameID, err
 }
 
 // Leagues returns all the active leagues the user is in for the game.
@@ -110,6 +117,10 @@ func extractLeagueKeys(rawResp string) ([]string, error) {
 }
 
 // MakeLeague creates a League object from the given league id.
-func (g *Game) MakeLeague(leagueID string) *league.League {
-	return league.New(g.yf, fmt.Sprintf("%v.l.%v", g.Sport, leagueID))
+func (g *Game) MakeLeague(leagueID string) (*league.League, error) {
+	gameID, err := g.GetGameID()
+	if err != nil {
+		return nil, err
+	}
+	return league.New(g.yf, fmt.Sprintf("%v.l.%v", gameID, leagueID)), nil
 }

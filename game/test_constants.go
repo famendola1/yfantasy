@@ -2,15 +2,15 @@ package game
 
 const (
 	gameTestResp = `<?xml version="1.0" encoding="UTF-8"?>
-     <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nfl" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" time="30.575037002563ms" copyright="Data provided by Yahoo! and STATS, LLC" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+     <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nba" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" time="30.575037002563ms" copyright="Data provided by Yahoo! and STATS, LLC" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
       <game>
-        <game_key>257</game_key>
-        <game_id>257</game_id>
-        <name>Football</name>
-        <code>nfl</code>
+        <game_key>410</game_key>
+        <game_id>410</game_id>
+        <name>Basketball</name>
+        <code>nba</code>
         <type>full</type>
         <url>https://football.fantasysports.yahoo.com/f1</url>
-        <season>2011</season>
+        <season>2021</season>
       </game>
     </fantasy_content>`
 
