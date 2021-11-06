@@ -5,13 +5,14 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/antchfx/xmlquery"
 )
 
 const (
-	endpoint string = "https://fantasysports.yahooapis.com/fantasy/v2"
+	endpoint = "https://fantasysports.yahooapis.com/fantasy/v2"
 )
 
 // YFantasy holds a client for interacting with the Yahoo Fantasy API.
@@ -162,8 +163,13 @@ func (y *YFantasy) GetPlayerRaw(leageuKey string, playerKey string) (string, err
 // GetPlayersRaw queries the /league//players endpoint for player data for
 // multiple players and returns the raw response as a string.
 func (y *YFantasy) GetPlayersRaw(leagueKey string, playerKeys []string) (string, error) {
-	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v",
-		leagueKey, strings.Join(playerKeys, ",")))
+	return y.get(fmt.Sprintf("league/%v/players;player_keys=%v", leagueKey, strings.Join(playerKeys, ",")))
+}
+
+// GetPlayersBySearchRaw queries the /league//players endpoint with the "search"
+// filter set to the provided search string.
+func (y *YFantasy) GetPlayersBySearchRaw(leagueKey string, searchStr string) (string, error) {
+	return y.get(fmt.Sprintf("league/%v/players;search=%v", leagueKey, url.QueryEscape(searchStr)))
 }
 
 // TODO(famendola1): Query /league//players//stats endpoint

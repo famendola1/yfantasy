@@ -1,7 +1,7 @@
 package game
 
 const (
-	gameTestResp string = `<?xml version="1.0" encoding="UTF-8"?>
+	gameTestResp = `<?xml version="1.0" encoding="UTF-8"?>
      <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nfl" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" time="30.575037002563ms" copyright="Data provided by Yahoo! and STATS, LLC" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
       <game>
         <game_key>257</game_key>
@@ -13,7 +13,8 @@ const (
         <season>2011</season>
       </game>
     </fantasy_content>`
-	leagueTestResp string = `<?xml version="1.0" encoding="UTF-8"?>
+
+	leagueTestResp = `<?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=nba/leagues" time="37.668943405151ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
    <users count="1">
     <user>

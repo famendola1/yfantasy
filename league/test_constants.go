@@ -1,7 +1,7 @@
 package league
 
 const (
-	standingsResp string = `
+	standingsResp = `
   <?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/223.l.431/standings" time="201.46489143372ms" copyright="Data provided by Yahoo! and STATS, LLC">
     <league>
@@ -37,4 +37,21 @@ const (
       </standings>
     </league>
   </fantasy_content>`
+
+	searchResp = `
+  <?xml version="1.0" encoding="UTF-8"?>
+  <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/410.l.16883/players;search=Jalen Green" time="25.722980499268ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+   <league>
+    <league_key>410.l.16883</league_key>
+    <league_id>16883</league_id>
+    <name>NBA Fantasy 2K22</name>
+    <season>2021</season>
+    <players count="1">
+     <player>
+      <player_key>410.p.6513</player_key>
+     </player>
+    </players>
+   </league>
+  </fantasy_content>
+  `
 )

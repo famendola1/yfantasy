@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/famendola1/yfantasy/player"
 	"github.com/famendola1/yfantasy/team"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
@@ -35,5 +36,17 @@ func TestExtractTeams(t *testing.T) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("unexpected teams extracted: got %v, want %v", got, want)
 	}
+}
 
+func TestExtractPlayers(t *testing.T) {
+	lg := New(nil, "123.1.456")
+	want := []*player.Player{player.New(nil, "410.p.6513")}
+	got, err := lg.extractPlayersFromSearch(searchResp)
+	if err != nil {
+		t.Errorf("extractPlayersFromSearch failed, expected success")
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("unexpected players extracted: got %v, want %v", got, want)
+	}
 }

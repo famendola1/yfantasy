@@ -6,6 +6,7 @@ import (
 
 	"github.com/antchfx/xmlquery"
 	"github.com/famendola1/yfantasy"
+	"github.com/famendola1/yfantasy/player"
 	"github.com/famendola1/yfantasy/team"
 )
 
@@ -58,4 +59,39 @@ func (l *League) extractTeamsFromStandings(rawResp string) ([]*team.Team, error)
 	}
 
 	return teams, nil
+}
+
+// SearchPlayers searches for players using the provided name.
+// playerName can be the player's full name or a partial name.
+func (l *League) SearchPlayers(playerName string) ([]*player.Player, error) {
+	rawResp, err := l.yf.GetPlayersBySearchRaw(l.LeagueKey, playerName)
+	if err != nil {
+		return nil, err
+	}
+
+	return l.extractPlayersFromSearch(rawResp)
+}
+
+// extractPlayersFromSearch extracts players from the search results.
+func (l *League) extractPlayersFromSearch(rawResp string) ([]*player.Player, error) {
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := xmlquery.QueryAll(doc, "//player")
+	if err != nil {
+		return nil, err
+	}
+
+	players := make([]*player.Player, len(nodes))
+	for i, node := range nodes {
+		playerKey, err := xmlquery.Query(node, "/player_key")
+		if err != nil {
+			return nil, err
+		}
+		players[i] = player.New(l.yf, playerKey.InnerText())
+	}
+
+	return players, nil
 }
