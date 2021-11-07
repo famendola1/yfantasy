@@ -216,8 +216,13 @@ func (y *YFantasy) GetUserLeagues() (string, error) {
 // GetUserLeaguesForSport is the same as GetUserLeagues except the leagues
 // restricted to the given sport and only active leagues are returned.
 func (y *YFantasy) GetUserLeaguesForSport(sport string) (string, error) {
-	return y.get(
-		fmt.Sprintf("users;use_login=1/games;game_keys=%v/leagues", sport))
+	return y.get(fmt.Sprintf("users;use_login=1/games;game_keys=%v/leagues", sport))
+}
+
+// GetUserTeamInLeagueRaw queries the /users endpoint for the user's team in the
+// given league.
+func (y *YFantasy) GetUserTeamInLeagueRaw(gameKey string, leagueKey string) (string, error) {
+	return y.get(fmt.Sprintf("users;use_login=1/games;game_keys=%v/leagues;league_keys=%v/teams", gameKey, leagueKey))
 }
 
 // PostAddDropTransaction sends a POST request to the /league//transactions
