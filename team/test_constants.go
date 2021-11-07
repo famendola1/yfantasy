@@ -1,7 +1,7 @@
 package team
 
 const (
-	rosterResp string = `
+	rosterResp = `
   <?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/253.l.102614.t.10/roster/players" time="110.02206802368ms" copyright="Data provided by Yahoo! and STATS, LLC">
     <team>

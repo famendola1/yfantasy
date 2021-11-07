@@ -14,7 +14,7 @@ import (
 type Game struct {
 	yf     *yfantasy.YFantasy
 	Sport  string
-	GameID string
+	gameID string
 }
 
 // New returns a new Game object.
@@ -25,8 +25,8 @@ func New(yf *yfantasy.YFantasy, sport string) *Game {
 // GetGameID queries the Yahoo fantasy API for the ID of the game and sets
 // GameID in the Game.
 func (g *Game) GetGameID() (string, error) {
-	if g.GameID != "" {
-		return g.GameID, nil
+	if g.gameID != "" {
+		return g.gameID, nil
 	}
 
 	rawResp, err := g.yf.GetGameRaw(g.Sport)
@@ -49,8 +49,8 @@ func (g *Game) extractGameID(rawResp string) (string, error) {
 		return "", err
 	}
 
-	g.GameID = node.InnerText()
-	return g.GameID, err
+	g.gameID = node.InnerText()
+	return g.gameID, err
 }
 
 // Leagues returns all the active leagues the user is in for the game.

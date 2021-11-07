@@ -14,7 +14,7 @@ func TestNew(t *testing.T) {
 	want := &League{nil, "789.l.456"}
 	got := New(nil, "789.l.456")
 
-	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
+	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(League{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
 	}
 }
@@ -22,10 +22,10 @@ func TestNew(t *testing.T) {
 func TestExtractTeams(t *testing.T) {
 	lg := New(nil, "223.l.431")
 	want := []*team.Team{
-		team.New(nil, "223.l.431.t.10", "223.l.431"),
-		team.New(nil, "223.l.431.t.5", "223.l.431"),
-		team.New(nil, "223.l.431.t.8", "223.l.431"),
-		team.New(nil, "223.l.431.t.12", "223.l.431"),
+		team.New(nil, "223.l.431.t.10"),
+		team.New(nil, "223.l.431.t.5"),
+		team.New(nil, "223.l.431.t.8"),
+		team.New(nil, "223.l.431.t.12"),
 	}
 
 	got, err := lg.extractTeamsFromStandings(standingsResp)

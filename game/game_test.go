@@ -13,7 +13,7 @@ func TestNew(t *testing.T) {
 	want := &Game{yf: nil, Sport: "nba"}
 	got := New(nil, "nba")
 
-	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
+	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Game{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
 	}
 }
@@ -62,7 +62,7 @@ func TestLeagueKeys(t *testing.T) {
 
 func TestMakeLeague(t *testing.T) {
 	game := New(nil, "nba")
-	game.GameID = "410"
+	game.gameID = "410"
 
 	leagueID := "1234"
 	want := league.New(nil, "410.l.1234")
@@ -71,7 +71,7 @@ func TestMakeLeague(t *testing.T) {
 		t.Errorf("MakeLeague(%q) failed, want success", leagueID)
 	}
 
-	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(*got, *want)) {
-		t.Errorf("MakeLeague(%q) = %+v, want %+v", "1234", *got, *want)
+	if !cmp.Equal(got, want, cmp.AllowUnexported(Game{})) {
+		t.Errorf("MakeLeague(%q) = %+v, want %+v", leagueID, *got, *want)
 	}
 }

@@ -55,7 +55,7 @@ func (l *League) extractTeamsFromStandings(rawResp string) ([]*team.Team, error)
 		if err != nil {
 			return nil, err
 		}
-		teams[i] = team.New(l.yf, teamKey.InnerText(), l.LeagueKey)
+		teams[i] = team.New(l.yf, teamKey.InnerText())
 	}
 
 	return teams, nil
