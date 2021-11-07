@@ -2,6 +2,7 @@
 package league
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/antchfx/xmlquery"
@@ -23,7 +24,12 @@ func New(yf *yfantasy.YFantasy, leagueKey string) *League {
 
 // LeagueID returns the ID of the league.
 func (l *League) LeagueID() string {
-	return strings.Split(l.LeagueKey, ".")[2]
+	return strings.Split(l.LeagueKey, ".l.")[1]
+}
+
+// GameKey returns the game key for the league.
+func (l *League) GameKey() string {
+	return strings.Split(l.LeagueKey, ".l.")[0]
 }
 
 // Teams returns a list of the teams in the league
@@ -33,12 +39,30 @@ func (l *League) Teams() ([]*team.Team, error) {
 		return nil, err
 	}
 
-	return l.extractTeamsFromStandings(rawResp)
+	return l.extractTeams(rawResp)
 }
 
-// extractTeamsFromStandings parses the raw XML response from the
+// UserTeam returns the team that the user has in this league.
+func (l *League) UserTeam() (*team.Team, error) {
+	rawResp, err := l.yf.GetUserTeamInLeagueRaw(l.GameKey(), l.LeagueKey)
+	if err != nil {
+		return nil, err
+	}
+
+	teams, err := l.extractTeams(rawResp)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(teams) == 0 {
+		return nil, fmt.Errorf("user has no teams in this league")
+	}
+	return teams[0], nil
+}
+
+// extractTeams parses the raw XML response from the
 // /league//standings endpoint for teams.
-func (l *League) extractTeamsFromStandings(rawResp string) ([]*team.Team, error) {
+func (l *League) extractTeams(rawResp string) ([]*team.Team, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
 		return nil, err
