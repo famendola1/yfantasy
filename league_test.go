@@ -1,18 +1,16 @@
-package league
+package yfantasy
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/famendola1/yfantasy/player"
-	"github.com/famendola1/yfantasy/team"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
-func TestNew(t *testing.T) {
+func TestNewLeague(t *testing.T) {
 	want := &League{nil, "789.l.456"}
-	got := New(nil, "789.l.456")
+	got := NewLeague(nil, "789.l.456")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(League{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
@@ -20,15 +18,15 @@ func TestNew(t *testing.T) {
 }
 
 func TestExtractTeams(t *testing.T) {
-	lg := New(nil, "223.l.431")
-	want := []*team.Team{
-		team.New(nil, "223.l.431.t.10"),
-		team.New(nil, "223.l.431.t.5"),
-		team.New(nil, "223.l.431.t.8"),
-		team.New(nil, "223.l.431.t.12"),
+	lg := NewLeague(nil, "223.l.431")
+	want := []*Team{
+		NewTeam(nil, "223.l.431.t.10"),
+		NewTeam(nil, "223.l.431.t.5"),
+		NewTeam(nil, "223.l.431.t.8"),
+		NewTeam(nil, "223.l.431.t.12"),
 	}
 
-	got, err := lg.extractTeamsFromStandings(standingsResp)
+	got, err := lg.extractTeams(standingsResp)
 	if err != nil {
 		t.Errorf("extractTeams failed, expected success")
 	}
@@ -39,8 +37,8 @@ func TestExtractTeams(t *testing.T) {
 }
 
 func TestExtractPlayers(t *testing.T) {
-	lg := New(nil, "123.1.456")
-	want := []*player.Player{player.New(nil, "410.p.6513")}
+	lg := NewLeague(nil, "123.1.456")
+	want := []*Player{NewPlayer(nil, "410.p.6513")}
 	got, err := lg.extractPlayersFromSearch(searchResp)
 	if err != nil {
 		t.Errorf("extractPlayersFromSearch(%q) failed, want success", searchResp)

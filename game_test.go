@@ -1,17 +1,16 @@
-package game
+package yfantasy
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/famendola1/yfantasy/league"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
-func TestNew(t *testing.T) {
+func TestNewGame(t *testing.T) {
 	want := &Game{yf: nil, Sport: "nba"}
-	got := New(nil, "nba")
+	got := NewGame(nil, "nba")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Game{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
@@ -19,7 +18,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestExtractGameId(t *testing.T) {
-	game := New(nil, "nba")
+	game := NewGame(nil, "nba")
 	want := "410"
 	got, err := game.extractGameID(gameTestResp)
 	if err != nil {
@@ -32,11 +31,11 @@ func TestExtractGameId(t *testing.T) {
 }
 
 func TestExtractLeagues(t *testing.T) {
-	game := New(nil, "nba")
-	want := []*league.League{
-		league.New(nil, "410.l.16883"),
-		league.New(nil, "410.l.61777"),
-		league.New(nil, "410.l.159928"),
+	game := NewGame(nil, "nba")
+	want := []*League{
+		NewLeague(nil, "410.l.16883"),
+		NewLeague(nil, "410.l.61777"),
+		NewLeague(nil, "410.l.159928"),
 	}
 	got, err := game.extractLeagues(leagueTestResp)
 	if err != nil {
@@ -61,17 +60,17 @@ func TestLeagueKeys(t *testing.T) {
 }
 
 func TestMakeLeague(t *testing.T) {
-	game := New(nil, "nba")
+	game := NewGame(nil, "nba")
 	game.gameID = "410"
 
 	leagueID := "1234"
-	want := league.New(nil, "410.l.1234")
+	want := NewLeague(nil, "410.l.1234")
 	got, err := game.MakeLeague(leagueID)
 	if err != nil {
 		t.Errorf("MakeLeague(%q) failed, want success", leagueID)
 	}
 
-	if !cmp.Equal(got, want, cmp.AllowUnexported(Game{})) {
+	if !cmp.Equal(got, want, cmp.AllowUnexported(League{})) {
 		t.Errorf("MakeLeague(%q) = %+v, want %+v", leagueID, *got, *want)
 	}
 }

@@ -1,27 +1,24 @@
-// Package team contains functionality for interacting with a Yahoo team.
-package team
+package yfantasy
 
 import (
 	"strings"
 
 	"github.com/antchfx/xmlquery"
-	"github.com/famendola1/yfantasy"
-	"github.com/famendola1/yfantasy/player"
 )
 
 // Team represents a Yahoo team.
 type Team struct {
-	yf      *yfantasy.YFantasy
+	yf      *YFantasy
 	TeamKey string
 }
 
-// New returns a new Team
-func New(yf *yfantasy.YFantasy, teamKey string) *Team {
+// NewTeam returns a new Team
+func NewTeam(yf *YFantasy, teamKey string) *Team {
 	return &Team{yf: yf, TeamKey: teamKey}
 }
 
 // Roster returns the list of players on this team.
-func (t *Team) Roster() ([]*player.Player, error) {
+func (t *Team) Roster() ([]*Player, error) {
 	rawResp, err := t.yf.GetTeamRosterRaw(t.TeamKey)
 	if err != nil {
 		return nil, err
@@ -31,7 +28,7 @@ func (t *Team) Roster() ([]*player.Player, error) {
 
 // extractPlayersFromRoster parses the raw XML response from the /team//roster
 // endpoint for players.
-func (t *Team) extractPlayersFromRoster(rawResp string) ([]*player.Player, error) {
+func (t *Team) extractPlayersFromRoster(rawResp string) ([]*Player, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
 		return nil, err
@@ -42,13 +39,13 @@ func (t *Team) extractPlayersFromRoster(rawResp string) ([]*player.Player, error
 		return nil, err
 	}
 
-	players := make([]*player.Player, len(nodes))
+	players := make([]*Player, len(nodes))
 	for i, node := range nodes {
 		playerKey, err := xmlquery.Query(node, "/player_key")
 		if err != nil {
 			return nil, err
 		}
-		players[i] = player.New(t.yf, playerKey.InnerText())
+		players[i] = NewPlayer(t.yf, playerKey.InnerText())
 	}
 
 	return players, nil

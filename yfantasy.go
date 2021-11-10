@@ -177,11 +177,10 @@ func (y *YFantasy) GetPlayersBySearchRaw(leagueKey string, searchStr string) (st
 // TODO(famendola1): Query /league//players using filters
 
 // GetTransactionsRaw queries the /league//transactions endpoint for league
-// transactions of the given type and returns the raw response as a string.
+// transactions of the given types and returns the raw response as a string.
 // Valid transactionTypes are: add, drop, commish, trade
-func (y *YFantasy) GetTransactionsRaw(leagueKey string, transactionType string) (string, error) {
-	return y.get(
-		fmt.Sprintf("league/%v/transactions;type=%v", leagueKey, transactionType))
+func (y *YFantasy) GetTransactionsRaw(leagueKey string, transactionTypes []string) (string, error) {
+	return y.get(fmt.Sprintf("league/%v/transactions;types=%v", leagueKey, strings.Join(transactionTypes, ",")))
 }
 
 // GetTeamTransactionsRaw queries the /league//transactions endpoint for league

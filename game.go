@@ -1,24 +1,21 @@
-// Package game contains functionality for interacting with a Yahoo game.
-package game
+package yfantasy
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/antchfx/xmlquery"
-	"github.com/famendola1/yfantasy"
-	"github.com/famendola1/yfantasy/league"
 )
 
 // Game represents a Yahoo game
 type Game struct {
-	yf     *yfantasy.YFantasy
+	yf     *YFantasy
 	Sport  string
 	gameID string
 }
 
-// New returns a new Game object.
-func New(yf *yfantasy.YFantasy, sport string) *Game {
+// NewGame returns a new Game object.
+func NewGame(yf *YFantasy, sport string) *Game {
 	return &Game{yf: yf, Sport: sport}
 }
 
@@ -54,7 +51,7 @@ func (g *Game) extractGameID(rawResp string) (string, error) {
 }
 
 // Leagues returns all the active leagues the user is in for the game.
-func (g *Game) Leagues() ([]*league.League, error) {
+func (g *Game) Leagues() ([]*League, error) {
 	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
 	if err != nil {
 		return nil, err
@@ -64,7 +61,7 @@ func (g *Game) Leagues() ([]*league.League, error) {
 }
 
 // extractLeagues parses the raw XML response for leagues.
-func (g *Game) extractLeagues(rawResp string) ([]*league.League, error) {
+func (g *Game) extractLeagues(rawResp string) ([]*League, error) {
 	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
 	if err != nil {
 		return nil, err
@@ -75,13 +72,13 @@ func (g *Game) extractLeagues(rawResp string) ([]*league.League, error) {
 		return nil, err
 	}
 
-	leagues := make([]*league.League, len(nodes))
+	leagues := make([]*League, len(nodes))
 	for i, node := range nodes {
 		leagueKey, err := xmlquery.Query(node, "/league_key")
 		if err != nil {
 			return nil, err
 		}
-		leagues[i] = league.New(g.yf, leagueKey.InnerText())
+		leagues[i] = NewLeague(g.yf, leagueKey.InnerText())
 	}
 	return leagues, nil
 }
@@ -117,10 +114,10 @@ func extractLeagueKeys(rawResp string) ([]string, error) {
 }
 
 // MakeLeague creates a League object from the given league id.
-func (g *Game) MakeLeague(leagueID string) (*league.League, error) {
+func (g *Game) MakeLeague(leagueID string) (*League, error) {
 	gameID, err := g.GetGameID()
 	if err != nil {
 		return nil, err
 	}
-	return league.New(g.yf, fmt.Sprintf("%v.l.%v", gameID, leagueID)), nil
+	return NewLeague(g.yf, fmt.Sprintf("%v.l.%v", gameID, leagueID)), nil
 }
