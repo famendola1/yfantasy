@@ -141,4 +141,32 @@ const (
     </user>
    </users>
   </fantasy_content>`
+
+  leagueFullTestResp = `<league>
+    <league_key>410.l.16883</league_key>
+    <league_id>16883</league_id>
+    <name>NBA Fantasy 2K22</name>
+    <url>https://basketball.fantasysports.yahoo.com/nba/16883</url>
+    <logo_url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/0743c1232a845a00b408b165a683c19ad0ee273236a45766137c9698234246bf.jpg</logo_url>
+    <draft_status>postdraft</draft_status>
+    <num_teams>12</num_teams>
+    <edit_key>2021-11-09</edit_key>
+    <weekly_deadline>intraday</weekly_deadline>
+    <league_update_timestamp>1636441834</league_update_timestamp>
+    <scoring_type>headone</scoring_type>
+    <league_type>private</league_type>
+    <renew>402_22765</renew>
+    <short_invitation_url>https://basketball.fantasysports.yahoo.com/nba/16883/invitation?key=1f14749a8282d491&amp;ikey=bc6fb9e93fd791bb</short_invitation_url>
+    <allow_add_to_dl_extra_pos>1</allow_add_to_dl_extra_pos>
+    <is_pro_league>0</is_pro_league>
+    <is_cash_league>0</is_cash_league>
+    <current_week>4</current_week>
+    <start_week>1</start_week>
+    <start_date>2021-10-19</start_date>
+    <end_week>24</end_week>
+    <end_date>2022-04-10</end_date>
+    <game_code>nba</game_code>
+    <season>2021</season>
+   </league>
+  `
 )
