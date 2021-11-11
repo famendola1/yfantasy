@@ -59,10 +59,10 @@ func TestNewLeagueFromXML(t *testing.T) {
 func TestExtractTeams(t *testing.T) {
 	lg := NewLeague("223.l.431", nil)
 	want := []*Team{
-		NewTeam(nil, "223.l.431.t.10"),
-		NewTeam(nil, "223.l.431.t.5"),
-		NewTeam(nil, "223.l.431.t.8"),
-		NewTeam(nil, "223.l.431.t.12"),
+		NewTeam("223.l.431.t.10", nil),
+		NewTeam("223.l.431.t.5", nil),
+		NewTeam("223.l.431.t.8", nil),
+		NewTeam("223.l.431.t.12", nil),
 	}
 
 	got, err := lg.extractTeams(standingsResp)

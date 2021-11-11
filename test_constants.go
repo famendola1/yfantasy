@@ -41,7 +41,7 @@ const (
     </team>
   </fantasy_content>`
 
-  standingsResp = `
+	standingsResp = `
   <?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/223.l.431/standings" time="201.46489143372ms" copyright="Data provided by Yahoo! and STATS, LLC">
     <league>
@@ -50,7 +50,7 @@ const (
       <name>Y! Friends and Family League</name>
       <url>https://football.fantasysports.yahoo.com/archive/pnfl/2009/431</url>
       <draft_status>postdraft</draft_status>
-      <num_teams>14</num_teams>
+      <num_teams>4</num_teams>
       <edit_key>17</edit_key>
       <weekly_deadline/>
       <league_update_timestamp>1262595518</league_update_timestamp>
@@ -95,7 +95,7 @@ const (
   </fantasy_content>
   `
 
-  gameTestResp = `<?xml version="1.0" encoding="UTF-8"?>
+	gameTestResp = `<?xml version="1.0" encoding="UTF-8"?>
      <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nba" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" time="30.575037002563ms" copyright="Data provided by Yahoo! and STATS, LLC" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
       <game>
         <game_key>410</game_key>
@@ -142,7 +142,7 @@ const (
    </users>
   </fantasy_content>`
 
-  leagueFullTestResp = `<league>
+	leagueFullTestResp = `<league>
     <league_key>410.l.16883</league_key>
     <league_id>16883</league_id>
     <name>NBA Fantasy 2K22</name>
@@ -169,4 +169,43 @@ const (
     <season>2021</season>
    </league>
   `
+
+	teamFullTestResp = `
+	<team>
+    <team_key>410.l.16883.t.1</team_key>
+    <team_id>1</team_id>
+    <name>Bring Me A Shot</name>
+    <is_owned_by_current_login>1</is_owned_by_current_login>
+    <url>https://basketball.fantasysports.yahoo.com/nba/16883/1</url>
+    <team_logos>
+     <team_logo>
+      <size>large</size>
+      <url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/6d1c4b1ab7f7d94e33ea9f4a3306381954a2880b244fe54ca8dfea504c7be242.jpg</url>
+     </team_logo>
+    </team_logos>
+    <waiver_priority>9</waiver_priority>
+    <number_of_moves>23</number_of_moves>
+    <number_of_trades>0</number_of_trades>
+    <roster_adds>
+     <coverage_type>week</coverage_type>
+     <coverage_value>4</coverage_value>
+     <value>3</value>
+    </roster_adds>
+    <league_scoring_type>headone</league_scoring_type>
+    <draft_position>4</draft_position>
+    <has_draft_grade>0</has_draft_grade>
+    <managers>
+     <manager>
+      <manager_id>1</manager_id>
+      <nickname>Fabio</nickname>
+      <is_commissioner>1</is_commissioner>
+      <is_current_login>1</is_current_login>
+      <email>example@gmail.com</email>
+      <image_url>https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg</image_url>
+      <felo_score>890</felo_score>
+      <felo_tier>platinum</felo_tier>
+     </manager>
+    </managers>
+   </team>
+	`
 )

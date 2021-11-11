@@ -132,11 +132,10 @@ func (l *League) extractTeams(rawResp string) ([]*Team, error) {
 
 	teams := make([]*Team, len(nodes))
 	for i, node := range nodes {
-		teamKey, err := xmlquery.Query(node, "/team_key")
+		teams[i], err = NewTeamFromXML(node.OutputXML(true), l.yf)
 		if err != nil {
 			return nil, err
 		}
-		teams[i] = NewTeam(l.yf, teamKey.InnerText())
 	}
 
 	return teams, nil
