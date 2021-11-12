@@ -17,7 +17,7 @@ func TestNewPlayer(t *testing.T) {
 	}
 }
 
-func TestNewPLayerFromXML(t *testing.T) {
+func TestNewPlayerFromXML(t *testing.T) {
 	want := &Player{
 		XMLName:                  xml.Name{Local: "player"},
 		PlayerKey:                "410.p.6065",

@@ -39,7 +39,7 @@ type League struct {
 	yf *YFantasy
 }
 
-// NewLeagueFromXML returns a new League object parsed form an XML string.
+// NewLeagueFromXML returns a new League object parsed from an XML string.
 func NewLeagueFromXML(rawXML string, yf *YFantasy) (*League, error) {
 	var lg League
 	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&lg)
@@ -165,13 +165,11 @@ func (l *League) extractPlayersFromSearch(rawResp string) ([]*Player, error) {
 
 	players := make([]*Player, len(nodes))
 	for i, node := range nodes {
-		playerKey, err := xmlquery.Query(node, "/player_key")
+		players[i], err = NewPlayerFromXML(node.OutputXML(true), l.yf)
 		if err != nil {
 			return nil, err
 		}
-		players[i] = NewPlayer(playerKey.InnerText(), l.yf)
 	}
-
 	return players, nil
 }
 
@@ -198,4 +196,33 @@ func (l *League) FetchPlayerData(player *Player) error {
 		return err
 	}
 	return nil
+}
+
+// Transactions returns all the league's transaction for the given types.
+func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error) {
+	rawResp, err := l.yf.GetTransactionsRaw(l.LeagueKey, transactionTypes)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := xmlquery.QueryAll(doc, "//transaction")
+	if err != nil {
+		return nil, err
+	}
+
+	transactions := make([]*Transaction, len(nodes))
+	for i, node := range nodes {
+		transactions[i], err = NewTransactionFromXML(node.OutputXML(true), l.yf)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return transactions, nil
+
 }

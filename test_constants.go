@@ -244,4 +244,58 @@ const (
 	 <player_notes_last_timestamp>1636515545</player_notes_last_timestamp>
 	</player>
 	`
+
+	transactionFullTestResp = `
+	<transaction>
+	 <transaction_key>410.l.16883.tr.227</transaction_key>
+	 <transaction_id>227</transaction_id>
+	 <type>add/drop</type>
+	 <status>successful</status>
+	 <timestamp>1636674697</timestamp>
+	 <players count="2">
+		<player>
+		 <player_key>410.p.6450</player_key>
+		 <player_id>6450</player_id>
+		 <name>
+			<full>Paul Reed</full>
+			<first>Paul</first>
+			<last>Reed</last>
+			<ascii_first>Paul</ascii_first>
+			<ascii_last>Reed</ascii_last>
+		 </name>
+		 <editorial_team_abbr>PHI</editorial_team_abbr>
+		 <display_position>SF</display_position>
+		 <position_type>P</position_type>
+		 <transaction_data>
+			<type>add</type>
+			<source_type>freeagents</source_type>
+			<destination_type>team</destination_type>
+			<destination_team_key>410.l.16883.t.8</destination_team_key>
+			<destination_team_name>Anti-Vax and INJ</destination_team_name>
+		 </transaction_data>
+		</player>
+		<player>
+		 <player_key>410.p.4488</player_key>
+		 <player_id>4488</player_id>
+		 <name>
+			<full>George Hill</full>
+			<first>George</first>
+			<last>Hill</last>
+			<ascii_first>George</ascii_first>
+			<ascii_last>Hill</ascii_last>
+		 </name>
+		 <editorial_team_abbr>MIL</editorial_team_abbr>
+		 <display_position>PG,SG</display_position>
+		 <position_type>P</position_type>
+		 <transaction_data>
+			<type>drop</type>
+			<source_type>team</source_type>
+			<source_team_key>410.l.16883.t.8</source_team_key>
+			<source_team_name>Anti-Vax and INJ</source_team_name>
+			<destination_type>waivers</destination_type>
+		 </transaction_data>
+		</player>
+	 </players>
+	</transaction>
+	`
 )

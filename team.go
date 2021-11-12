@@ -64,7 +64,7 @@ type Manager struct {
 	FeloTier       string `xml:"felo_tier"`
 }
 
-// NewTeamFromXML returns a new Team object parsed form an XML string.
+// NewTeamFromXML returns a new Team object parsed from an XML string.
 func NewTeamFromXML(rawXML string, yf *YFantasy) (*Team, error) {
 	var tm Team
 	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&tm)

@@ -78,7 +78,7 @@ func TestExtractTeams(t *testing.T) {
 
 func TestExtractPlayers(t *testing.T) {
 	lg := NewLeague("123.1.456", nil)
-	want := []*Player{NewPlayer("410.p.6513", nil)}
+	want := []*Player{{XMLName: xml.Name{Local: "player"}, PlayerKey: "410.p.6513"}}
 	got, err := lg.extractPlayersFromSearch(searchResp)
 	if err != nil {
 		t.Errorf("extractPlayersFromSearch(%q) failed, want success", searchResp)
