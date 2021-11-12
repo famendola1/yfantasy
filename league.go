@@ -56,8 +56,7 @@ func NewLeague(lgKey string, yf *YFantasy) *League {
 	return &League{XMLName: xml.Name{Local: "league"}, LeagueKey: lgKey, yf: yf}
 }
 
-// FetchLeagueData gets all the data for a league and sets populates all the
-// fields.
+// FetchLeagueData gets all the data for a league and populates all the fields.
 func (l *League) FetchLeagueData() error {
 	if l.yf == nil {
 		return fmt.Errorf("unable to fetch league data, YFantasy is nil")
@@ -170,8 +169,33 @@ func (l *League) extractPlayersFromSearch(rawResp string) ([]*Player, error) {
 		if err != nil {
 			return nil, err
 		}
-		players[i] = NewPlayer(l.yf, playerKey.InnerText())
+		players[i] = NewPlayer(playerKey.InnerText(), l.yf)
 	}
 
 	return players, nil
+}
+
+// FetchPlayerData gets all the data for a player and populates/overrides all
+// the fields in the player object.
+func (l *League) FetchPlayerData(player *Player) error {
+	rawResp, err := l.yf.GetPlayerRaw(l.LeagueKey, player.PlayerKey)
+	if err != nil {
+		return err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return err
+	}
+
+	node, err := xmlquery.Query(doc, "//player")
+	if err != nil {
+		return err
+	}
+
+	player, err = NewPlayerFromXML(node.OutputXML(true), l.yf)
+	if err != nil {
+		return err
+	}
+	return nil
 }

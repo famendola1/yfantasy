@@ -208,4 +208,40 @@ const (
     </managers>
    </team>
 	`
+
+	playerFullTestResp = `
+	<player>
+	 <player_key>410.p.6065</player_key>
+	 <player_id>6065</player_id>
+	 <name>
+		<full>Shake Milton</full>
+		<first>Shake</first>
+		<last>Milton</last>
+		<ascii_first>Shake</ascii_first>
+		<ascii_last>Milton</ascii_last>
+	 </name>
+	 <editorial_player_key>nba.p.6065</editorial_player_key>
+	 <editorial_team_key>nba.t.20</editorial_team_key>
+	 <editorial_team_full_name>Philadelphia 76ers</editorial_team_full_name>
+	 <editorial_team_abbr>PHI</editorial_team_abbr>
+	 <uniform_number>18</uniform_number>
+	 <display_position>PG,SG</display_position>
+	 <headshot>
+		<url>https://s.yimg.com/iu/api/res/1.2/PTF3UNtaGJzwH3Ah22R0Ow--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nba_cutout/players_l/10142021/6065.png</url>
+		<size>small</size>
+	 </headshot>
+	 <image_url>https://s.yimg.com/iu/api/res/1.2/PTF3UNtaGJzwH3Ah22R0Ow--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nba_cutout/players_l/10142021/6065.png</image_url>
+	 <is_undroppable>0</is_undroppable>
+	 <position_type>P</position_type>
+	 <primary_position>PG</primary_position>
+	 <eligible_positions>
+		<position>PG</position>
+		<position>SG</position>
+		<position>G</position>
+		<position>Util</position>
+	 </eligible_positions>
+	 <has_player_notes>1</has_player_notes>
+	 <player_notes_last_timestamp>1636515545</player_notes_last_timestamp>
+	</player>
+	`
 )

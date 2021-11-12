@@ -132,7 +132,7 @@ func (t *Team) extractPlayersFromRoster(rawResp string) ([]*Player, error) {
 		if err != nil {
 			return nil, err
 		}
-		players[i] = NewPlayer(t.yf, playerKey.InnerText())
+		players[i] = NewPlayer(playerKey.InnerText(), t.yf)
 	}
 
 	return players, nil

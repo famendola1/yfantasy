@@ -49,12 +49,12 @@ func TestNewTeamFromXML(t *testing.T) {
 	}
 	got, err := NewTeamFromXML(teamFullTestResp, nil)
 	if err != nil {
-		t.Errorf("NewTeamFromXML(%q) failed, want success.", leagueFullTestResp)
+		t.Errorf("NewTeamFromXML(%q) failed, want success.", teamFullTestResp)
 		return
 	}
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Team{})) {
-		t.Errorf("NewTeamFromXML(%q) = %+v, want %+v", leagueFullTestResp, *got, *want)
+		t.Errorf("NewTeamFromXML(%q) = %+v, want %+v", teamFullTestResp, *got, *want)
 	}
 }
 
@@ -80,9 +80,9 @@ func TestLeagueKey(t *testing.T) {
 func TestExtractPlayersForTeam(t *testing.T) {
 	team := NewTeam("123.1.456.t.789", nil)
 	want := []*Player{
-		NewPlayer(nil, "253.p.7569"),
-		NewPlayer(nil, "253.p.7054"),
-		NewPlayer(nil, "253.p.7382"),
+		NewPlayer("253.p.7569", nil),
+		NewPlayer("253.p.7054", nil),
+		NewPlayer("253.p.7382", nil),
 	}
 	got, err := team.extractPlayersFromRoster(rosterResp)
 	if err != nil {
