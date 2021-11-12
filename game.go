@@ -15,7 +15,7 @@ type Game struct {
 }
 
 // NewGame returns a new Game object.
-func NewGame(yf *YFantasy, sport string) *Game {
+func NewGame(sport string, yf *YFantasy) *Game {
 	return &Game{yf: yf, Sport: sport}
 }
 
@@ -58,6 +58,23 @@ func (g *Game) Leagues() ([]*League, error) {
 	}
 
 	return g.extractLeagues(rawResp)
+}
+
+// GetLeagueByName returns a league with the given name. If no league is found
+// an error is returned.
+func (g *Game) GetLeagueByName(lgName string) (*League, error) {
+	lgs, err := g.Leagues()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, lg := range lgs {
+		if lg.Name == lgName {
+			return lg, nil
+		}
+	}
+
+	return nil, fmt.Errorf("league with name: %q not found", lgName)
 }
 
 // extractLeagues parses the raw XML response for leagues.

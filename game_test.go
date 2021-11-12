@@ -11,7 +11,7 @@ import (
 
 func TestNewGame(t *testing.T) {
 	want := &Game{yf: nil, Sport: "nba"}
-	got := NewGame(nil, "nba")
+	got := NewGame("nba", nil)
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Game{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
@@ -19,7 +19,7 @@ func TestNewGame(t *testing.T) {
 }
 
 func TestExtractGameId(t *testing.T) {
-	game := NewGame(nil, "nba")
+	game := NewGame("nba", nil)
 	want := "410"
 	got, err := game.extractGameID(gameTestResp)
 	if err != nil {
@@ -32,7 +32,7 @@ func TestExtractGameId(t *testing.T) {
 }
 
 func TestExtractLeagues(t *testing.T) {
-	game := NewGame(nil, "nba")
+	game := NewGame("nba", nil)
 	want := []*League{
 		NewLeague("410.l.16883", nil),
 		NewLeague("410.l.61777", nil),
@@ -64,7 +64,7 @@ func TestLeagueKeys(t *testing.T) {
 }
 
 func TestMakeLeague(t *testing.T) {
-	game := NewGame(nil, "nba")
+	game := NewGame("nba", nil)
 	game.gameID = "410"
 
 	leagueID := "1234"
