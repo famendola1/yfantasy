@@ -1,6 +1,7 @@
 package yfantasy
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -33,13 +34,16 @@ func TestExtractGameId(t *testing.T) {
 func TestExtractLeagues(t *testing.T) {
 	game := NewGame(nil, "nba")
 	want := []*League{
-		NewLeague(nil, "410.l.16883"),
-		NewLeague(nil, "410.l.61777"),
-		NewLeague(nil, "410.l.159928"),
+		NewLeague("410.l.16883", nil),
+		NewLeague("410.l.61777", nil),
+		NewLeague("410.l.159928", nil),
 	}
+
 	got, err := game.extractLeagues(leagueTestResp)
 	if err != nil {
+		fmt.Println(err)
 		t.Errorf("extractLeagues(%q) failed, want success", leagueTestResp)
+		return
 	}
 
 	if !reflect.DeepEqual(got, want) {
@@ -64,7 +68,7 @@ func TestMakeLeague(t *testing.T) {
 	game.gameID = "410"
 
 	leagueID := "1234"
-	want := NewLeague(nil, "410.l.1234")
+	want := NewLeague("410.l.1234", nil)
 	got, err := game.MakeLeague(leagueID)
 	if err != nil {
 		t.Errorf("MakeLeague(%q) failed, want success", leagueID)

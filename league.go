@@ -1,6 +1,7 @@
 package yfantasy
 
 import (
+	"encoding/xml"
 	"fmt"
 	"strings"
 
@@ -9,18 +10,77 @@ import (
 
 // League represents a Yahoo league.
 type League struct {
-	yf        *YFantasy
-	LeagueKey string
+	XMLName               xml.Name `xml:"league"`
+	LeagueKey             string   `xml:"league_key"`
+	LeagueID              string   `xml:"league_id"`
+	Name                  string   `xml:"name"`
+	URL                   string   `xml:"url"`
+	LogoURL               string   `xml:"logo_url"`
+	DraftStatus           string   `xml:"draft_status"`
+	NumTeams              string   `xml:"num_teams"`
+	EditKey               string   `xml:"edit_key"`
+	WeeklyDeadline        string   `xml:"weekly_deadline"`
+	LeagueUpdateTimestamp string   `xml:"league_update_timestamp"`
+	ScoringType           string   `xml:"scoring_type"`
+	LeagueType            string   `xml:"league_type"`
+	Renew                 string   `xml:"renew"`
+	ShortInvitationURL    string   `xml:"short_invitation_url"`
+	AllowAddToDlExtraPos  string   `xml:"allow_add_to_dl_extra_pos"`
+	IsProLeague           string   `xml:"is_pro_league"`
+	IsCashLeague          string   `xml:"is_cash_league"`
+	CurrentWeek           string   `xml:"current_week"`
+	StartWeek             string   `xml:"start_week"`
+	StartDate             string   `xml:"start_date"`
+	EndWeek               string   `xml:"end_week"`
+	EndDate               string   `xml:"end_date"`
+	GameCode              string   `xml:"game_code"`
+	Season                string   `xml:"season"`
+
+	yf *YFantasy
 }
 
-// NewLeague returns a new League object.
-func NewLeague(yf *YFantasy, leagueKey string) *League {
-	return &League{yf: yf, LeagueKey: leagueKey}
+// NewLeagueFromXML returns a new League object parsed from an XML string.
+func NewLeagueFromXML(rawXML string, yf *YFantasy) (*League, error) {
+	var lg League
+	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&lg)
+	if err != nil {
+		return nil, err
+	}
+	lg.yf = yf
+	return &lg, nil
 }
 
-// LeagueID returns the ID of the league.
-func (l *League) LeagueID() string {
-	return strings.Split(l.LeagueKey, ".l.")[1]
+// NewLeague creates a League with just the LeagueKey field set. To get all the
+// league data, clients must call FetchLeagueData.
+func NewLeague(lgKey string, yf *YFantasy) *League {
+	return &League{XMLName: xml.Name{Local: "league"}, LeagueKey: lgKey, yf: yf}
+}
+
+// FetchLeagueData gets all the data for a league and populates all the fields.
+func (l *League) FetchLeagueData() error {
+	if l.yf == nil {
+		return fmt.Errorf("unable to fetch league data, YFantasy is nil")
+	}
+	rawResp, err := l.yf.GetLeagueRaw(l.LeagueKey)
+	if err != nil {
+		return err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return err
+	}
+
+	node, err := xmlquery.Query(doc, "//league")
+	if err != nil {
+		return err
+	}
+
+	l, err = NewLeagueFromXML(node.OutputXML(true), l.yf)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GameKey returns the game key for the league.
@@ -71,11 +131,10 @@ func (l *League) extractTeams(rawResp string) ([]*Team, error) {
 
 	teams := make([]*Team, len(nodes))
 	for i, node := range nodes {
-		teamKey, err := xmlquery.Query(node, "/team_key")
+		teams[i], err = NewTeamFromXML(node.OutputXML(true), l.yf)
 		if err != nil {
 			return nil, err
 		}
-		teams[i] = NewTeam(l.yf, teamKey.InnerText())
 	}
 
 	return teams, nil
@@ -106,12 +165,64 @@ func (l *League) extractPlayersFromSearch(rawResp string) ([]*Player, error) {
 
 	players := make([]*Player, len(nodes))
 	for i, node := range nodes {
-		playerKey, err := xmlquery.Query(node, "/player_key")
+		players[i], err = NewPlayerFromXML(node.OutputXML(true), l.yf)
 		if err != nil {
 			return nil, err
 		}
-		players[i] = NewPlayer(l.yf, playerKey.InnerText())
+	}
+	return players, nil
+}
+
+// FetchPlayerData gets all the data for a player and populates/overrides all
+// the fields in the player object.
+func (l *League) FetchPlayerData(player *Player) error {
+	rawResp, err := l.yf.GetPlayerRaw(l.LeagueKey, player.PlayerKey)
+	if err != nil {
+		return err
 	}
 
-	return players, nil
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return err
+	}
+
+	node, err := xmlquery.Query(doc, "//player")
+	if err != nil {
+		return err
+	}
+
+	player, err = NewPlayerFromXML(node.OutputXML(true), l.yf)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Transactions returns all the league's transaction for the given types.
+func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error) {
+	rawResp, err := l.yf.GetTransactionsRaw(l.LeagueKey, transactionTypes)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := xmlquery.QueryAll(doc, "//transaction")
+	if err != nil {
+		return nil, err
+	}
+
+	transactions := make([]*Transaction, len(nodes))
+	for i, node := range nodes {
+		transactions[i], err = NewTransactionFromXML(node.OutputXML(true), l.yf)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return transactions, nil
+
 }

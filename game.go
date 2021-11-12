@@ -74,11 +74,10 @@ func (g *Game) extractLeagues(rawResp string) ([]*League, error) {
 
 	leagues := make([]*League, len(nodes))
 	for i, node := range nodes {
-		leagueKey, err := xmlquery.Query(node, "/league_key")
+		leagues[i], err = NewLeagueFromXML(node.OutputXML(true), g.yf)
 		if err != nil {
 			return nil, err
 		}
-		leagues[i] = NewLeague(g.yf, leagueKey.InnerText())
 	}
 	return leagues, nil
 }
@@ -119,5 +118,5 @@ func (g *Game) MakeLeague(leagueID string) (*League, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewLeague(g.yf, fmt.Sprintf("%v.l.%v", gameID, leagueID)), nil
+	return NewLeague(fmt.Sprintf("%v.l.%v", gameID, leagueID), g.yf), nil
 }
