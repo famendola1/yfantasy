@@ -6,3 +6,6 @@
 ~~~
 go get github.com/famendola1/yfantasy
 ~~~
+
+## Examples
+Example usages of this client can be found at https://github.com/famendola1/yahoo_fantasy_scripts.
