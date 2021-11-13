@@ -26,6 +26,7 @@ type Player struct {
 	HasPlayerNotes           string            `xml:"has_player_notes"`
 	PlayerNotesLastTimestamp string            `xml:"player_notes_last_timestamp"`
 	TransactionData          TransactionData   `xml:"transaction_data"`
+	PlayerStats              PlayerStats       `xml:"player_stats"`
 
 	yf *YFantasy
 }
