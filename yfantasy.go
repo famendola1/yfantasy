@@ -67,8 +67,6 @@ func (y *YFantasy) post(uri string, data string) error {
 		return handleError(resp)
 	}
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(resp.Body)
 	return nil
 }
 
