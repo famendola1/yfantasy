@@ -25,11 +25,11 @@ type YFantasy struct {
 // average season stats for Player A, or last week's stats for Team B.
 type StatDuration struct {
 	// Valid types are season, average_season, date, last_week, last_month.
-	durationType string
+	DurationType string
 	// Date formattted as YYYY-MM-DD.
-	date string
+	Date string
 	// Year the season started in as YYYY.
-	season string
+	Season string
 }
 
 // New returns a new YFantasy object.
@@ -140,23 +140,23 @@ func (y *YFantasy) GetTeamMatchupsRaw(teamKey string, startWeek int, numWeeks in
 // GetTeamStatsRaw queries the /team//stats endpoint for team stats of the given
 // duration.
 func (y *YFantasy) GetTeamStatsRaw(teamKey string, duration StatDuration) (string, error) {
-	if duration.durationType == "lastweek" || duration.durationType == "lastmonth" {
-		return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration.durationType))
+	if duration.DurationType == "lastweek" || duration.DurationType == "lastmonth" {
+		return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration.DurationType))
 	}
 
-	if duration.durationType == "date" {
-		date := duration.date
+	if duration.DurationType == "date" {
+		date := duration.Date
 		if date == "" {
 			date = time.Now().Format("2006-01-02")
 		}
-		return y.get(fmt.Sprintf("team/%v/stats;type=%v;date=%v", teamKey, duration.durationType, date))
+		return y.get(fmt.Sprintf("team/%v/stats;type=%v;date=%v", teamKey, duration.DurationType, date))
 	}
 
-	if duration.durationType == "season" || duration.durationType == "average_season" {
-		if duration.season == "" {
-			return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration.durationType))
+	if duration.DurationType == "season" || duration.DurationType == "average_season" {
+		if duration.Season == "" {
+			return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration.DurationType))
 		}
-		return y.get(fmt.Sprintf("team/%v/stats;type=%v;season=%v", teamKey, duration.durationType, duration.season))
+		return y.get(fmt.Sprintf("team/%v/stats;type=%v;season=%v", teamKey, duration.DurationType, duration.Season))
 	}
 
 	return "", fmt.Errorf("requested duration invalid or not supported")
@@ -206,23 +206,23 @@ func (y *YFantasy) GetPlayersBySearchRaw(leagueKey string, searchStr string) (st
 // requested at once.
 func (y *YFantasy) GetPlayersStatsRaw(leagueKey string, playerKeys []string, duration StatDuration) (string, error) {
 	players := strings.Join(playerKeys, ",")
-	if duration.durationType == "lastweek" || duration.durationType == "lastmonth" {
-		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v", leagueKey, players, duration.durationType))
+	if duration.DurationType == "lastweek" || duration.DurationType == "lastmonth" {
+		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v", leagueKey, players, duration.DurationType))
 	}
 
-	if duration.durationType == "date" {
-		date := duration.date
+	if duration.DurationType == "date" {
+		date := duration.Date
 		if date == "" {
 			date = time.Now().Format("2006-01-02")
 		}
-		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v;date=%v", leagueKey, players, duration.durationType, date))
+		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v;date=%v", leagueKey, players, duration.DurationType, date))
 	}
 
-	if duration.durationType == "season" || duration.durationType == "average_season" {
-		if duration.season == "" {
-			return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v", leagueKey, players, duration.durationType))
+	if duration.DurationType == "season" || duration.DurationType == "average_season" {
+		if duration.Season == "" {
+			return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v", leagueKey, players, duration.DurationType))
 		}
-		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v;season=%v", leagueKey, players, duration.durationType, duration.season))
+		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v;season=%v", leagueKey, players, duration.DurationType, duration.Season))
 	}
 
 	return "", fmt.Errorf("requested duration invalid or not supported")
