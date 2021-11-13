@@ -19,7 +19,7 @@ func TestNewTransactionFromXML(t *testing.T) {
 		Timestamp:      "1636674697",
 		Players: Players{
 			Count: "2",
-			Player: []Player{
+			Player: []*Player{
 				{
 					XMLName:           xml.Name{Local: "player"},
 					PlayerKey:         "410.p.6450",

@@ -83,8 +83,8 @@ type Stat struct {
 
 // Players is a list of players.
 type Players struct {
-	Count  string   `xml:"count,attr"`
-	Player []Player `xml:"player"`
+	Count  string    `xml:"count,attr"`
+	Player []*Player `xml:"player"`
 }
 
 // NewPlayer returns a new player.
