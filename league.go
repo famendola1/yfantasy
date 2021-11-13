@@ -224,5 +224,32 @@ func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error)
 	}
 
 	return transactions, nil
+}
 
+// GetPlayersStats fetches the stats for the requested players for the requested
+// duration.
+func (l *League) GetPlayersStats(playerKeys []string, duration StatDuration) ([]*Player, error) {
+	rawResp, err := l.yf.GetPlayersStatsRaw(l.LeagueKey, playerKeys, duration)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	nodes, err := xmlquery.QueryAll(doc, "//player")
+	if err != nil {
+		return nil, err
+	}
+
+	players := make([]*Player, len(nodes))
+	for i, node := range nodes {
+		players[i], err = NewPlayerFromXML(node.OutputXML(true), l.yf)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return players, nil
 }

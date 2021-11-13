@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/antchfx/xmlquery"
 )
@@ -18,6 +19,17 @@ const (
 // YFantasy holds a client for interacting with the Yahoo Fantasy API.
 type YFantasy struct {
 	client *http.Client
+}
+
+// StatDuration represents a duration of team or player stats. For example, the
+// average season stats for Player A, or last week's stats for Team B.
+type StatDuration struct {
+	// Valid types are season, average_season, date, last_week, last_month.
+	durationType string
+	// Date formattted as YYYY-MM-DD.
+	date string
+	// Year the season started in as YYYY.
+	season string
 }
 
 // New returns a new YFantasy object.
@@ -127,10 +139,27 @@ func (y *YFantasy) GetTeamMatchupsRaw(teamKey string, startWeek int, numWeeks in
 
 // GetTeamStatsRaw queries the /team//stats endpoint for team stats of the given
 // duration.
-// Valid durations are: season, average_season, date, last_week, last_month.
-// TODO(famendola1): Add support to specify a season or date to fetch data for.
-func (y *YFantasy) GetTeamStatsRaw(teamKey string, duration string) (string, error) {
-	return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration))
+func (y *YFantasy) GetTeamStatsRaw(teamKey string, duration StatDuration) (string, error) {
+	if duration.durationType == "lastweek" || duration.durationType == "lastmonth" {
+		return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration.durationType))
+	}
+
+	if duration.durationType == "date" {
+		date := duration.date
+		if date == "" {
+			date = time.Now().Format("2006-01-02")
+		}
+		return y.get(fmt.Sprintf("team/%v/stats;type=%v;date=%v", teamKey, duration.durationType, date))
+	}
+
+	if duration.durationType == "season" || duration.durationType == "average_season" {
+		if duration.season == "" {
+			return y.get(fmt.Sprintf("team/%v/stats;type=%v", teamKey, duration.durationType))
+		}
+		return y.get(fmt.Sprintf("team/%v/stats;type=%v;season=%v", teamKey, duration.durationType, duration.season))
+	}
+
+	return "", fmt.Errorf("requested duration invalid or not supported")
 }
 
 // GetTeamRosterRaw queries the /team//roster endpoint for the team's current
@@ -172,7 +201,32 @@ func (y *YFantasy) GetPlayersBySearchRaw(leagueKey string, searchStr string) (st
 	return y.get(fmt.Sprintf("league/%v/players;search=%v", leagueKey, url.QueryEscape(searchStr)))
 }
 
-// TODO(famendola1): Query /league//players//stats endpoint
+// GetPlayersStatsRaw queries the /league//players//stats endpoint for stats of
+// all the requested players of the given duration. Only 25 players can be
+// requested at once.
+func (y *YFantasy) GetPlayersStatsRaw(leagueKey string, playerKeys []string, duration StatDuration) (string, error) {
+	players := strings.Join(playerKeys, ",")
+	if duration.durationType == "lastweek" || duration.durationType == "lastmonth" {
+		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v", leagueKey, players, duration.durationType))
+	}
+
+	if duration.durationType == "date" {
+		date := duration.date
+		if date == "" {
+			date = time.Now().Format("2006-01-02")
+		}
+		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v;date=%v", leagueKey, players, duration.durationType, date))
+	}
+
+	if duration.durationType == "season" || duration.durationType == "average_season" {
+		if duration.season == "" {
+			return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v", leagueKey, players, duration.durationType))
+		}
+		return y.get(fmt.Sprintf("league/%v/players;player_keys=%v/stats;type=%v;season=%v", leagueKey, players, duration.durationType, duration.season))
+	}
+
+	return "", fmt.Errorf("requested duration invalid or not supported")
+}
 
 // TODO(famendola1): Query /league//players using filters
 

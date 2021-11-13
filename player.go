@@ -61,6 +61,26 @@ type TransactionData struct {
 	SourceTeamName      string `xml:"source_team_name"`
 }
 
+// PlayerStats for a Player.
+type PlayerStats struct {
+	XMLName      xml.Name `xml:"player_stats"`
+	CoverageType string   `xml:"coverage_type"`
+	Season       string   `xml:"season"`
+	Date         string   `xml:"date"`
+	Stats        Stats    `xml:"stats"`
+}
+
+// Stats for a Player
+type Stats struct {
+	Stat []Stat `xml:"stat"`
+}
+
+// Stat for a Player
+type Stat struct {
+	StatID string `xml:"stat_id"`
+	Value  string `xml:"value"`
+}
+
 // Players is a list of players.
 type Players struct {
 	Count  string   `xml:"count,attr"`
