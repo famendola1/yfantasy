@@ -45,7 +45,7 @@ func (y *YFantasy) get(uri string) (string, error) {
 		return "", err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return "", handleError(resp)
 	}
 
@@ -63,7 +63,7 @@ func (y *YFantasy) post(uri string, data string) error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return handleError(resp)
 	}
 
