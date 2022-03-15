@@ -71,17 +71,6 @@ type PlayerStats struct {
 	Stats        Stats    `xml:"stats"`
 }
 
-// Stats for a Player
-type Stats struct {
-	Stat []Stat `xml:"stat"`
-}
-
-// Stat for a Player
-type Stat struct {
-	StatID string `xml:"stat_id"`
-	Value  string `xml:"value"`
-}
-
 // Players is a list of players.
 type Players struct {
 	Count  string    `xml:"count,attr"`

@@ -253,3 +253,32 @@ func (l *League) GetPlayersStats(playerKeys []string, duration StatDuration) ([]
 	}
 	return players, nil
 }
+
+// GetScoreboard fetches all the matchups in a league for the given week.
+func (l *League) GetScoreboard(week int) (*Matchups, error) {
+	if week < 0 {
+		return nil, fmt.Errorf("invalid week number")
+	}
+
+	rawResp, err := l.yf.GetLeagueScoreboardRaw(l.LeagueKey, week)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	node, err := xmlquery.Query(doc, "//matchups")
+	if err != nil {
+		return nil, err
+	}
+
+	matchups, err := NewMatchupsFromXML(node.OutputXML(true))
+	if err != nil {
+		return nil, err
+	}
+
+	return matchups, nil
+}

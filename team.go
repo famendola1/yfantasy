@@ -7,61 +7,98 @@ import (
 	"github.com/antchfx/xmlquery"
 )
 
+// Teams holds multiple Team.
+type Teams struct {
+	Count string `xml:"count,attr"`
+	Team  []Team `xml:"team"`
+}
+
 // Team represents a Yahoo team.
 type Team struct {
-	XMLName               xml.Name   `xml:"team"`
-	TeamKey               string     `xml:"team_key"`
-	TeamID                string     `xml:"team_id"`
-	Name                  string     `xml:"name"`
-	IsOwnedByCurrentLogin string     `xml:"is_owned_by_current_login"`
-	URL                   string     `xml:"url"`
-	TeamLogos             TeamLogos  `xml:"team_logos"`
-	WaiverPriority        string     `xml:"waiver_priority"`
-	NumberOfMoves         string     `xml:"number_of_moves"`
-	NumberOfTrades        string     `xml:"number_of_trades"`
-	RosterAdds            RosterAdds `xml:"roster_adds"`
-	LeagueScoringType     string     `xml:"league_scoring_type"`
-	DraftPosition         string     `xml:"draft_position"`
-	HasDraftGrade         string     `xml:"has_draft_grade"`
-	Managers              Managers   `xml:"managers"`
+	XMLName               xml.Name           `xml:"team"`
+	TeamKey               string             `xml:"team_key"`
+	TeamID                string             `xml:"team_id"`
+	Name                  string             `xml:"name"`
+	IsOwnedByCurrentLogin string             `xml:"is_owned_by_current_login"`
+	URL                   string             `xml:"url"`
+	TeamLogos             TeamLogos          `xml:"team_logos"`
+	WaiverPriority        string             `xml:"waiver_priority"`
+	NumberOfMoves         string             `xml:"number_of_moves"`
+	NumberOfTrades        string             `xml:"number_of_trades"`
+	RosterAdds            RosterAdds         `xml:"roster_adds"`
+	LeagueScoringType     string             `xml:"league_scoring_type"`
+	DraftPosition         string             `xml:"draft_position"`
+	HasDraftGrade         string             `xml:"has_draft_grade"`
+	Managers              Managers           `xml:"managers"`
+	TeamStats             TeamStats          `xml:"team_stats"`
+	TeamPoints            TeamPoints         `xml:"team_points"`
+	TeamRemainingGames    TeamRemainingGames `xml:"team_remaining_games"`
 
 	yf *YFantasy
 }
 
-// TeamLogos for Team
+// TeamLogos for Team.
 type TeamLogos struct {
 	TeamLogo []TeamLogo `xml:"team_logo"`
 }
 
-// TeamLogo for Team
+// TeamLogo for Team.
 type TeamLogo struct {
 	Size string `xml:"size"`
 	URL  string `xml:"url"`
 }
 
-// RosterAdds for Team
+// RosterAdds for Team.
 type RosterAdds struct {
 	CoverageType  string `xml:"coverage_type"`
 	CoverageValue string `xml:"coverage_value"`
 	Value         string `xml:"value"`
 }
 
-// Managers for Team
+// Managers for Team.
 type Managers struct {
 	Manager []Manager `xml:"manager"`
 }
 
-// Manager for Team
+// Manager for Team.
 type Manager struct {
 	ManagerID      string `xml:"manager_id"`
 	Nickname       string `xml:"nickname"`
-	Guid           string `xml:"guid"`
+	GUID           string `xml:"guid"`
 	IsCommissioner string `xml:"is_commissioner"`
 	IsCurrentLogin string `xml:"is_current_login"`
 	Email          string `xml:"email"`
 	ImageURL       string `xml:"image_url"`
 	FeloScore      string `xml:"felo_score"`
 	FeloTier       string `xml:"felo_tier"`
+}
+
+// TeamStats for Team.
+type TeamStats struct {
+	CoverageType string `xml:"coverage_type"`
+	Week         string `xml:"week"`
+	Stats        Stats  `xml:"stats"`
+}
+
+// TeamPoints for Team.
+type TeamPoints struct {
+	CoverageType string `xml:"coverage_type"`
+	Week         string `xml:"week"`
+	Total        string `xml:"total"`
+}
+
+// TeamRemainingGames for Team.
+type TeamRemainingGames struct {
+	CoverageType string `xml:"coverage_type"`
+	Week         string `xml:"week"`
+	Total        Total  `xml:"total"`
+}
+
+// Total for TeamRemainingGames.
+type Total struct {
+	RemainingGames string `xml:"remaining_games"`
+	LiveGames      string `xml:"live_games"`
+	CompletedGames string `xml:"completed_games"`
 }
 
 // NewTeamFromXML returns a new Team object parsed from an XML string.
