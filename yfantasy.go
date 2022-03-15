@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -134,11 +135,11 @@ func (y *YFantasy) GetTeamRaw(teamKey string) (string, error) {
 // GetTeamMatchupsRaw queries the /team//matchups endpoint for matchup data for
 // a team for weeks startWeek to startWeek+numWeeks-1.
 func (y *YFantasy) GetTeamMatchupsRaw(teamKey string, startWeek int, numWeeks int) (string, error) {
-	if numWeeks == 1 {
-		return y.get(fmt.Sprintf("team/%s/matchups;weeks=%d", teamKey, startWeek))
+	weeks := make([]string, numWeeks)
+	for i := 0; i < numWeeks; i++ {
+		weeks[i] = strconv.Itoa(startWeek + i)
 	}
-	return y.get(fmt.Sprintf("team/%s/matchups;weeks=%d,%d", teamKey, startWeek,
-		startWeek+numWeeks-1))
+	return y.get(fmt.Sprintf("team/%s/matchups;weeks=%s", teamKey, strings.Join(weeks, ",")))
 }
 
 // GetTeamStatsRaw queries the /team//stats endpoint for team stats of the given
