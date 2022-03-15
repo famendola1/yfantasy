@@ -17,22 +17,23 @@ type Teams struct {
 type Team struct {
 	XMLName               xml.Name           `xml:"team"`
 	TeamKey               string             `xml:"team_key"`
-	TeamID                string             `xml:"team_id"`
+	TeamID                int                `xml:"team_id"`
 	Name                  string             `xml:"name"`
-	IsOwnedByCurrentLogin string             `xml:"is_owned_by_current_login"`
+	IsOwnedByCurrentLogin bool               `xml:"is_owned_by_current_login"`
 	URL                   string             `xml:"url"`
 	TeamLogos             TeamLogos          `xml:"team_logos"`
-	WaiverPriority        string             `xml:"waiver_priority"`
-	NumberOfMoves         string             `xml:"number_of_moves"`
-	NumberOfTrades        string             `xml:"number_of_trades"`
+	WaiverPriority        int                `xml:"waiver_priority"`
+	NumberOfMoves         int                `xml:"number_of_moves"`
+	NumberOfTrades        int                `xml:"number_of_trades"`
 	RosterAdds            RosterAdds         `xml:"roster_adds"`
 	LeagueScoringType     string             `xml:"league_scoring_type"`
-	DraftPosition         string             `xml:"draft_position"`
-	HasDraftGrade         string             `xml:"has_draft_grade"`
+	DraftPosition         int                `xml:"draft_position"`
+	HasDraftGrade         bool               `xml:"has_draft_grade"`
 	Managers              Managers           `xml:"managers"`
 	TeamStats             TeamStats          `xml:"team_stats"`
 	TeamPoints            TeamPoints         `xml:"team_points"`
 	TeamRemainingGames    TeamRemainingGames `xml:"team_remaining_games"`
+	ClinchedPlayoffs      bool               `xml:"clinched_playoffs"`
 
 	yf *YFantasy
 }

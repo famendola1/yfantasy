@@ -12,12 +12,12 @@ import (
 type League struct {
 	XMLName               xml.Name `xml:"league"`
 	LeagueKey             string   `xml:"league_key"`
-	LeagueID              string   `xml:"league_id"`
+	LeagueID              int      `xml:"league_id"`
 	Name                  string   `xml:"name"`
 	URL                   string   `xml:"url"`
 	LogoURL               string   `xml:"logo_url"`
 	DraftStatus           string   `xml:"draft_status"`
-	NumTeams              string   `xml:"num_teams"`
+	NumTeams              int      `xml:"num_teams"`
 	EditKey               string   `xml:"edit_key"`
 	WeeklyDeadline        string   `xml:"weekly_deadline"`
 	LeagueUpdateTimestamp string   `xml:"league_update_timestamp"`
@@ -26,9 +26,9 @@ type League struct {
 	Renew                 string   `xml:"renew"`
 	ShortInvitationURL    string   `xml:"short_invitation_url"`
 	AllowAddToDlExtraPos  string   `xml:"allow_add_to_dl_extra_pos"`
-	IsProLeague           string   `xml:"is_pro_league"`
-	IsCashLeague          string   `xml:"is_cash_league"`
-	CurrentWeek           string   `xml:"current_week"`
+	IsProLeague           bool     `xml:"is_pro_league"`
+	IsCashLeague          bool     `xml:"is_cash_league"`
+	CurrentWeek           int      `xml:"current_week"`
 	StartWeek             string   `xml:"start_week"`
 	StartDate             string   `xml:"start_date"`
 	EndWeek               string   `xml:"end_week"`

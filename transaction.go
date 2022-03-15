@@ -9,7 +9,7 @@ import (
 type Transaction struct {
 	XMLName        xml.Name `xml:"transaction"`
 	TransactionKey string   `xml:"transaction_key"`
-	TransactionID  string   `xml:"transaction_id"`
+	TransactionID  int      `xml:"transaction_id"`
 	Type           string   `xml:"type"`
 	Status         string   `xml:"status"`
 	Timestamp      string   `xml:"timestamp"`

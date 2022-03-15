@@ -15,12 +15,14 @@ type Matchups struct {
 // Matchup represents a Yahoo matchup.
 type Matchup struct {
 	XMLName       xml.Name    `xml:"matchup"`
-	Week          string      `xml:"week"`
+	Week          int         `xml:"week"`
 	WeekStart     string      `xml:"week_start"`
 	WeekEnd       string      `xml:"week_end"`
 	Status        string      `xml:"status"`
-	IsPlayoffs    string      `xml:"is_playoffs"`
-	IsConsolation string      `xml:"is_consolation"`
+	IsPlayoffs    bool        `xml:"is_playoffs"`
+	IsConsolation bool        `xml:"is_consolation"`
+	IsTied        bool        `xml:"is_tied"`
+	WinnerTeamKey string      `xml:"winner_team_key"`
 	StatWinners   StatWinners `xml:"stat_winners"`
 	Teams         Teams       `xml:"teams"`
 }
@@ -32,10 +34,9 @@ type StatWinners struct {
 
 // StatWinner represents the winner of a stat category.
 type StatWinner struct {
-	Text          string `xml:",chardata"`
-	StatID        string `xml:"stat_id"`
+	StatID        int    `xml:"stat_id"`
 	WinnerTeamKey string `xml:"winner_team_key"`
-	IsTied        string `xml:"is_tied"`
+	IsTied        bool   `xml:"is_tied"`
 }
 
 // NewMatchupsFromXML creates a new Matchups object parsed from an XML string.

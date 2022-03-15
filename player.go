@@ -9,21 +9,21 @@ import (
 type Player struct {
 	XMLName                  xml.Name          `xml:"player"`
 	PlayerKey                string            `xml:"player_key"`
-	PlayerID                 string            `xml:"player_id"`
+	PlayerID                 int               `xml:"player_id"`
 	Name                     Name              `xml:"name"`
 	EditorialPlayerKey       string            `xml:"editorial_player_key"`
 	EditorialTeamKey         string            `xml:"editorial_team_key"`
 	EditorialTeamFullName    string            `xml:"editorial_team_full_name"`
 	EditorialTeamAbbr        string            `xml:"editorial_team_abbr"`
-	UniformNumber            string            `xml:"uniform_number"`
+	UniformNumber            int               `xml:"uniform_number"`
 	DisplayPosition          string            `xml:"display_position"`
 	Headshot                 Headshot          `xml:"headshot"`
 	ImageURL                 string            `xml:"image_url"`
-	IsUndroppable            string            `xml:"is_undroppable"`
+	IsUndroppable            bool              `xml:"is_undroppable"`
 	PositionType             string            `xml:"position_type"`
 	PrimaryPosition          string            `xml:"primary_position"`
 	EligiblePositions        EligiblePositions `xml:"eligible_positions"`
-	HasPlayerNotes           string            `xml:"has_player_notes"`
+	HasPlayerNotes           bool              `xml:"has_player_notes"`
 	PlayerNotesLastTimestamp string            `xml:"player_notes_last_timestamp"`
 	TransactionData          TransactionData   `xml:"transaction_data"`
 	PlayerStats              PlayerStats       `xml:"player_stats"`
