@@ -52,8 +52,8 @@ type TeamLogo struct {
 // RosterAdds for Team.
 type RosterAdds struct {
 	CoverageType  string `xml:"coverage_type"`
-	CoverageValue string `xml:"coverage_value"`
-	Value         string `xml:"value"`
+	CoverageValue int    `xml:"coverage_value"`
+	Value         int    `xml:"value"`
 }
 
 // Managers for Team.
@@ -63,43 +63,43 @@ type Managers struct {
 
 // Manager for Team.
 type Manager struct {
-	ManagerID      string `xml:"manager_id"`
+	ManagerID      int    `xml:"manager_id"`
 	Nickname       string `xml:"nickname"`
 	GUID           string `xml:"guid"`
-	IsCommissioner string `xml:"is_commissioner"`
-	IsCurrentLogin string `xml:"is_current_login"`
+	IsCommissioner bool   `xml:"is_commissioner"`
+	IsCurrentLogin bool   `xml:"is_current_login"`
 	Email          string `xml:"email"`
 	ImageURL       string `xml:"image_url"`
-	FeloScore      string `xml:"felo_score"`
+	FeloScore      int    `xml:"felo_score"`
 	FeloTier       string `xml:"felo_tier"`
 }
 
 // TeamStats for Team.
 type TeamStats struct {
 	CoverageType string `xml:"coverage_type"`
-	Week         string `xml:"week"`
+	Week         int    `xml:"week"`
 	Stats        Stats  `xml:"stats"`
 }
 
 // TeamPoints for Team.
 type TeamPoints struct {
 	CoverageType string `xml:"coverage_type"`
-	Week         string `xml:"week"`
-	Total        string `xml:"total"`
+	Week         int    `xml:"week"`
+	Total        int    `xml:"total"`
 }
 
 // TeamRemainingGames for Team.
 type TeamRemainingGames struct {
 	CoverageType string `xml:"coverage_type"`
-	Week         string `xml:"week"`
+	Week         int    `xml:"week"`
 	Total        Total  `xml:"total"`
 }
 
 // Total for TeamRemainingGames.
 type Total struct {
-	RemainingGames string `xml:"remaining_games"`
-	LiveGames      string `xml:"live_games"`
-	CompletedGames string `xml:"completed_games"`
+	RemainingGames int `xml:"remaining_games"`
+	LiveGames      int `xml:"live_games"`
+	CompletedGames int `xml:"completed_games"`
 }
 
 // NewTeamFromXML returns a new Team object parsed from an XML string.

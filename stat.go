@@ -7,6 +7,6 @@ type Stats struct {
 
 // Stat represents a stat category in Yahoo.
 type Stat []struct {
-	StatID string `xml:"stat_id"`
-	Value  string `xml:"value"`
+	StatID int `xml:"stat_id"`
+	Value  int `xml:"value"`
 }
