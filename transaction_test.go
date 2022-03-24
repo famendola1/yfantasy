@@ -13,7 +13,7 @@ func TestNewTransactionFromXML(t *testing.T) {
 	want := &Transaction{
 		XMLName:        xml.Name{Local: "transaction"},
 		TransactionKey: "410.l.16883.tr.227",
-		TransactionID:  "227",
+		TransactionID:  227,
 		Type:           "add/drop",
 		Status:         "successful",
 		Timestamp:      "1636674697",
@@ -23,7 +23,7 @@ func TestNewTransactionFromXML(t *testing.T) {
 				{
 					XMLName:           xml.Name{Local: "player"},
 					PlayerKey:         "410.p.6450",
-					PlayerID:          "6450",
+					PlayerID:          6450,
 					Name:              Name{Full: "Paul Reed", First: "Paul", Last: "Reed", ASCIIFirst: "Paul", ASCIILast: "Reed"},
 					EditorialTeamAbbr: "PHI",
 					DisplayPosition:   "SF",
@@ -33,7 +33,7 @@ func TestNewTransactionFromXML(t *testing.T) {
 				{
 					XMLName:           xml.Name{Local: "player"},
 					PlayerKey:         "410.p.4488",
-					PlayerID:          "4488",
+					PlayerID:          4488,
 					Name:              Name{Full: "George Hill", First: "George", Last: "Hill", ASCIIFirst: "George", ASCIILast: "Hill"},
 					EditorialTeamAbbr: "MIL",
 					DisplayPosition:   "PG,SG",

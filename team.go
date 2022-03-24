@@ -186,3 +186,13 @@ func (t *Team) LeagueKey() string {
 func (t *Team) AddDrop(addPlayerKey string, dropPlayerKey string) error {
 	return t.yf.PostAddDropTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey, dropPlayerKey)
 }
+
+// Add adds the specified player to the team.
+func (t *Team) Add(addPlayerKey string) error {
+	return t.yf.PostAddTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey)
+}
+
+// Drop adds drops the specified player from the team.
+func (t *Team) Drop(dropPlayerKey string) error {
+	return t.yf.PostDropTransaction(t.LeagueKey(), t.TeamKey, dropPlayerKey)
+}

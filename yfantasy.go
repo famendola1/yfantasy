@@ -290,3 +290,19 @@ func (y *YFantasy) PostAddDropTransaction(leagueKey string, teamKey string, addP
 	data := fmt.Sprintf(addDropTransaction, addPlayerKey, teamKey, dropPlayerKey, teamKey)
 	return y.post(fmt.Sprintf("league/%s/transactions", leagueKey), data)
 }
+
+// PostAddTransaction sends a POST request to the /league//transactions
+// endpoint to add the selected player for the given team. The raw response is
+// returned as a string.
+func (y *YFantasy) PostAddTransaction(leagueKey string, teamKey string, addPlayerKey string) error {
+	data := fmt.Sprintf(addTransaction, addPlayerKey, teamKey)
+	return y.post(fmt.Sprintf("league/%s/transactions", leagueKey), data)
+}
+
+// PostDropTransaction sends a POST request to the /league//transactions
+// endpoint to drop the selected player for the given team. The raw response is
+// returned as a string.
+func (y *YFantasy) PostDropTransaction(leagueKey string, teamKey string, dropPlayerKey string) error {
+	data := fmt.Sprintf(dropTransaction, teamKey, dropPlayerKey)
+	return y.post(fmt.Sprintf("league/%s/transactions", leagueKey), data)
+}
