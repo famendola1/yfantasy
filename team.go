@@ -196,3 +196,29 @@ func (t *Team) Add(addPlayerKey string) error {
 func (t *Team) Drop(dropPlayerKey string) error {
 	return t.yf.PostDropTransaction(t.LeagueKey(), t.TeamKey, dropPlayerKey)
 }
+
+// GetTeamStats returns the team's stats for a given duration.
+func (t *Team) GetTeamStats(duration StatDuration) (*TeamStats, error) {
+	rawResp, err := t.yf.GetTeamStatsRaw(t.TeamKey, duration)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	node, err := xmlquery.Query(doc, "//team_stats")
+	if err != nil {
+		return nil, err
+	}
+
+	var stats TeamStats
+	err = xml.NewDecoder(strings.NewReader(node.OutputXML(false))).Decode(&stats)
+	if err != nil {
+		return nil, err
+	}
+
+	return &stats, nil
+}
