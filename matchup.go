@@ -4,7 +4,6 @@ package yfantasy
 
 import (
 	"encoding/xml"
-	"fmt"
 	"strings"
 )
 
@@ -47,10 +46,9 @@ func NewMatchupsFromXML(rawXML string, yf *YFantasy) (*Matchups, error) {
 		return nil, err
 	}
 
-	for _, m := range m.Matchup {
-		for _, tm := range m.Teams.Team {
-			tm.yf = yf
-			fmt.Println(tm)
+	for i := range m.Matchup {
+		for j := range m.Matchup[i].Teams.Team {
+			m.Matchup[i].Teams.Team[j].yf = yf
 		}
 	}
 	return &m, nil
@@ -63,8 +61,8 @@ func NewMatchupFromXML(rawXML string, yf *YFantasy) (*Matchup, error) {
 		return nil, err
 	}
 
-	for _, tm := range m.Teams.Team {
-		tm.yf = yf
+	for i := range m.Teams.Team {
+		m.Teams.Team[i].yf = yf
 	}
 	return &m, nil
 }
