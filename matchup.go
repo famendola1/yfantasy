@@ -40,19 +40,29 @@ type StatWinner struct {
 }
 
 // NewMatchupsFromXML creates a new Matchups object parsed from an XML string.
-func NewMatchupsFromXML(rawXML string) (*Matchups, error) {
+func NewMatchupsFromXML(rawXML string, yf *YFantasy) (*Matchups, error) {
 	var m Matchups
 	if err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&m); err != nil {
 		return nil, err
+	}
+
+	for _, m := range m.Matchup {
+		for _, tm := range m.Teams.Team {
+			tm.yf = yf
+		}
 	}
 	return &m, nil
 }
 
 // NewMatchupFromXML creates a new Matchup object parsed from an XML string.
-func NewMatchupFromXML(rawXML string) (*Matchup, error) {
+func NewMatchupFromXML(rawXML string, yf *YFantasy) (*Matchup, error) {
 	var m Matchup
 	if err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&m); err != nil {
 		return nil, err
+	}
+
+	for _, tm := range m.Teams.Team {
+		tm.yf = yf
 	}
 	return &m, nil
 }

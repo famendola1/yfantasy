@@ -275,7 +275,7 @@ func (l *League) GetScoreboard(week int) (*Matchups, error) {
 		return nil, err
 	}
 
-	matchups, err := NewMatchupsFromXML(node.OutputXML(true))
+	matchups, err := NewMatchupsFromXML(node.OutputXML(true), l.yf)
 	if err != nil {
 		return nil, err
 	}
