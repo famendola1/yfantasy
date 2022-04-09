@@ -215,7 +215,7 @@ func (t *Team) GetTeamStats(duration StatDuration) (*TeamStats, error) {
 	}
 
 	var stats TeamStats
-	err = xml.NewDecoder(strings.NewReader(node.OutputXML(false))).Decode(&stats)
+	err = xml.NewDecoder(strings.NewReader(node.OutputXML(true))).Decode(&stats)
 	if err != nil {
 		return nil, err
 	}
