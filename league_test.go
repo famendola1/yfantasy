@@ -10,8 +10,9 @@ import (
 )
 
 func TestNewLeague(t *testing.T) {
+	yf := &YFantasy{}
 	want := &League{XMLName: xml.Name{Local: "league"}, LeagueKey: "789.l.456"}
-	got := NewLeague("789.l.456", nil)
+	got := yf.newLeague("789.l.456")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(League{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
@@ -19,6 +20,7 @@ func TestNewLeague(t *testing.T) {
 }
 
 func TestNewLeagueFromXML(t *testing.T) {
+	yf := &YFantasy{}
 	want := &League{
 		XMLName:               xml.Name{Local: "league"},
 		LeagueKey:             "410.l.16883",
@@ -45,7 +47,7 @@ func TestNewLeagueFromXML(t *testing.T) {
 		EndDate:               "2022-04-10",
 		GameCode:              "nba",
 		Season:                "2021"}
-	got, err := NewLeagueFromXML(leagueFullTestResp, nil)
+	got, err := yf.newLeagueFromXML(leagueFullTestResp)
 	if err != nil {
 		t.Errorf("NewLeagueFromXML(%q) failed, want success.", leagueFullTestResp)
 		return
@@ -57,12 +59,13 @@ func TestNewLeagueFromXML(t *testing.T) {
 }
 
 func TestExtractTeams(t *testing.T) {
-	lg := NewLeague("223.l.431", nil)
+	yf := &YFantasy{}
+	lg := yf.newLeague("223.l.431")
 	want := []*Team{
-		NewTeam("223.l.431.t.10", nil),
-		NewTeam("223.l.431.t.5", nil),
-		NewTeam("223.l.431.t.8", nil),
-		NewTeam("223.l.431.t.12", nil),
+		yf.newTeam("223.l.431.t.10"),
+		yf.newTeam("223.l.431.t.5"),
+		yf.newTeam("223.l.431.t.8"),
+		yf.newTeam("223.l.431.t.12"),
 	}
 
 	got, err := lg.extractTeams(standingsResp)
@@ -77,8 +80,9 @@ func TestExtractTeams(t *testing.T) {
 }
 
 func TestExtractPlayers(t *testing.T) {
-	lg := NewLeague("123.1.456", nil)
-	want := []*Player{{XMLName: xml.Name{Local: "player"}, PlayerKey: "410.p.6513"}}
+	yf := &YFantasy{}
+	lg := yf.newLeague("123.1.456")
+	want := []*Player{{XMLName: xml.Name{Local: "player"}, PlayerKey: "410.p.6513", yf: yf}}
 	got, err := lg.extractPlayersFromSearch(searchResp)
 	if err != nil {
 		t.Errorf("extractPlayersFromSearch(%q) failed, want success", searchResp)

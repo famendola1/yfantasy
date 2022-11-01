@@ -10,6 +10,7 @@ import (
 )
 
 func TestNewTransactionFromXML(t *testing.T) {
+	yf := &YFantasy{}
 	want := &Transaction{
 		XMLName:        xml.Name{Local: "transaction"},
 		TransactionKey: "410.l.16883.tr.227",
@@ -42,7 +43,7 @@ func TestNewTransactionFromXML(t *testing.T) {
 			},
 		},
 	}
-	got, err := NewTransactionFromXML(transactionFullTestResp, nil)
+	got, err := yf.newTransactionFromXML(transactionFullTestResp)
 	if err != nil {
 		fmt.Println(err)
 		t.Errorf("NewTransactionFromXML(%q) failed, want success.", transactionFullTestResp)

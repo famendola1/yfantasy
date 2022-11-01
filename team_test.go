@@ -10,6 +10,7 @@ import (
 )
 
 func TestNewTeamFromXML(t *testing.T) {
+	yf := &YFantasy{}
 	want := &Team{
 		XMLName:               xml.Name{Local: "team"},
 		TeamKey:               "410.l.16883.t.1",
@@ -47,7 +48,7 @@ func TestNewTeamFromXML(t *testing.T) {
 			},
 		},
 	}
-	got, err := NewTeamFromXML(teamFullTestResp, nil)
+	got, err := yf.newTeamFromXML(teamFullTestResp)
 	if err != nil {
 		t.Errorf("NewTeamFromXML(%q) failed, want success.", teamFullTestResp)
 		return
@@ -59,8 +60,9 @@ func TestNewTeamFromXML(t *testing.T) {
 }
 
 func TestNewTeam(t *testing.T) {
+	yf := &YFantasy{}
 	want := &Team{XMLName: xml.Name{Local: "team"}, TeamKey: "123.l.456.t.789"}
-	got := NewTeam("123.l.456.t.789", nil)
+	got := yf.newTeam("123.l.456.t.789")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Team{})) {
 		t.Errorf("New() %+v, want %+v", *got, *want)
@@ -68,8 +70,9 @@ func TestNewTeam(t *testing.T) {
 }
 
 func TestLeagueKey(t *testing.T) {
+	yf := &YFantasy{}
 	want := "123.l.456"
-	team := NewTeam("123.l.456.t.789", nil)
+	team := yf.newTeam("123.l.456.t.789")
 	got := team.LeagueKey()
 
 	if got != want {
@@ -78,11 +81,12 @@ func TestLeagueKey(t *testing.T) {
 }
 
 func TestExtractPlayersForTeam(t *testing.T) {
-	team := NewTeam("123.1.456.t.789", nil)
+	yf := &YFantasy{}
+	team := yf.newTeam("123.1.456.t.789")
 	want := []*Player{
-		NewPlayer("253.p.7569", nil),
-		NewPlayer("253.p.7054", nil),
-		NewPlayer("253.p.7382", nil),
+		yf.newPlayer("253.p.7569"),
+		yf.newPlayer("253.p.7054"),
+		yf.newPlayer("253.p.7382"),
 	}
 	got, err := team.extractPlayersFromRoster(rosterResp)
 	if err != nil {

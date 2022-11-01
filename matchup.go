@@ -39,8 +39,8 @@ type StatWinner struct {
 	IsTied        bool   `xml:"is_tied"`
 }
 
-// NewMatchupsFromXML creates a new Matchups object parsed from an XML string.
-func NewMatchupsFromXML(rawXML string, yf *YFantasy) (*Matchups, error) {
+// newMatchupsFromXML creates a new Matchups object parsed from an XML string.
+func (yf *YFantasy) newMatchupsFromXML(rawXML string) (*Matchups, error) {
 	var m Matchups
 	if err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&m); err != nil {
 		return nil, err
@@ -54,8 +54,8 @@ func NewMatchupsFromXML(rawXML string, yf *YFantasy) (*Matchups, error) {
 	return &m, nil
 }
 
-// NewMatchupFromXML creates a new Matchup object parsed from an XML string.
-func NewMatchupFromXML(rawXML string, yf *YFantasy) (*Matchup, error) {
+// newMatchupFromXML creates a new Matchup object parsed from an XML string.
+func (yf *YFantasy) newMatchupFromXML(rawXML string) (*Matchup, error) {
 	var m Matchup
 	if err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&m); err != nil {
 		return nil, err

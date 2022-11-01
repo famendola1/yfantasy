@@ -2,6 +2,7 @@ package yfantasy
 
 import (
 	"encoding/xml"
+	"fmt"
 	"strings"
 
 	"github.com/antchfx/xmlquery"
@@ -102,8 +103,8 @@ type Total struct {
 	CompletedGames int `xml:"completed_games"`
 }
 
-// NewTeamFromXML returns a new Team object parsed from an XML string.
-func NewTeamFromXML(rawXML string, yf *YFantasy) (*Team, error) {
+// newTeamFromXML returns a new Team object parsed from an XML string.
+func (yf *YFantasy) newTeamFromXML(rawXML string) (*Team, error) {
 	var tm Team
 	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&tm)
 	if err != nil {
@@ -113,14 +114,19 @@ func NewTeamFromXML(rawXML string, yf *YFantasy) (*Team, error) {
 	return &tm, nil
 }
 
-// NewTeam returns a new Team
-func NewTeam(teamKey string, yf *YFantasy) *Team {
-	return &Team{XMLName: xml.Name{Local: "team"}, TeamKey: teamKey, yf: yf}
+// newTeam returns a new Team populated with information from Yahoo.
+func (yf *YFantasy) newTeam(teamKey string) *Team {
+	tm := &Team{XMLName: xml.Name{Local: "team"}, TeamKey: teamKey, yf: yf}
+	yf.fetchTeamData(tm)
+	return tm
 }
 
 // FetchTeamData gets all the data for a team and populates all the fields.
-func (t *Team) FetchTeamData() error {
-	rawResp, err := t.yf.GetTeamRaw(t.TeamKey)
+func (yf *YFantasy) fetchTeamData(tm *Team) error {
+	if !yf.IsValid() {
+		return fmt.Errorf("unable to fetch team data, YFantasy is invalid")
+	}
+	rawResp, err := yf.getTeamRaw(tm.TeamKey)
 	if err != nil {
 		return err
 	}
@@ -135,7 +141,7 @@ func (t *Team) FetchTeamData() error {
 		return err
 	}
 
-	t, err = NewTeamFromXML(node.OutputXML(true), t.yf)
+	tm, err = yf.newTeamFromXML(node.OutputXML(true))
 	if err != nil {
 		return err
 	}
@@ -144,7 +150,7 @@ func (t *Team) FetchTeamData() error {
 
 // Roster returns the list of players on this team.
 func (t *Team) Roster() ([]*Player, error) {
-	rawResp, err := t.yf.GetTeamRosterRaw(t.TeamKey)
+	rawResp, err := t.yf.getTeamRosterRaw(t.TeamKey)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +176,7 @@ func (t *Team) extractPlayersFromRoster(rawResp string) ([]*Player, error) {
 		if err != nil {
 			return nil, err
 		}
-		players[i] = NewPlayer(playerKey.InnerText(), t.yf)
+		players[i] = t.yf.newPlayer(playerKey.InnerText())
 	}
 
 	return players, nil
@@ -184,22 +190,22 @@ func (t *Team) LeagueKey() string {
 // AddDrop adds the specified player to the team and drops the specified player
 // from the team in a single transaction.
 func (t *Team) AddDrop(addPlayerKey string, dropPlayerKey string) error {
-	return t.yf.PostAddDropTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey, dropPlayerKey)
+	return t.yf.postAddDropTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey, dropPlayerKey)
 }
 
 // Add adds the specified player to the team.
 func (t *Team) Add(addPlayerKey string) error {
-	return t.yf.PostAddTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey)
+	return t.yf.postAddTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey)
 }
 
 // Drop adds drops the specified player from the team.
 func (t *Team) Drop(dropPlayerKey string) error {
-	return t.yf.PostDropTransaction(t.LeagueKey(), t.TeamKey, dropPlayerKey)
+	return t.yf.postDropTransaction(t.LeagueKey(), t.TeamKey, dropPlayerKey)
 }
 
 // GetTeamStats returns the team's stats for a given duration.
 func (t *Team) GetTeamStats(duration StatDuration) (*TeamStats, error) {
-	rawResp, err := t.yf.GetTeamStatsRaw(t.TeamKey, duration)
+	rawResp, err := t.yf.getTeamStatsRaw(t.TeamKey, duration)
 	if err != nil {
 		return nil, err
 	}

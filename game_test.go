@@ -10,8 +10,9 @@ import (
 )
 
 func TestNewGame(t *testing.T) {
-	want := &Game{yf: nil, Sport: "nba"}
-	got := NewGame("nba", nil)
+	yf := &YFantasy{}
+	want := &Game{Sport: "nba"}
+	got := yf.Game("nba")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Game{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
@@ -19,7 +20,8 @@ func TestNewGame(t *testing.T) {
 }
 
 func TestExtractGameId(t *testing.T) {
-	game := NewGame("nba", nil)
+	yf := &YFantasy{}
+	game := yf.Game("nba")
 	want := "410"
 	got, err := game.extractGameID(gameTestResp)
 	if err != nil {
@@ -32,11 +34,12 @@ func TestExtractGameId(t *testing.T) {
 }
 
 func TestExtractLeagues(t *testing.T) {
-	game := NewGame("nba", nil)
+	yf := &YFantasy{}
+	game := yf.Game("nba")
 	want := []*League{
-		NewLeague("410.l.16883", nil),
-		NewLeague("410.l.61777", nil),
-		NewLeague("410.l.159928", nil),
+		yf.newLeague("410.l.16883"),
+		yf.newLeague("410.l.61777"),
+		yf.newLeague("410.l.159928"),
 	}
 
 	got, err := game.extractLeagues(leagueTestResp)
@@ -64,17 +67,18 @@ func TestLeagueKeys(t *testing.T) {
 }
 
 func TestMakeLeague(t *testing.T) {
-	game := NewGame("nba", nil)
+	yf := &YFantasy{}
+	game := yf.Game("nba")
 	game.gameID = "410"
 
 	leagueID := "1234"
-	want := NewLeague("410.l.1234", nil)
-	got, err := game.MakeLeague(leagueID)
+	want := yf.newLeague("410.l.1234")
+	got, err := game.League(leagueID)
 	if err != nil {
-		t.Errorf("MakeLeague(%q) failed, want success", leagueID)
+		t.Errorf("League(%q) failed, want success", leagueID)
 	}
 
-	if !cmp.Equal(got, want, cmp.AllowUnexported(League{})) {
-		t.Errorf("MakeLeague(%q) = %+v, want %+v", leagueID, *got, *want)
+	if !cmp.Equal(got, want, cmp.AllowUnexported(League{}, YFantasy{})) {
+		t.Errorf("League(%q) = %+v, want %+v", leagueID, *got, *want)
 	}
 }

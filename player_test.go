@@ -9,8 +9,9 @@ import (
 )
 
 func TestNewPlayer(t *testing.T) {
+	yf := &YFantasy{}
 	want := &Player{PlayerKey: "123.p.789"}
-	got := NewPlayer("123.p.789", nil)
+	got := yf.newPlayer("123.p.789")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Player{})) {
 		t.Errorf("New() = %+v, want %+v", *got, *want)
@@ -18,6 +19,7 @@ func TestNewPlayer(t *testing.T) {
 }
 
 func TestNewPlayerFromXML(t *testing.T) {
+	yf := &YFantasy{}
 	want := &Player{
 		XMLName:                  xml.Name{Local: "player"},
 		PlayerKey:                "410.p.6065",
@@ -38,7 +40,7 @@ func TestNewPlayerFromXML(t *testing.T) {
 		HasPlayerNotes:           true,
 		PlayerNotesLastTimestamp: "1636515545",
 	}
-	got, err := NewPlayerFromXML(playerFullTestResp, nil)
+	got, err := yf.newPlayerFromXML(playerFullTestResp)
 	if err != nil {
 		t.Errorf("NewPlayerFromXML(%q) failed, want success.", playerFullTestResp)
 		return

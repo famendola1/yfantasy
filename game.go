@@ -15,7 +15,7 @@ type Game struct {
 }
 
 // NewGame returns a new Game object.
-func NewGame(sport string, yf *YFantasy) *Game {
+func (yf *YFantasy) Game(sport string) *Game {
 	return &Game{yf: yf, Sport: sport}
 }
 
@@ -26,7 +26,7 @@ func (g *Game) GetGameID() (string, error) {
 		return g.gameID, nil
 	}
 
-	rawResp, err := g.yf.GetGameRaw(g.Sport)
+	rawResp, err := g.yf.getGameRaw(g.Sport)
 	if err != nil {
 		return "", nil
 	}
@@ -52,7 +52,7 @@ func (g *Game) extractGameID(rawResp string) (string, error) {
 
 // Leagues returns all the active leagues the user is in for the game.
 func (g *Game) Leagues() ([]*League, error) {
-	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
+	rawResp, err := g.yf.getUserLeaguesForSport(g.Sport)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (g *Game) extractLeagues(rawResp string) ([]*League, error) {
 
 	leagues := make([]*League, len(nodes))
 	for i, node := range nodes {
-		leagues[i], err = NewLeagueFromXML(node.OutputXML(true), g.yf)
+		leagues[i], err = g.yf.newLeagueFromXML(node.OutputXML(true))
 		if err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (g *Game) extractLeagues(rawResp string) ([]*League, error) {
 // LeagueKeys returns all the active league keys of the leagues the user is in
 // for the game.
 func (g *Game) LeagueKeys() ([]string, error) {
-	rawResp, err := g.yf.GetUserLeaguesForSport(g.Sport)
+	rawResp, err := g.yf.getUserLeaguesForSport(g.Sport)
 	if err != nil {
 		return nil, err
 	}
@@ -129,11 +129,11 @@ func extractLeagueKeys(rawResp string) ([]string, error) {
 	return leagueKeys, nil
 }
 
-// MakeLeague creates a League object from the given league id.
-func (g *Game) MakeLeague(leagueID string) (*League, error) {
+// League creates a League object from the given league id.
+func (g *Game) League(leagueID string) (*League, error) {
 	gameID, err := g.GetGameID()
 	if err != nil {
 		return nil, err
 	}
-	return NewLeague(fmt.Sprintf("%v.l.%v", gameID, leagueID), g.yf), nil
+	return g.yf.newLeague(fmt.Sprintf("%v.l.%v", gameID, leagueID)), nil
 }

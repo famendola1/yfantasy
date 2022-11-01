@@ -77,13 +77,13 @@ type Players struct {
 	Player []*Player `xml:"player"`
 }
 
-// NewPlayer returns a new player.
-func NewPlayer(playerKey string, yf *YFantasy) *Player {
+// newPlayer returns a new player.
+func (yf *YFantasy) newPlayer(playerKey string) *Player {
 	return &Player{PlayerKey: playerKey, yf: yf}
 }
 
-// NewPlayerFromXML returns a new Player object parsed from an XML string.
-func NewPlayerFromXML(rawXML string, yf *YFantasy) (*Player, error) {
+// newPlayerFromXML returns a new Player object parsed from an XML string.
+func (yf *YFantasy) newPlayerFromXML(rawXML string) (*Player, error) {
 	var p Player
 	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&p)
 	if err != nil {

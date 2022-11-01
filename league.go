@@ -40,7 +40,7 @@ type League struct {
 }
 
 // NewLeagueFromXML returns a new League object parsed from an XML string.
-func NewLeagueFromXML(rawXML string, yf *YFantasy) (*League, error) {
+func (yf *YFantasy) newLeagueFromXML(rawXML string) (*League, error) {
 	var lg League
 	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&lg)
 	if err != nil {
@@ -50,18 +50,19 @@ func NewLeagueFromXML(rawXML string, yf *YFantasy) (*League, error) {
 	return &lg, nil
 }
 
-// NewLeague creates a League with just the LeagueKey field set. To get all the
-// league data, clients must call FetchLeagueData.
-func NewLeague(lgKey string, yf *YFantasy) *League {
-	return &League{XMLName: xml.Name{Local: "league"}, LeagueKey: lgKey, yf: yf}
+// NewLeague creates a League containing all the league data from Yahoo.
+func (yf *YFantasy) newLeague(lgKey string) *League {
+	lg := &League{XMLName: xml.Name{Local: "league"}, LeagueKey: lgKey, yf: yf}
+	yf.fetchLeagueData(lg)
+	return lg
 }
 
-// FetchLeagueData gets all the data for a league and populates all the fields.
-func (l *League) FetchLeagueData() error {
-	if l.yf == nil {
-		return fmt.Errorf("unable to fetch league data, YFantasy is nil")
+// fetchLeagueData gets all the data for a league and populates all the fields.
+func (yf *YFantasy) fetchLeagueData(lg *League) error {
+	if !yf.IsValid() {
+		return fmt.Errorf("unable to fetch league data, YFantasy is invalid")
 	}
-	rawResp, err := l.yf.GetLeagueRaw(l.LeagueKey)
+	rawResp, err := yf.getLeagueRaw(lg.LeagueKey)
 	if err != nil {
 		return err
 	}
@@ -76,7 +77,7 @@ func (l *League) FetchLeagueData() error {
 		return err
 	}
 
-	l, err = NewLeagueFromXML(node.OutputXML(true), l.yf)
+	lg, err = yf.newLeagueFromXML(node.OutputXML(true))
 	if err != nil {
 		return err
 	}
@@ -90,7 +91,7 @@ func (l *League) GameKey() string {
 
 // Teams returns a list of the teams in the league
 func (l *League) Teams() ([]*Team, error) {
-	rawResp, err := l.yf.GetLeagueStandingsRaw(l.LeagueKey)
+	rawResp, err := l.yf.getLeagueStandingsRaw(l.LeagueKey)
 	if err != nil {
 		return nil, err
 	}
@@ -98,9 +99,9 @@ func (l *League) Teams() ([]*Team, error) {
 	return l.extractTeams(rawResp)
 }
 
-// UserTeam returns the team that the user has in this league.
-func (l *League) UserTeam() (*Team, error) {
-	rawResp, err := l.yf.GetUserTeamInLeagueRaw(l.GameKey(), l.LeagueKey)
+// MyTeam returns the team that the user has in this league.
+func (l *League) MyTeam() (*Team, error) {
+	rawResp, err := l.yf.getUserTeamInLeagueRaw(l.GameKey(), l.LeagueKey)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +132,7 @@ func (l *League) extractTeams(rawResp string) ([]*Team, error) {
 
 	teams := make([]*Team, len(nodes))
 	for i, node := range nodes {
-		teams[i], err = NewTeamFromXML(node.OutputXML(true), l.yf)
+		teams[i], err = l.yf.newTeamFromXML(node.OutputXML(true))
 		if err != nil {
 			return nil, err
 		}
@@ -143,7 +144,7 @@ func (l *League) extractTeams(rawResp string) ([]*Team, error) {
 // SearchPlayers searches for players using the provided name.
 // playerName can be the player's full name or a partial name.
 func (l *League) SearchPlayers(playerName string) ([]*Player, error) {
-	rawResp, err := l.yf.GetPlayersBySearchRaw(l.LeagueKey, playerName)
+	rawResp, err := l.yf.getPlayersBySearchRaw(l.LeagueKey, playerName)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +166,7 @@ func (l *League) extractPlayersFromSearch(rawResp string) ([]*Player, error) {
 
 	players := make([]*Player, len(nodes))
 	for i, node := range nodes {
-		players[i], err = NewPlayerFromXML(node.OutputXML(true), l.yf)
+		players[i], err = l.yf.newPlayerFromXML(node.OutputXML(true))
 		if err != nil {
 			return nil, err
 		}
@@ -173,34 +174,9 @@ func (l *League) extractPlayersFromSearch(rawResp string) ([]*Player, error) {
 	return players, nil
 }
 
-// FetchPlayerData gets all the data for a player and populates/overrides all
-// the fields in the player object.
-func (l *League) FetchPlayerData(player *Player) error {
-	rawResp, err := l.yf.GetPlayerRaw(l.LeagueKey, player.PlayerKey)
-	if err != nil {
-		return err
-	}
-
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return err
-	}
-
-	node, err := xmlquery.Query(doc, "//player")
-	if err != nil {
-		return err
-	}
-
-	player, err = NewPlayerFromXML(node.OutputXML(true), l.yf)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // Transactions returns all the league's transaction for the given types.
 func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error) {
-	rawResp, err := l.yf.GetTransactionsRaw(l.LeagueKey, transactionTypes)
+	rawResp, err := l.yf.getTransactionsRaw(l.LeagueKey, transactionTypes)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +193,7 @@ func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error)
 
 	transactions := make([]*Transaction, len(nodes))
 	for i, node := range nodes {
-		transactions[i], err = NewTransactionFromXML(node.OutputXML(true), l.yf)
+		transactions[i], err = l.yf.newTransactionFromXML(node.OutputXML(true))
 		if err != nil {
 			return nil, err
 		}
@@ -229,7 +205,7 @@ func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error)
 // GetPlayersStats fetches the stats for the requested players for the requested
 // duration.
 func (l *League) GetPlayersStats(playerKeys []string, duration StatDuration) ([]*Player, error) {
-	rawResp, err := l.yf.GetPlayersStatsRaw(l.LeagueKey, playerKeys, duration)
+	rawResp, err := l.yf.getPlayersStatsRaw(l.LeagueKey, playerKeys, duration)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +222,7 @@ func (l *League) GetPlayersStats(playerKeys []string, duration StatDuration) ([]
 
 	players := make([]*Player, len(nodes))
 	for i, node := range nodes {
-		players[i], err = NewPlayerFromXML(node.OutputXML(true), l.yf)
+		players[i], err = l.yf.newPlayerFromXML(node.OutputXML(true))
 		if err != nil {
 			return nil, err
 		}
@@ -260,7 +236,7 @@ func (l *League) GetScoreboard(week int) (*Matchups, error) {
 		return nil, fmt.Errorf("invalid week number")
 	}
 
-	rawResp, err := l.yf.GetLeagueScoreboardRaw(l.LeagueKey, week)
+	rawResp, err := l.yf.getLeagueScoreboardRaw(l.LeagueKey, week)
 	if err != nil {
 		return nil, err
 	}
@@ -275,7 +251,7 @@ func (l *League) GetScoreboard(week int) (*Matchups, error) {
 		return nil, err
 	}
 
-	matchups, err := NewMatchupsFromXML(node.OutputXML(true), l.yf)
+	matchups, err := l.yf.newMatchupsFromXML(node.OutputXML(true))
 	if err != nil {
 		return nil, err
 	}

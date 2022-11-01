@@ -18,9 +18,9 @@ type Transaction struct {
 	yf *YFantasy
 }
 
-// NewTransactionFromXML returns a new Transaction object parsed from an
+// newTransactionFromXML returns a new Transaction object parsed from an
 // XML string.
-func NewTransactionFromXML(rawXML string, yf *YFantasy) (*Transaction, error) {
+func (yf *YFantasy) newTransactionFromXML(rawXML string) (*Transaction, error) {
 	var tr Transaction
 	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&tr)
 	if err != nil {
