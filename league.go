@@ -39,6 +39,7 @@ type League struct {
 	yf *YFantasy
 }
 
+// Standings contains the standings for a league.
 type Standings struct {
 	Teams Teams `xml:"teams"`
 }
@@ -263,6 +264,7 @@ func (l *League) GetScoreboard(week int) (*Matchups, error) {
 	return matchups, nil
 }
 
+// GetStandings fetches the standings for a league.
 func (l *League) GetStandings() (*Standings, error) {
 	rawResp, err := l.yf.getLeagueStandingsRaw(l.LeagueKey)
 	if err != nil {

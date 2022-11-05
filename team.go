@@ -103,23 +103,26 @@ type Total struct {
 	CompletedGames int `xml:"completed_games"`
 }
 
+// TeamStandings contains information about a Team's ranking in their league.
 type TeamStandings struct {
 	Rank                    int                     `xml:"rank"`
 	OutcomeTotals           OutcomeTotals           `xml:"outcome_totals"`
 	DivisionalOutcomeTotals DivisionalOutcomeTotals `xml:"divisional_outcome_totals"`
 }
 
+// OutcomeTotals contains information on the outcomes of a Team's matchups.
 type OutcomeTotals struct {
-	Wins       string `xml:"wins"`
-	Losses     string `xml:"losses"`
-	Ties       string `xml:"ties"`
-	Percentage string `xml:"percentage"`
+	Wins       int     `xml:"wins"`
+	Losses     int     `xml:"losses"`
+	Ties       int     `xml:"ties"`
+	Percentage float32 `xml:"percentage"`
 }
 
+// DvisionnalOutcomeTotals contains information on the outcomes of a Team's matchups in their division.
 type DivisionalOutcomeTotals struct {
-	Wins   string `xml:"wins"`
-	Losses string `xml:"losses"`
-	Ties   string `xml:"ties"`
+	Wins   int `xml:"wins"`
+	Losses int `xml:"losses"`
+	Ties   int `xml:"ties"`
 }
 
 // newTeamFromXML returns a new Team object parsed from an XML string.
