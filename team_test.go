@@ -1,7 +1,6 @@
 package yfantasy
 
 import (
-	"encoding/xml"
 	"reflect"
 	"testing"
 
@@ -12,7 +11,6 @@ import (
 func TestNewTeamFromXML(t *testing.T) {
 	yf := &YFantasy{}
 	want := &Team{
-		XMLName:               xml.Name{Local: "team"},
 		TeamKey:               "410.l.16883.t.1",
 		TeamID:                1,
 		Name:                  "Bring Me A Shot",
@@ -61,7 +59,7 @@ func TestNewTeamFromXML(t *testing.T) {
 
 func TestNewTeam(t *testing.T) {
 	yf := &YFantasy{}
-	want := &Team{XMLName: xml.Name{Local: "team"}, TeamKey: "123.l.456.t.789"}
+	want := &Team{TeamKey: "123.l.456.t.789"}
 	got := yf.newTeam("123.l.456.t.789")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(Team{})) {

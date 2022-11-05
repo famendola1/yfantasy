@@ -7,7 +7,6 @@ import (
 
 // Player represents a Yahoo player.
 type Player struct {
-	XMLName                  xml.Name          `xml:"player"`
 	PlayerKey                string            `xml:"player_key"`
 	PlayerID                 int               `xml:"player_id"`
 	Name                     Name              `xml:"name"`

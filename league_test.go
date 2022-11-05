@@ -1,7 +1,6 @@
 package yfantasy
 
 import (
-	"encoding/xml"
 	"reflect"
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 
 func TestNewLeague(t *testing.T) {
 	yf := &YFantasy{}
-	want := &League{XMLName: xml.Name{Local: "league"}, LeagueKey: "789.l.456"}
+	want := &League{LeagueKey: "789.l.456"}
 	got := yf.newLeague("789.l.456")
 
 	if !cmp.Equal(got, want, cmpopts.IgnoreUnexported(League{})) {
@@ -22,7 +21,6 @@ func TestNewLeague(t *testing.T) {
 func TestNewLeagueFromXML(t *testing.T) {
 	yf := &YFantasy{}
 	want := &League{
-		XMLName:               xml.Name{Local: "league"},
 		LeagueKey:             "410.l.16883",
 		LeagueID:              16883,
 		Name:                  "NBA Fantasy 2K22",
@@ -82,7 +80,7 @@ func TestExtractTeams(t *testing.T) {
 func TestExtractPlayers(t *testing.T) {
 	yf := &YFantasy{}
 	lg := yf.newLeague("123.1.456")
-	want := []*Player{{XMLName: xml.Name{Local: "player"}, PlayerKey: "410.p.6513", yf: yf}}
+	want := []*Player{{PlayerKey: "410.p.6513", yf: yf}}
 	got, err := lg.extractPlayersFromSearch(searchResp)
 	if err != nil {
 		t.Errorf("extractPlayersFromSearch(%q) failed, want success", searchResp)

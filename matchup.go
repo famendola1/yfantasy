@@ -14,7 +14,6 @@ type Matchups struct {
 
 // Matchup represents a Yahoo matchup.
 type Matchup struct {
-	XMLName       xml.Name    `xml:"matchup"`
 	Week          int         `xml:"week"`
 	WeekStart     string      `xml:"week_start"`
 	WeekEnd       string      `xml:"week_end"`

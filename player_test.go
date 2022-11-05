@@ -1,7 +1,6 @@
 package yfantasy
 
 import (
-	"encoding/xml"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -21,7 +20,6 @@ func TestNewPlayer(t *testing.T) {
 func TestNewPlayerFromXML(t *testing.T) {
 	yf := &YFantasy{}
 	want := &Player{
-		XMLName:                  xml.Name{Local: "player"},
 		PlayerKey:                "410.p.6065",
 		PlayerID:                 6065,
 		Name:                     Name{Full: "Shake Milton", First: "Shake", Last: "Milton", ASCIIFirst: "Shake", ASCIILast: "Milton"},

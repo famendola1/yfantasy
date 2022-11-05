@@ -16,7 +16,6 @@ type Teams struct {
 
 // Team represents a Yahoo team.
 type Team struct {
-	XMLName               xml.Name           `xml:"team"`
 	TeamKey               string             `xml:"team_key"`
 	TeamID                int                `xml:"team_id"`
 	Name                  string             `xml:"name"`
@@ -35,6 +34,7 @@ type Team struct {
 	TeamPoints            TeamPoints         `xml:"team_points"`
 	TeamRemainingGames    TeamRemainingGames `xml:"team_remaining_games"`
 	ClinchedPlayoffs      bool               `xml:"clinched_playoffs"`
+	TeamStandings         TeamStandings      `xml:"team_standings"`
 
 	yf *YFantasy
 }
@@ -103,6 +103,25 @@ type Total struct {
 	CompletedGames int `xml:"completed_games"`
 }
 
+type TeamStandings struct {
+	Rank                    int                     `xml:"rank"`
+	OutcomeTotals           OutcomeTotals           `xml:"outcome_totals"`
+	DivisionalOutcomeTotals DivisionalOutcomeTotals `xml:"divisional_outcome_totals"`
+}
+
+type OutcomeTotals struct {
+	Wins       string `xml:"wins"`
+	Losses     string `xml:"losses"`
+	Ties       string `xml:"ties"`
+	Percentage string `xml:"percentage"`
+}
+
+type DivisionalOutcomeTotals struct {
+	Wins   string `xml:"wins"`
+	Losses string `xml:"losses"`
+	Ties   string `xml:"ties"`
+}
+
 // newTeamFromXML returns a new Team object parsed from an XML string.
 func (yf *YFantasy) newTeamFromXML(rawXML string) (*Team, error) {
 	var tm Team
@@ -116,7 +135,7 @@ func (yf *YFantasy) newTeamFromXML(rawXML string) (*Team, error) {
 
 // newTeam returns a new Team populated with information from Yahoo.
 func (yf *YFantasy) newTeam(teamKey string) *Team {
-	tm := &Team{XMLName: xml.Name{Local: "team"}, TeamKey: teamKey, yf: yf}
+	tm := &Team{TeamKey: teamKey, yf: yf}
 	yf.fetchTeamData(tm)
 	return tm
 }

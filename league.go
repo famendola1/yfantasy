@@ -10,33 +10,37 @@ import (
 
 // League represents a Yahoo league.
 type League struct {
-	XMLName               xml.Name `xml:"league"`
-	LeagueKey             string   `xml:"league_key"`
-	LeagueID              int      `xml:"league_id"`
-	Name                  string   `xml:"name"`
-	URL                   string   `xml:"url"`
-	LogoURL               string   `xml:"logo_url"`
-	DraftStatus           string   `xml:"draft_status"`
-	NumTeams              int      `xml:"num_teams"`
-	EditKey               string   `xml:"edit_key"`
-	WeeklyDeadline        string   `xml:"weekly_deadline"`
-	LeagueUpdateTimestamp string   `xml:"league_update_timestamp"`
-	ScoringType           string   `xml:"scoring_type"`
-	LeagueType            string   `xml:"league_type"`
-	Renew                 string   `xml:"renew"`
-	ShortInvitationURL    string   `xml:"short_invitation_url"`
-	AllowAddToDlExtraPos  string   `xml:"allow_add_to_dl_extra_pos"`
-	IsProLeague           bool     `xml:"is_pro_league"`
-	IsCashLeague          bool     `xml:"is_cash_league"`
-	CurrentWeek           int      `xml:"current_week"`
-	StartWeek             string   `xml:"start_week"`
-	StartDate             string   `xml:"start_date"`
-	EndWeek               string   `xml:"end_week"`
-	EndDate               string   `xml:"end_date"`
-	GameCode              string   `xml:"game_code"`
-	Season                string   `xml:"season"`
+	LeagueKey             string `xml:"league_key"`
+	LeagueID              int    `xml:"league_id"`
+	Name                  string `xml:"name"`
+	URL                   string `xml:"url"`
+	LogoURL               string `xml:"logo_url"`
+	DraftStatus           string `xml:"draft_status"`
+	NumTeams              int    `xml:"num_teams"`
+	EditKey               string `xml:"edit_key"`
+	WeeklyDeadline        string `xml:"weekly_deadline"`
+	LeagueUpdateTimestamp string `xml:"league_update_timestamp"`
+	ScoringType           string `xml:"scoring_type"`
+	LeagueType            string `xml:"league_type"`
+	Renew                 string `xml:"renew"`
+	ShortInvitationURL    string `xml:"short_invitation_url"`
+	AllowAddToDlExtraPos  string `xml:"allow_add_to_dl_extra_pos"`
+	IsProLeague           bool   `xml:"is_pro_league"`
+	IsCashLeague          bool   `xml:"is_cash_league"`
+	CurrentWeek           int    `xml:"current_week"`
+	StartWeek             string `xml:"start_week"`
+	StartDate             string `xml:"start_date"`
+	EndWeek               string `xml:"end_week"`
+	EndDate               string `xml:"end_date"`
+	GameCode              string `xml:"game_code"`
+	Season                string `xml:"season"`
+	IsFinished            bool   `xml:"is_finished"`
 
 	yf *YFantasy
+}
+
+type Standings struct {
+	Teams Teams `xml:"teams"`
 }
 
 // NewLeagueFromXML returns a new League object parsed from an XML string.
@@ -52,7 +56,7 @@ func (yf *YFantasy) newLeagueFromXML(rawXML string) (*League, error) {
 
 // NewLeague creates a League containing all the league data from Yahoo.
 func (yf *YFantasy) newLeague(lgKey string) *League {
-	lg := &League{XMLName: xml.Name{Local: "league"}, LeagueKey: lgKey, yf: yf}
+	lg := &League{LeagueKey: lgKey, yf: yf}
 	yf.fetchLeagueData(lg)
 	return lg
 }
@@ -232,7 +236,7 @@ func (l *League) GetPlayersStats(playerKeys []string, duration StatDuration) ([]
 
 // GetScoreboard fetches all the matchups in a league for the given week.
 func (l *League) GetScoreboard(week int) (*Matchups, error) {
-	if week < 0 {
+	if week < 1 {
 		return nil, fmt.Errorf("invalid week number")
 	}
 
@@ -257,4 +261,28 @@ func (l *League) GetScoreboard(week int) (*Matchups, error) {
 	}
 
 	return matchups, nil
+}
+
+func (l *League) GetStandings() (*Standings, error) {
+	rawResp, err := l.yf.getLeagueStandingsRaw(l.LeagueKey)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
+	if err != nil {
+		return nil, err
+	}
+
+	node, err := xmlquery.Query(doc, "//standings")
+	if err != nil {
+		return nil, err
+	}
+
+	var s Standings
+	if err := xml.NewDecoder(strings.NewReader(node.OutputXML(true))).Decode(&s); err != nil {
+		return nil, err
+	}
+
+	return &s, nil
 }
