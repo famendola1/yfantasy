@@ -1,9 +1,5 @@
 package yfantasy
 
-import (
-	"encoding/xml"
-)
-
 // Player represents a Yahoo player.
 type Player struct {
 	PlayerKey                string            `xml:"player_key"`
@@ -22,11 +18,9 @@ type Player struct {
 	PrimaryPosition          string            `xml:"primary_position"`
 	EligiblePositions        EligiblePositions `xml:"eligible_positions"`
 	HasPlayerNotes           bool              `xml:"has_player_notes"`
-	PlayerNotesLastTimestamp string            `xml:"player_notes_last_timestamp"`
+	PlayerNotesLastTimestamp uint64            `xml:"player_notes_last_timestamp"`
 	TransactionData          TransactionData   `xml:"transaction_data"`
 	PlayerStats              PlayerStats       `xml:"player_stats"`
-
-	yf *YFantasy
 }
 
 // Name for Player
@@ -62,15 +56,66 @@ type TransactionData struct {
 
 // PlayerStats for a Player.
 type PlayerStats struct {
-	XMLName      xml.Name `xml:"player_stats"`
-	CoverageType string   `xml:"coverage_type"`
-	Season       string   `xml:"season"`
-	Date         string   `xml:"date"`
-	Stats        Stats    `xml:"stats"`
+	CoverageType string `xml:"coverage_type"`
+	Season       string `xml:"season"`
+	Date         string `xml:"date"`
+	Stats        Stats  `xml:"stats"`
 }
 
 // Players is a list of players.
 type Players struct {
-	Count  string    `xml:"count,attr"`
-	Player []*Player `xml:"player"`
+	Count  int      `xml:"count,attr"`
+	Player []Player `xml:"player"`
+}
+
+// Transaction represents a Yahoo fantasy transaction.
+type Transaction struct {
+	TransactionKey string  `xml:"transaction_key"`
+	TransactionID  int     `xml:"transaction_id"`
+	Type           string  `xml:"type"`
+	Status         string  `xml:"status"`
+	Timestamp      uint64  `xml:"timestamp"`
+	Players        Players `xml:"players"`
+}
+
+// Matchups hold multiple Matchup.
+type Matchups struct {
+	Matchup []Matchup `xml:"matchup"`
+}
+
+// Matchup represents a Yahoo matchup.
+type Matchup struct {
+	Week          int         `xml:"week"`
+	WeekStart     string      `xml:"week_start"`
+	WeekEnd       string      `xml:"week_end"`
+	Status        string      `xml:"status"`
+	IsPlayoffs    bool        `xml:"is_playoffs"`
+	IsConsolation bool        `xml:"is_consolation"`
+	IsTied        bool        `xml:"is_tied"`
+	WinnerTeamKey string      `xml:"winner_team_key"`
+	StatWinners   StatWinners `xml:"stat_winners"`
+	Teams         Teams       `xml:"teams"`
+}
+
+// StatWinners for Matchup
+type StatWinners struct {
+	StatWinner []StatWinner `xml:"stat_winner"`
+}
+
+// StatWinner represents the winner of a stat category.
+type StatWinner struct {
+	StatID        int    `xml:"stat_id"`
+	WinnerTeamKey string `xml:"winner_team_key"`
+	IsTied        bool   `xml:"is_tied"`
+}
+
+// Stats holds multiple Stat
+type Stats struct {
+	Stat []Stat `xml:"stat"`
+}
+
+// Stat represents a stat category in Yahoo.
+type Stat struct {
+	StatID int    `xml:"stat_id"`
+	Value  string `xml:"value"`
 }

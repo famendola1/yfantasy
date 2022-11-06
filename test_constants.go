@@ -1,7 +1,7 @@
 package yfantasy
 
 const (
-	rosterResp = `
+	rosterTestResp = `
   <?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/253.l.102614.t.10/roster/players" time="110.02206802368ms" copyright="Data provided by Yahoo! and STATS, LLC">
     <team>
@@ -41,7 +41,7 @@ const (
     </team>
   </fantasy_content>`
 
-	standingsResp = `
+	standingsTestResp = `
   <?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/223.l.431/standings" time="201.46489143372ms" copyright="Data provided by Yahoo! and STATS, LLC">
     <league>
@@ -78,7 +78,7 @@ const (
     </league>
   </fantasy_content>`
 
-	searchResp = `
+	searchTestResp = `
   <?xml version="1.0" encoding="UTF-8"?>
   <fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/410.l.16883/players;search=Jalen Green" time="25.722980499268ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
    <league>
@@ -258,14 +258,7 @@ const (
 		 <player_id>6450</player_id>
 		 <name>
 			<full>Paul Reed</full>
-			<first>Paul</first>
-			<last>Reed</last>
-			<ascii_first>Paul</ascii_first>
-			<ascii_last>Reed</ascii_last>
 		 </name>
-		 <editorial_team_abbr>PHI</editorial_team_abbr>
-		 <display_position>SF</display_position>
-		 <position_type>P</position_type>
 		 <transaction_data>
 			<type>add</type>
 			<source_type>freeagents</source_type>
@@ -279,14 +272,7 @@ const (
 		 <player_id>4488</player_id>
 		 <name>
 			<full>George Hill</full>
-			<first>George</first>
-			<last>Hill</last>
-			<ascii_first>George</ascii_first>
-			<ascii_last>Hill</ascii_last>
 		 </name>
-		 <editorial_team_abbr>MIL</editorial_team_abbr>
-		 <display_position>PG,SG</display_position>
-		 <position_type>P</position_type>
 		 <transaction_data>
 			<type>drop</type>
 			<source_type>team</source_type>
