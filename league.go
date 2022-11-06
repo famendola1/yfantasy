@@ -1,11 +1,8 @@
 package yfantasy
 
 import (
-	"encoding/xml"
 	"fmt"
 	"strings"
-
-	"github.com/antchfx/xmlquery"
 )
 
 // League represents a Yahoo league.
@@ -44,17 +41,6 @@ type Standings struct {
 	Teams Teams `xml:"teams"`
 }
 
-// NewLeagueFromXML returns a new League object parsed from an XML string.
-func (yf *YFantasy) newLeagueFromXML(rawXML string) (*League, error) {
-	var lg League
-	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&lg)
-	if err != nil {
-		return nil, err
-	}
-	lg.yf = yf
-	return &lg, nil
-}
-
 // NewLeague creates a League containing all the league data from Yahoo.
 func (yf *YFantasy) newLeague(lgKey string) *League {
 	lg := &League{LeagueKey: lgKey, yf: yf}
@@ -71,22 +57,7 @@ func (yf *YFantasy) fetchLeagueData(lg *League) error {
 	if err != nil {
 		return err
 	}
-
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return err
-	}
-
-	node, err := xmlquery.Query(doc, "//league")
-	if err != nil {
-		return err
-	}
-
-	lg, err = yf.newLeagueFromXML(node.OutputXML(true))
-	if err != nil {
-		return err
-	}
-	return nil
+	return parse(rawResp, "//league", lg)
 }
 
 // GameKey returns the game key for the league.
@@ -101,7 +72,7 @@ func (l *League) Teams() ([]*Team, error) {
 		return nil, err
 	}
 
-	return l.extractTeams(rawResp)
+	return parseAllTeams(rawResp, l.yf)
 }
 
 // MyTeam returns the team that the user has in this league.
@@ -111,7 +82,7 @@ func (l *League) MyTeam() (*Team, error) {
 		return nil, err
 	}
 
-	teams, err := l.extractTeams(rawResp)
+	teams, err := parseAllTeams(rawResp, l.yf)
 	if err != nil {
 		return nil, err
 	}
@@ -122,30 +93,6 @@ func (l *League) MyTeam() (*Team, error) {
 	return teams[0], nil
 }
 
-// extractTeams parses the raw XML response from the
-// /league//standings endpoint for teams.
-func (l *League) extractTeams(rawResp string) ([]*Team, error) {
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//team")
-	if err != nil {
-		return nil, err
-	}
-
-	teams := make([]*Team, len(nodes))
-	for i, node := range nodes {
-		teams[i], err = l.yf.newTeamFromXML(node.OutputXML(true))
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return teams, nil
-}
-
 // SearchPlayers searches for players using the provided name.
 // playerName can be the player's full name or a partial name.
 func (l *League) SearchPlayers(playerName string) ([]*Player, error) {
@@ -154,29 +101,7 @@ func (l *League) SearchPlayers(playerName string) ([]*Player, error) {
 		return nil, err
 	}
 
-	return l.extractPlayersFromSearch(rawResp)
-}
-
-// extractPlayersFromSearch extracts players from the search results.
-func (l *League) extractPlayersFromSearch(rawResp string) ([]*Player, error) {
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//player")
-	if err != nil {
-		return nil, err
-	}
-
-	players := make([]*Player, len(nodes))
-	for i, node := range nodes {
-		players[i], err = l.yf.newPlayerFromXML(node.OutputXML(true))
-		if err != nil {
-			return nil, err
-		}
-	}
-	return players, nil
+	return parseAllPlayers(rawResp)
 }
 
 // Transactions returns all the league's transaction for the given types.
@@ -185,26 +110,7 @@ func (l *League) Transactions(transactionTypes []string) ([]*Transaction, error)
 	if err != nil {
 		return nil, err
 	}
-
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//transaction")
-	if err != nil {
-		return nil, err
-	}
-
-	transactions := make([]*Transaction, len(nodes))
-	for i, node := range nodes {
-		transactions[i], err = l.yf.newTransactionFromXML(node.OutputXML(true))
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return transactions, nil
+	return parseAllTransactions(rawResp)
 }
 
 // GetPlayersStats fetches the stats for the requested players for the requested
@@ -214,25 +120,7 @@ func (l *League) GetPlayersStats(playerKeys []string, duration StatDuration) ([]
 	if err != nil {
 		return nil, err
 	}
-
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//player")
-	if err != nil {
-		return nil, err
-	}
-
-	players := make([]*Player, len(nodes))
-	for i, node := range nodes {
-		players[i], err = l.yf.newPlayerFromXML(node.OutputXML(true))
-		if err != nil {
-			return nil, err
-		}
-	}
-	return players, nil
+	return parseAllPlayers(rawResp)
 }
 
 // GetScoreboard fetches all the matchups in a league for the given week.
@@ -246,22 +134,11 @@ func (l *League) GetScoreboard(week int) (*Matchups, error) {
 		return nil, err
 	}
 
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
+	var m Matchups
+	if err := parse(rawResp, "//matchups", &m); err != nil {
 		return nil, err
 	}
-
-	node, err := xmlquery.Query(doc, "//matchups")
-	if err != nil {
-		return nil, err
-	}
-
-	matchups, err := l.yf.newMatchupsFromXML(node.OutputXML(true))
-	if err != nil {
-		return nil, err
-	}
-
-	return matchups, nil
+	return &m, nil
 }
 
 // GetStandings fetches the standings for a league.
@@ -271,20 +148,9 @@ func (l *League) GetStandings() (*Standings, error) {
 		return nil, err
 	}
 
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	node, err := xmlquery.Query(doc, "//standings")
-	if err != nil {
-		return nil, err
-	}
-
 	var s Standings
-	if err := xml.NewDecoder(strings.NewReader(node.OutputXML(true))).Decode(&s); err != nil {
+	if err := parse(rawResp, "//standings", &s); err != nil {
 		return nil, err
 	}
-
 	return &s, nil
 }

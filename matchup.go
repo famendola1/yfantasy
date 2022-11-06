@@ -2,11 +2,6 @@ package yfantasy
 
 // TODO(famendola1): Add tests for this file.
 
-import (
-	"encoding/xml"
-	"strings"
-)
-
 // Matchups hold multiple Matchup.
 type Matchups struct {
 	Matchup []Matchup `xml:"matchup"`
@@ -36,32 +31,4 @@ type StatWinner struct {
 	StatID        int    `xml:"stat_id"`
 	WinnerTeamKey string `xml:"winner_team_key"`
 	IsTied        bool   `xml:"is_tied"`
-}
-
-// newMatchupsFromXML creates a new Matchups object parsed from an XML string.
-func (yf *YFantasy) newMatchupsFromXML(rawXML string) (*Matchups, error) {
-	var m Matchups
-	if err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&m); err != nil {
-		return nil, err
-	}
-
-	for i := range m.Matchup {
-		for j := range m.Matchup[i].Teams.Team {
-			m.Matchup[i].Teams.Team[j].yf = yf
-		}
-	}
-	return &m, nil
-}
-
-// newMatchupFromXML creates a new Matchup object parsed from an XML string.
-func (yf *YFantasy) newMatchupFromXML(rawXML string) (*Matchup, error) {
-	var m Matchup
-	if err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&m); err != nil {
-		return nil, err
-	}
-
-	for i := range m.Teams.Team {
-		m.Teams.Team[i].yf = yf
-	}
-	return &m, nil
 }

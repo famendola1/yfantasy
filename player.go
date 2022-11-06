@@ -2,7 +2,6 @@ package yfantasy
 
 import (
 	"encoding/xml"
-	"strings"
 )
 
 // Player represents a Yahoo player.
@@ -74,20 +73,4 @@ type PlayerStats struct {
 type Players struct {
 	Count  string    `xml:"count,attr"`
 	Player []*Player `xml:"player"`
-}
-
-// newPlayer returns a new player.
-func (yf *YFantasy) newPlayer(playerKey string) *Player {
-	return &Player{PlayerKey: playerKey, yf: yf}
-}
-
-// newPlayerFromXML returns a new Player object parsed from an XML string.
-func (yf *YFantasy) newPlayerFromXML(rawXML string) (*Player, error) {
-	var p Player
-	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&p)
-	if err != nil {
-		return nil, err
-	}
-	p.yf = yf
-	return &p, nil
 }

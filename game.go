@@ -2,62 +2,46 @@ package yfantasy
 
 import (
 	"fmt"
-	"strings"
-
-	"github.com/antchfx/xmlquery"
 )
 
 // Game represents a Yahoo game
 type Game struct {
-	yf     *YFantasy
-	Sport  string
-	gameID string
+	GameKey            string `xml:"game_key"`
+	GameID             int    `xml:"game_id"`
+	Name               string `xml:"name"`
+	Code               string `xml:"code"`
+	Type               string `xml:"type"`
+	URL                string `xml:"url"`
+	Season             string `xml:"season"`
+	IsRegistrationOver bool   `xml:"is_registration_over"`
+	IsGameOver         bool   `xml:"is_game_over"`
+	IsOffseason        bool   `xml:"is_offseason"`
+
+	yf *YFantasy
 }
 
-// NewGame returns a new Game object.
-func (yf *YFantasy) Game(sport string) *Game {
-	return &Game{yf: yf, Sport: sport}
-}
-
-// GetGameID queries the Yahoo fantasy API for the ID of the game and sets
-// GameID in the Game.
-func (g *Game) GetGameID() (string, error) {
-	if g.gameID != "" {
-		return g.gameID, nil
-	}
-
-	rawResp, err := g.yf.getGameRaw(g.Sport)
-	if err != nil {
-		return "", nil
-	}
-
-	return g.extractGameID(rawResp)
-}
-
-// extractGameID parses the raw XML response for a the game id.
-func (g *Game) extractGameID(rawResp string) (string, error) {
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return "", err
-	}
-
-	node, err := xmlquery.Query(doc, "/fantasy_content/game/game_id")
-	if err != nil {
-		return "", err
-	}
-
-	g.gameID = node.InnerText()
-	return g.gameID, err
-}
-
-// Leagues returns all the active leagues the user is in for the game.
-func (g *Game) Leagues() ([]*League, error) {
-	rawResp, err := g.yf.getUserLeaguesForSport(g.Sport)
+// Game returns a new Game object.
+func (yf *YFantasy) Game(sport string) (*Game, error) {
+	rawResp, err := yf.getGameRaw(sport)
 	if err != nil {
 		return nil, err
 	}
 
-	return g.extractLeagues(rawResp)
+	var g Game
+	if err := parse(rawResp, "//game", &g); err != nil {
+		return nil, err
+	}
+	g.yf = yf
+	return &g, nil
+}
+
+// Leagues returns all the active leagues the user is in for the game.
+func (g *Game) Leagues() ([]*League, error) {
+	rawResp, err := g.yf.getUserLeaguesForSport(g.Code)
+	if err != nil {
+		return nil, err
+	}
+	return parseAllLeagues(rawResp, g.yf)
 }
 
 // GetLeagueByName returns a league with the given name. If no league is found
@@ -77,63 +61,18 @@ func (g *Game) GetLeagueByName(lgName string) (*League, error) {
 	return nil, fmt.Errorf("league with name: %q not found", lgName)
 }
 
-// extractLeagues parses the raw XML response for leagues.
-func (g *Game) extractLeagues(rawResp string) ([]*League, error) {
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//league")
-	if err != nil {
-		return nil, err
-	}
-
-	leagues := make([]*League, len(nodes))
-	for i, node := range nodes {
-		leagues[i], err = g.yf.newLeagueFromXML(node.OutputXML(true))
-		if err != nil {
-			return nil, err
-		}
-	}
-	return leagues, nil
-}
-
 // LeagueKeys returns all the active league keys of the leagues the user is in
 // for the game.
 func (g *Game) LeagueKeys() ([]string, error) {
-	rawResp, err := g.yf.getUserLeaguesForSport(g.Sport)
+	rawResp, err := g.yf.getUserLeaguesForSport(g.Code)
 	if err != nil {
 		return nil, err
 	}
 
-	return extractLeagueKeys(rawResp)
-}
-
-// extractLeagueKeys parses the raw XML response for all the league keys.
-func extractLeagueKeys(rawResp string) ([]string, error) {
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//league_key")
-	if err != nil {
-		return nil, err
-	}
-
-	leagueKeys := make([]string, len(nodes))
-	for i, node := range nodes {
-		leagueKeys[i] = node.InnerText()
-	}
-	return leagueKeys, nil
+	return parseAllString(rawResp, "//league_key")
 }
 
 // League creates a League object from the given league id.
-func (g *Game) League(leagueID string) (*League, error) {
-	gameID, err := g.GetGameID()
-	if err != nil {
-		return nil, err
-	}
-	return g.yf.newLeague(fmt.Sprintf("%v.l.%v", gameID, leagueID)), nil
+func (g *Game) League(leagueKey string) (*League, error) {
+	return g.yf.newLeague(fmt.Sprintf("%d.l.%s", g.GameID, leagueKey)), nil
 }

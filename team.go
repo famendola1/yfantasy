@@ -1,11 +1,8 @@
 package yfantasy
 
 import (
-	"encoding/xml"
 	"fmt"
 	"strings"
-
-	"github.com/antchfx/xmlquery"
 )
 
 // Teams holds multiple Team.
@@ -118,22 +115,11 @@ type OutcomeTotals struct {
 	Percentage float32 `xml:"percentage"`
 }
 
-// DvisionnalOutcomeTotals contains information on the outcomes of a Team's matchups in their division.
+// DivisionalOutcomeTotals contains information on the outcomes of a Team's matchups in their division.
 type DivisionalOutcomeTotals struct {
 	Wins   int `xml:"wins"`
 	Losses int `xml:"losses"`
 	Ties   int `xml:"ties"`
-}
-
-// newTeamFromXML returns a new Team object parsed from an XML string.
-func (yf *YFantasy) newTeamFromXML(rawXML string) (*Team, error) {
-	var tm Team
-	err := xml.NewDecoder(strings.NewReader(rawXML)).Decode(&tm)
-	if err != nil {
-		return nil, err
-	}
-	tm.yf = yf
-	return &tm, nil
 }
 
 // newTeam returns a new Team populated with information from Yahoo.
@@ -152,22 +138,7 @@ func (yf *YFantasy) fetchTeamData(tm *Team) error {
 	if err != nil {
 		return err
 	}
-
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return err
-	}
-
-	node, err := xmlquery.Query(doc, "//team")
-	if err != nil {
-		return err
-	}
-
-	tm, err = yf.newTeamFromXML(node.OutputXML(true))
-	if err != nil {
-		return err
-	}
-	return nil
+	return parse(rawResp, "//team", tm)
 }
 
 // Roster returns the list of players on this team.
@@ -176,32 +147,7 @@ func (t *Team) Roster() ([]*Player, error) {
 	if err != nil {
 		return nil, err
 	}
-	return t.extractPlayersFromRoster(rawResp)
-}
-
-// extractPlayersFromRoster parses the raw XML response from the /team//roster
-// endpoint for players.
-func (t *Team) extractPlayersFromRoster(rawResp string) ([]*Player, error) {
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	nodes, err := xmlquery.QueryAll(doc, "//player")
-	if err != nil {
-		return nil, err
-	}
-
-	players := make([]*Player, len(nodes))
-	for i, node := range nodes {
-		playerKey, err := xmlquery.Query(node, "/player_key")
-		if err != nil {
-			return nil, err
-		}
-		players[i] = t.yf.newPlayer(playerKey.InnerText())
-	}
-
-	return players, nil
+	return parseAllPlayers(rawResp)
 }
 
 // LeagueKey returns the key of the leauge this team is in.
@@ -232,19 +178,8 @@ func (t *Team) GetTeamStats(duration StatDuration) (*TeamStats, error) {
 		return nil, err
 	}
 
-	doc, err := xmlquery.Parse(strings.NewReader(rawResp))
-	if err != nil {
-		return nil, err
-	}
-
-	node, err := xmlquery.Query(doc, "//team_stats")
-	if err != nil {
-		return nil, err
-	}
-
 	var stats TeamStats
-	err = xml.NewDecoder(strings.NewReader(node.OutputXML(true))).Decode(&stats)
-	if err != nil {
+	if err := parse(rawResp, "//team_stats", &stats); err != nil {
 		return nil, err
 	}
 
