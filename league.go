@@ -194,7 +194,7 @@ func (l *League) FindTeamByName(teamName string) (*Team, error) {
 // FindTeamRosterByName searches the league for a Team with the given name and
 // returns the roster.
 func (l *League) FindTeamRosterByName(teamName string) (*Roster, error) {
-	rawResp, err := l.yf.getLeagueTeamsRaw(l.LeagueKey)
+	rawResp, err := l.yf.getLeagueTeamsRosterRaw(l.LeagueKey)
 	if err != nil {
 		return nil, err
 	}
