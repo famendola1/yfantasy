@@ -21,6 +21,12 @@ type Player struct {
 	PlayerNotesLastTimestamp uint64            `xml:"player_notes_last_timestamp"`
 	TransactionData          TransactionData   `xml:"transaction_data"`
 	PlayerStats              PlayerStats       `xml:"player_stats"`
+	Status                   string            `xml:"status"`
+	StatusFull               string            `xml:"status_full"`
+	InjuryNote               string            `xml:"injury_note"`
+	HasRecentPlayerNotes     string            `xml:"has_recent_player_notes"`
+	SelectedPosition         SelectedPosition  `xml:"selected_position"`
+	IsKeeper                 IsKeeper          `xml:"is_keeper"`
 }
 
 // Name for Player
@@ -60,6 +66,21 @@ type PlayerStats struct {
 	Season       string `xml:"season"`
 	Date         string `xml:"date"`
 	Stats        Stats  `xml:"stats"`
+}
+
+// SelectedPosition contains information on a Player's selected position.
+type SelectedPosition struct {
+	CoverageType string `xml:"coverage_type"`
+	Date         string `xml:"date"`
+	Position     string `xml:"position"`
+	IsFlex       bool   `xml:"is_flex"`
+}
+
+// IsKeeper contains keeper information for a Player.
+type IsKeeper struct {
+	Status string `xml:"status"`
+	Cost   string `xml:"cost"`
+	Kept   string `xml:"kept"`
 }
 
 // Players is a list of players.

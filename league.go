@@ -174,3 +174,36 @@ func (l *League) GetStandings() (*Standings, error) {
 	}
 	return &s, nil
 }
+
+// FindTeamByName searches the league for a Team with the given name.
+func (l *League) FindTeamByName(teamName string) (*Team, error) {
+	rawResp, err := l.yf.getLeagueTeamsRaw(l.LeagueKey)
+	if err != nil {
+		return nil, err
+	}
+
+	teams, err := parseAllTeams(rawResp, l.yf)
+	for _, team := range teams {
+		if team.Name == teamName {
+			return team, nil
+		}
+	}
+	return nil, fmt.Errorf("team with name: %q not found", teamName)
+}
+
+// FindTeamRosterByName searches the league for a Team with the given name and
+// returns the roster.
+func (l *League) FindTeamRosterByName(teamName string) (*Roster, error) {
+	rawResp, err := l.yf.getLeagueTeamsRaw(l.LeagueKey)
+	if err != nil {
+		return nil, err
+	}
+
+	teams, err := parseAllTeams(rawResp, l.yf)
+	for _, team := range teams {
+		if team.Name == teamName {
+			return &team.Roster, nil
+		}
+	}
+	return nil, fmt.Errorf("team with name: %q not found", teamName)
+}

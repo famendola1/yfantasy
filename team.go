@@ -32,6 +32,7 @@ type Team struct {
 	TeamRemainingGames    TeamRemainingGames `xml:"team_remaining_games"`
 	ClinchedPlayoffs      bool               `xml:"clinched_playoffs"`
 	TeamStandings         TeamStandings      `xml:"team_standings"`
+	Roster                Roster             `xml:"roster"`
 
 	yf *YFantasy
 }
@@ -122,6 +123,14 @@ type DivisionalOutcomeTotals struct {
 	Ties   int `xml:"ties"`
 }
 
+// Roster contains information on a Team's roster.
+type Roster struct {
+	CoverageType string  `xml:"coverage_type"`
+	Date         string  `xml:"date"`
+	IsEditable   bool    `xml:"is_editable"`
+	Players      Players `xml:"players"`
+}
+
 // Team returns a new Team populated with information from Yahoo.
 func (yf *YFantasy) Team(gameKey string, leagueID, teamID int) (*Team, error) {
 	var tm Team
@@ -136,13 +145,18 @@ func (yf *YFantasy) Team(gameKey string, leagueID, teamID int) (*Team, error) {
 	return &tm, nil
 }
 
-// Roster returns the list of players on this team.
-func (t *Team) Roster() ([]*Player, error) {
+// GetRoster queries for and returns a Team's roster.
+func (t *Team) GetRoster() (*Roster, error) {
 	rawResp, err := t.yf.getTeamRosterRaw(t.TeamKey)
 	if err != nil {
 		return nil, err
 	}
-	return parseAllPlayers(rawResp)
+
+	var r Roster
+	if err := parse(rawResp, "//roster", &r); err != nil {
+		return nil, err
+	}
+	return &r, nil
 }
 
 func (t *Team) leagueKey() string {

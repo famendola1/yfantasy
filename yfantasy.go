@@ -136,6 +136,18 @@ func (yf *YFantasy) getLeagueScoreboardRaw(leagueKey string, week int) (string, 
 
 }
 
+// getLeagueTeamsRaw queries the /league//teams endpoint for all the active
+// teams in the given league.
+func (yf *YFantasy) getLeagueTeamsRaw(leagueKey string) (string, error) {
+	return yf.get(fmt.Sprintf("league/%s/teams", leagueKey))
+}
+
+// getLeagueTeamsRosterRaw queries the /league//teams/roster endpoint for the
+// rosters of all the active teams in the given league.
+func (yf *YFantasy) getLeagueTeamsRosterRaw(leagueKey string) (string, error) {
+	return yf.get(fmt.Sprintf("league/%s/teams/roster", leagueKey))
+}
+
 // getTeamRaw queries the /team endpoint for team information and returns the
 // response body as a string.
 // teamKey has the format: <game_key>.l.<league_id>.t.<team_id>
