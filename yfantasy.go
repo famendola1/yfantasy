@@ -98,6 +98,12 @@ func (yf *YFantasy) getGameRaw(sport string) (string, error) {
 	return yf.get(fmt.Sprintf("game/%s", sport))
 }
 
+// getAvailableGamesRaw queries the /games endpoint for the available games and
+// returns the raw response body as a string.
+func (yf *YFantasy) getAvailableGamesRaw() (string, error) {
+	return yf.get(fmt.Sprintf("games;is_available=1"))
+}
+
 // getLeagueRaw queries the /league endpoint for league information and returns
 // the raw response body as a string.
 // leagueKey has the format: <game_key>.l.<league_id> (ex: nba.l.1234)

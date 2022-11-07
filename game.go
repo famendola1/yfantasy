@@ -1,9 +1,5 @@
 package yfantasy
 
-import (
-	"fmt"
-)
-
 // Game represents a Yahoo game
 type Game struct {
 	GameKey            string `xml:"game_key"`
@@ -35,44 +31,26 @@ func (yf *YFantasy) Game(sport string) (*Game, error) {
 	return &g, nil
 }
 
+// AvailableGames returns a list of all the currently available Yahoo Games.
+func (yf *YFantasy) AvailableGames() ([]*Game, error) {
+	rawResp, err := yf.getAvailableGamesRaw()
+	if err != nil {
+		return nil, err
+	}
+
+	gms, err := parseAllGames(rawResp, yf)
+	if err != nil {
+		return nil, err
+	}
+	return gms, nil
+}
+
 // Leagues returns all the active leagues the user is in for the game.
 func (g *Game) Leagues() ([]*League, error) {
-	rawResp, err := g.yf.getUserLeaguesForSport(g.Code)
-	if err != nil {
-		return nil, err
-	}
-	return parseAllLeagues(rawResp, g.yf)
-}
-
-// GetLeagueByName returns a league with the given name. If no league is found
-// an error is returned.
-func (g *Game) GetLeagueByName(lgName string) (*League, error) {
-	lgs, err := g.Leagues()
-	if err != nil {
-		return nil, err
-	}
-
-	for _, lg := range lgs {
-		if lg.Name == lgName {
-			return lg, nil
-		}
-	}
-
-	return nil, fmt.Errorf("league with name: %q not found", lgName)
-}
-
-// LeagueKeys returns all the active league keys of the leagues the user is in
-// for the game.
-func (g *Game) LeagueKeys() ([]string, error) {
-	rawResp, err := g.yf.getUserLeaguesForSport(g.Code)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseAllString(rawResp, "//league_key")
+	return g.yf.UserLeagues(g.GameKey)
 }
 
 // League creates a League object from the given league id.
-func (g *Game) League(leagueKey string) (*League, error) {
-	return g.yf.newLeague(fmt.Sprintf("%d.l.%s", g.GameID, leagueKey)), nil
+func (g *Game) League(leagueID int) (*League, error) {
+	return g.yf.League(g.GameKey, leagueID)
 }

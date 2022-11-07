@@ -122,23 +122,18 @@ type DivisionalOutcomeTotals struct {
 	Ties   int `xml:"ties"`
 }
 
-// newTeam returns a new Team populated with information from Yahoo.
-func (yf *YFantasy) newTeam(teamKey string) *Team {
-	tm := &Team{TeamKey: teamKey, yf: yf}
-	yf.fetchTeamData(tm)
-	return tm
-}
-
-// FetchTeamData gets all the data for a team and populates all the fields.
-func (yf *YFantasy) fetchTeamData(tm *Team) error {
-	if !yf.IsValid() {
-		return fmt.Errorf("unable to fetch team data, YFantasy is invalid")
-	}
-	rawResp, err := yf.getTeamRaw(tm.TeamKey)
+// Team returns a new Team populated with information from Yahoo.
+func (yf *YFantasy) Team(gameKey string, leagueID, teamID int) (*Team, error) {
+	var tm Team
+	rawResp, err := yf.getTeamRaw(fmt.Sprintf("%s.l.%d.t.%d", gameKey, leagueID, teamID))
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return parse(rawResp, "//team", tm)
+	if err := parse(rawResp, "//team", tm); err != nil {
+		return nil, err
+	}
+	tm.yf = yf
+	return &tm, nil
 }
 
 // Roster returns the list of players on this team.
@@ -150,25 +145,24 @@ func (t *Team) Roster() ([]*Player, error) {
 	return parseAllPlayers(rawResp)
 }
 
-// LeagueKey returns the key of the leauge this team is in.
-func (t *Team) LeagueKey() string {
+func (t *Team) leagueKey() string {
 	return strings.Split(t.TeamKey, ".t.")[0]
 }
 
 // AddDrop adds the specified player to the team and drops the specified player
 // from the team in a single transaction.
 func (t *Team) AddDrop(addPlayerKey string, dropPlayerKey string) error {
-	return t.yf.postAddDropTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey, dropPlayerKey)
+	return t.yf.postAddDropTransaction(t.leagueKey(), t.TeamKey, addPlayerKey, dropPlayerKey)
 }
 
 // Add adds the specified player to the team.
 func (t *Team) Add(addPlayerKey string) error {
-	return t.yf.postAddTransaction(t.LeagueKey(), t.TeamKey, addPlayerKey)
+	return t.yf.postAddTransaction(t.leagueKey(), t.TeamKey, addPlayerKey)
 }
 
 // Drop adds drops the specified player from the team.
 func (t *Team) Drop(dropPlayerKey string) error {
-	return t.yf.postDropTransaction(t.LeagueKey(), t.TeamKey, dropPlayerKey)
+	return t.yf.postDropTransaction(t.leagueKey(), t.TeamKey, dropPlayerKey)
 }
 
 // GetTeamStats returns the team's stats for a given duration.

@@ -284,4 +284,32 @@ const (
 	 </players>
 	</transaction>
 	`
+
+	transactionsTestResp = `
+	<transactions>
+	  <transaction>
+	  	<transaction_key>257.l.193.pt.1</transaction_key>
+		</transaction>
+		<transaction>
+	  	<transaction_key>257.l.193.pt.2</transaction_key>
+		</transaction>
+		<transaction>
+	  	<transaction_key>257.l.193.pt.3</transaction_key>
+		</transaction>
+	</transactions>
+	`
+
+	gamesTestResp = `
+	<games>
+	  <game>
+		  <code>nba</code>
+		</game>
+		<game>
+		  <code>nfl</code>
+		</game>
+		<game>
+		  <code>nhl</code>
+		</game>
+	</games>
+	`
 )

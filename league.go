@@ -2,7 +2,6 @@ package yfantasy
 
 import (
 	"fmt"
-	"strings"
 )
 
 // League represents a Yahoo league.
@@ -25,9 +24,9 @@ type League struct {
 	IsProLeague           bool   `xml:"is_pro_league"`
 	IsCashLeague          bool   `xml:"is_cash_league"`
 	CurrentWeek           int    `xml:"current_week"`
-	StartWeek             string `xml:"start_week"`
+	StartWeek             int    `xml:"start_week"`
 	StartDate             string `xml:"start_date"`
-	EndWeek               string `xml:"end_week"`
+	EndWeek               int    `xml:"end_week"`
 	EndDate               string `xml:"end_date"`
 	GameCode              string `xml:"game_code"`
 	Season                string `xml:"season"`
@@ -41,31 +40,52 @@ type Standings struct {
 	Teams Teams `xml:"teams"`
 }
 
-// NewLeague creates a League containing all the league data from Yahoo.
-func (yf *YFantasy) newLeague(lgKey string) *League {
-	lg := &League{LeagueKey: lgKey, yf: yf}
-	yf.fetchLeagueData(lg)
-	return lg
-}
-
-// fetchLeagueData gets all the data for a league and populates all the fields.
-func (yf *YFantasy) fetchLeagueData(lg *League) error {
-	if !yf.IsValid() {
-		return fmt.Errorf("unable to fetch league data, YFantasy is invalid")
-	}
-	rawResp, err := yf.getLeagueRaw(lg.LeagueKey)
+// League creates a League containing all the league data from Yahoo.
+// gameKey can either be the key or code (e.g. nba, nfl, nhl, etc) for a game.
+func (yf *YFantasy) League(gameKey string, leagueID int) (*League, error) {
+	rawResp, err := yf.getLeagueRaw(fmt.Sprintf("%s.l.%d", gameKey, leagueID))
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return parse(rawResp, "//league", lg)
+
+	var lg League
+	if err := parse(rawResp, "//league", &lg); err != nil {
+		return nil, err
+	}
+	lg.yf = yf
+	return &lg, nil
 }
 
-// GameKey returns the game key for the league.
-func (l *League) GameKey() string {
-	return strings.Split(l.LeagueKey, ".l.")[0]
+// UserLeagues returns all the leagues the current user is registered in for a
+// given game. gameKey can either be the key or code (e.g. nba, nfl, nhl, etc)
+// for a game.
+func (yf *YFantasy) UserLeagues(gameKey string) ([]*League, error) {
+	rawResp, err := yf.getUserLeaguesForSport(gameKey)
+	if err != nil {
+		return nil, err
+	}
+	return parseAllLeagues(rawResp, yf)
 }
 
-// Teams returns a list of the teams in the league
+// FindLeagueByName returns a league with the given name for the given game. If
+// no league is found an error is returned. gameKey can either be the key or
+// code (e.g. nba, nfl, nhl, etc) for a game.
+func (yf *YFantasy) FindLeagueByName(gameKey, lgName string) (*League, error) {
+	lgs, err := yf.UserLeagues(gameKey)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, lg := range lgs {
+		if lg.Name == lgName {
+			return lg, nil
+		}
+	}
+
+	return nil, fmt.Errorf("league with name: %q not found", lgName)
+}
+
+// Teams returns a list of the teams in the league.
 func (l *League) Teams() ([]*Team, error) {
 	rawResp, err := l.yf.getLeagueStandingsRaw(l.LeagueKey)
 	if err != nil {
@@ -75,9 +95,9 @@ func (l *League) Teams() ([]*Team, error) {
 	return parseAllTeams(rawResp, l.yf)
 }
 
-// MyTeam returns the team that the user has in this league.
-func (l *League) MyTeam() (*Team, error) {
-	rawResp, err := l.yf.getUserTeamInLeagueRaw(l.GameKey(), l.LeagueKey)
+// UserTeam returns the team that the user has in this league.
+func (l *League) UserTeam() (*Team, error) {
+	rawResp, err := l.yf.getUserTeamInLeagueRaw(l.GameCode, l.LeagueKey)
 	if err != nil {
 		return nil, err
 	}

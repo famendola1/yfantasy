@@ -104,6 +104,25 @@ func parseAllTransactions(xmlDoc string) ([]*Transaction, error) {
 	return txns, nil
 }
 
+func parseAllGames(xmlDoc string, yf *YFantasy) ([]*Game, error) {
+	nodes, err := parseAll(xmlDoc, "//game")
+	if err != nil {
+		return nil, err
+	}
+
+	gms := make([]*Game, len(nodes))
+	for i, node := range nodes {
+		var gm Game
+		err := xml.NewDecoder(strings.NewReader(node.OutputXML(true))).Decode(&gm)
+		if err != nil {
+			return nil, err
+		}
+		gm.yf = yf
+		gms[i] = &gm
+	}
+	return gms, nil
+}
+
 func parseAllString(xmlDoc, expr string) ([]string, error) {
 	nodes, err := parseAll(xmlDoc, expr)
 	if err != nil {

@@ -144,7 +144,6 @@ func TestParseAllPlayers(t *testing.T) {
 	if diff := cmp.Diff(got, want); diff != "" {
 		t.Errorf("diff (-got, +want):\n %+s", diff)
 	}
-
 }
 
 func TestParseTransaction(t *testing.T) {
@@ -189,7 +188,60 @@ func TestParseTransaction(t *testing.T) {
 }
 
 func TestParseAllTransactions(t *testing.T) {
+	want := []*Transaction{
+		&Transaction{TransactionKey: "257.l.193.pt.1"},
+		&Transaction{TransactionKey: "257.l.193.pt.2"},
+		&Transaction{TransactionKey: "257.l.193.pt.3"},
+	}
+	got, err := parseAllTransactions(transactionsTestResp)
+	if err != nil {
+		t.Errorf("parseAllTransactions(%s) failed, want success", transactionsTestResp)
+		return
+	}
 
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Errorf("diff (-got, +want):\n %+s", diff)
+	}
+}
+
+func TestParseGame(t *testing.T) {
+	want := &Game{
+		GameKey: "410",
+		GameID:  410,
+		Name:    "Basketball",
+		Code:    "nba",
+		Type:    "full",
+		URL:     "https://football.fantasysports.yahoo.com/f1",
+		Season:  "2021",
+	}
+	got := &Game{}
+
+	if err := parse(gameTestResp, "//game", got); err != nil {
+		t.Errorf("parse(%s, \"//game\", %+v) failed, want success", gameTestResp, got)
+		return
+	}
+
+	if diff := cmp.Diff(got, want, cmpopts.IgnoreFields(Game{}, "yf")); diff != "" {
+		t.Errorf("diff (-got, +want):\n %+s", diff)
+	}
+}
+
+func TestParseAllGames(t *testing.T) {
+	yf := &YFantasy{}
+	want := []*Game{
+		&Game{Code: "nba"},
+		&Game{Code: "nfl"},
+		&Game{Code: "nhl"},
+	}
+	got, err := parseAllGames(gamesTestResp, yf)
+	if err != nil {
+		t.Errorf("parseAllGames(%s, %+v) failed, want success", gamesTestResp, yf)
+		return
+	}
+
+	if diff := cmp.Diff(got, want, cmpopts.IgnoreFields(Game{}, "yf")); diff != "" {
+		t.Errorf("diff (-got, +want):\n %+s", diff)
+	}
 }
 
 func ParseAllString(t *testing.T) {
