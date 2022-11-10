@@ -7,6 +7,11 @@ type StatsQuery struct {
 	query
 }
 
+// Stats returns a StatsQuery for the /stats subresource endpoint.
+func Stats() *StatsQuery {
+	return &StatsQuery{query{resource: "stats"}}
+}
+
 // LastWeek adds the "type=lastweek" parameter to the query.
 func (s *StatsQuery) LastWeek() *StatsQuery {
 	s.params = append(s.params, "type=lastweek")

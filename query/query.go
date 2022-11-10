@@ -25,10 +25,10 @@ type query struct {
 
 // ToString generates the endpoint string for the query
 func (q *query) ToString() string {
-	uri := q.base
+	var uri string
 
-	if !q.isCollection && len(q.keys) == 0 {
-		return ""
+	if q.base != "" {
+		uri = q.base + "/"
 	}
 
 	if q.isCollection {
@@ -37,7 +37,10 @@ func (q *query) ToString() string {
 			uri += fmt.Sprintf(";%s_keys=%s", q.resource, strings.Join(q.keys, ","))
 		}
 	} else {
-		uri += fmt.Sprintf("%s/%s", q.resource, q.keys[0])
+		uri += q.resource
+		if len(q.keys) != 0 {
+			uri += ("/" + q.keys[0])
+		}
 	}
 
 	if len(q.outs) == 1 {
@@ -49,6 +52,10 @@ func (q *query) ToString() string {
 
 	if len(q.params) != 0 {
 		uri += (";" + strings.Join(q.params, ";"))
+	}
+
+	if uri[0] != '/' {
+		uri = "/" + uri
 	}
 
 	return uri
@@ -73,7 +80,7 @@ func (q *query) Reset() {
 // get sends a GET request to the provided URI and returns the repsone as a
 // string.
 func get(client *http.Client, uri string) (string, error) {
-	resp, err := client.Get(fmt.Sprintf("%s/%s", endpoint, uri))
+	resp, err := client.Get((endpoint + uri))
 	if err != nil {
 		return "", err
 	}

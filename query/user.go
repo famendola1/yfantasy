@@ -20,7 +20,7 @@ func (u *UserQuery) Games() *GameQuery {
 	return &GameQuery{
 		query{
 			base:         u.ToString(),
-			resource:     "games",
+			resource:     "game",
 			isCollection: true,
 		},
 	}
@@ -31,7 +31,7 @@ func (u *UserQuery) Leagues() *LeagueQuery {
 	return &LeagueQuery{
 		query{
 			base:         u.ToString(),
-			resource:     "leagues",
+			resource:     "league",
 			isCollection: true,
 		},
 	}
@@ -42,7 +42,7 @@ func (u *UserQuery) Teams() *TeamQuery {
 	return &TeamQuery{
 		query{
 			base:         u.ToString(),
-			resource:     "teams",
+			resource:     "team",
 			isCollection: true,
 		},
 	}

@@ -76,21 +76,14 @@ func (l *LeagueQuery) Teams() *TeamQuery {
 
 // Player returns a PlayerQuery for the /player subresource.
 func (l *LeagueQuery) Player() *PlayerQuery {
-	return &PlayerQuery{
-		query{
-			base:     l.ToString(),
-			resource: "player",
-		},
-	}
+	pl := Player()
+	pl.base = l.ToString()
+	return pl
 }
 
 // Players returns a PlayerQuery for the /players subresource.
 func (l *LeagueQuery) Players() *PlayerQuery {
-	return &PlayerQuery{
-		query{
-			base:         l.ToString(),
-			resource:     "player",
-			isCollection: true,
-		},
-	}
+	pl := Players()
+	pl.base = l.ToString()
+	return pl
 }

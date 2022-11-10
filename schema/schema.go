@@ -172,6 +172,17 @@ type StatModifiers struct {
 	Stats Stats `xml:"stats"`
 }
 
+// StatPositionTypes is a list of stat position types.
+type StatPositionTypes struct {
+	StatPositionType []StatPositionType `xml:"stat_position_type"`
+}
+
+// StatPositionType contains information about a stat position type.
+type StatPositionType struct {
+	PositionType      string `xml:"position_type"`
+	IsOnlyDisplayStat string `xml:"is_only_display_stat"`
+}
+
 // Stats is a list of stats.
 type Stats struct {
 	Stat []Stat `xml:"stat"`
@@ -179,14 +190,30 @@ type Stats struct {
 
 // Stat represents a stat category in Yahoo.
 type Stat struct {
-	StatID            int    `xml:"stat_id"`
-	Value             string `xml:"value"`
-	Enabled           bool   `xml:"enabled"`
-	Name              string `xml:"name"`
-	DisplayName       string `xml:"display_name"`
-	SortOrder         string `xml:"sort_order"`
-	PositionType      string `xml:"position_type"`
-	IsOnlyDisplayStat bool   `xml:"is_only_display_stat"`
+	StatID            int               `xml:"stat_id"`
+	Value             string            `xml:"value"`
+	Enabled           bool              `xml:"enabled"`
+	Name              string            `xml:"name"`
+	DisplayName       string            `xml:"display_name"`
+	Group             string            `xml:"group"`
+	Abbr              string            `xml:"abbr"`
+	SortOrder         string            `xml:"sort_order"`
+	PositionType      string            `xml:"position_type"`
+	IsOnlyDisplayStat bool              `xml:"is_only_display_stat"`
+	StatPositionTypes StatPositionTypes `xml:"stat_position_types"`
+	Groups            Groups            `xml:"groups"`
+}
+
+// Groups is a list of groups.
+type Groups struct {
+	Group []Group `xml:"group"`
+}
+
+// Group contains information on a group.
+type Group struct {
+	GroupName        string `xml:"group_name"`
+	GroupDisplayName string `xml:"group_display_name"`
+	GroupAbbr        string `xml:"group_abbr"`
 }
 
 // Game represents a Yahoo game
@@ -393,30 +420,52 @@ type RosterPositions struct {
 
 // RosterPosition contains information about roster position.
 type RosterPosition struct {
-	Position     string `xml:"position"`
-	Count        int    `xml:"count"`
-	Abbreviation string `xml:"abbreviation"`
-	DisplayName  string `xml:"display_name"`
-	PositionType string `xml:"position_type"`
-	IsBench      bool   `xml:"is_bench"`
+	Position           string `xml:"position"`
+	PositionType       string `xml:"position_type"`
+	Count              int    `xml:"count"`
+	Abbreviation       string `xml:"abbreviation"`
+	DisplayName        string `xml:"display_name"`
+	IsBench            bool   `xml:"is_bench"`
+	IsStartingPosition bool   `xml:"is_starting_position"`
 }
 
 // Settings contains information about a league's settings.
 type Settings struct {
-	DraftType               string          `xml:"draft_type"`
-	ScoringType             string          `xml:"scoring_type"`
-	UsesPlayoff             bool            `xml:"uses_playoff"`
-	PlayoffStartWeek        int             `xml:"playoff_start_week"`
-	UsesPlayoffReseeding    bool            `xml:"uses_playoff_reseeding"`
-	UsesLockEliminatedTeams bool            `xml:"uses_lock_eliminated_teams"`
-	UsesFaab                bool            `xml:"uses_faab"`
-	TradeEndDate            string          `xml:"trade_end_date"`
-	TradeRatifyType         string          `xml:"trade_ratify_type"`
-	TradeRejectTime         string          `xml:"trade_reject_time"`
-	RosterPositions         RosterPositions `xml:"roster_positions"`
-	StatCategories          StatCategories  `xml:"stat_categories"`
-	StatModifiers           StatModifiers   `xml:"stat_modifiers"`
-	Divisions               Divisions       `xml:"divisions"`
+	DraftType                  string          `xml:"draft_type"`
+	ScoringType                string          `xml:"scoring_type"`
+	UsesPlayoff                bool            `xml:"uses_playoff"`
+	PlayoffStartWeek           int             `xml:"playoff_start_week"`
+	UsesPlayoffReseeding       bool            `xml:"uses_playoff_reseeding"`
+	UsesLockEliminatedTeams    bool            `xml:"uses_lock_eliminated_teams"`
+	UsesFaab                   bool            `xml:"uses_faab"`
+	TradeEndDate               string          `xml:"trade_end_date"`
+	TradeRatifyType            string          `xml:"trade_ratify_type"`
+	TradeRejectTime            int             `xml:"trade_reject_time"`
+	IsAuctionDraft             bool            `xml:"is_auction_draft"`
+	PersistentURL              string          `xml:"persistent_url"`
+	HasPlayoffConsolationGames bool            `xml:"has_playoff_consolation_games"`
+	NumPlayoffTeams            int             `xml:"num_playoff_teams"`
+	NumPlayoffConsolationTeams int             `xml:"num_playoff_consolation_teams"`
+	HasMultiweekChampionship   bool            `xml:"has_multiweek_championship"`
+	UsesRosterImport           bool            `xml:"uses_roster_import"`
+	RosterImportDeadline       string          `xml:"roster_import_deadline"`
+	WaiverType                 string          `xml:"waiver_type"`
+	WaiverRule                 string          `xml:"waiver_rule"`
+	DraftTime                  string          `xml:"draft_time"`
+	DraftPickTime              string          `xml:"draft_pick_time"`
+	PostDraftPlayers           string          `xml:"post_draft_players"`
+	MaxTeams                   int             `xml:"max_teams"`
+	WaiverTime                 string          `xml:"waiver_time"`
+	PlayerPool                 string          `xml:"player_pool"`
+	CantCutList                string          `xml:"cant_cut_list"`
+	DraftTogether              string          `xml:"draft_together"`
+	CanTradeDraftPicks         bool            `xml:"can_trade_draft_picks"`
+	SendbirdChannelURL         string          `xml:"sendbird_channel_url"`
+	MaxWeeklyAdds              int             `xml:"max_weekly_adds"`
+	RosterPositions            RosterPositions `xml:"roster_positions"`
+	StatCategories             StatCategories  `xml:"stat_categories"`
+	StatModifiers              StatModifiers   `xml:"stat_modifiers"`
+	Divisions                  Divisions       `xml:"divisions"`
 }
 
 // Divisions is a list of divisions.

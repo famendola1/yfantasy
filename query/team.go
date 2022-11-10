@@ -65,13 +65,16 @@ func (t *TeamQuery) Matchups(weeks []int) *TeamQuery {
 }
 
 // Stats returns a StatsQuery for the /stats subresource.
-func (t *TeamQuery) Stats() *StatsQuery {
-	return &StatsQuery{
-		query{
-			base:     t.ToString(),
-			resource: "stats",
-		},
-	}
+func (t *TeamQuery) Stats() *TeamQuery {
+	t.outs = append(t.outs, "stats")
+	return t
+}
+
+// StatsWithDuration returns a StatsQuery for the /stats subresource.
+func (t *TeamQuery) StatsWithDuration() *StatsQuery {
+	st := Stats()
+	st.base = t.ToString()
+	return st
 }
 
 // RosterDay returns a TeamRosterQuery for the /roster subresource with the

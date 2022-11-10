@@ -1,10 +1,23 @@
 package query
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 // PlayerQuery can be used to query the /players or /player Yahoo Fantasy endpoints.
 type PlayerQuery struct {
 	query
+}
+
+// Players returns a PlayerQuery for the /players endpoint.
+func Players() *PlayerQuery {
+	return &PlayerQuery{query{resource: "player", isCollection: true}}
+}
+
+// Player returns a PlayerQuery for the /player endpoint.
+func Player() *PlayerQuery {
+	return &PlayerQuery{query{resource: "player"}}
 }
 
 // Keys adds the "player_keys" parameter with the given keys to the query.
@@ -41,7 +54,7 @@ func (p *PlayerQuery) Status(status string) *PlayerQuery {
 
 // Search adds the "search" parameter with the provided name to the query.
 func (p *PlayerQuery) Search(name string) *PlayerQuery {
-	p.params = append(p.params, fmt.Sprintf("search=%s", name))
+	p.params = append(p.params, fmt.Sprintf("search=%s", url.QueryEscape(name)))
 	return p
 }
 
@@ -106,11 +119,8 @@ func (p *PlayerQuery) Count(count int) *PlayerQuery {
 }
 
 // Stats returns a StatsQuery for the /stats subresource.
-func (p *PlayerQuery) Stats(count int) *StatsQuery {
-	return &StatsQuery{
-		query{
-			base:     p.ToString(),
-			resource: "stats",
-		},
-	}
+func (p *PlayerQuery) Stats() *StatsQuery {
+	st := Stats()
+	st.base = p.ToString()
+	return st
 }
