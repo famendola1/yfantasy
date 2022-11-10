@@ -76,9 +76,9 @@ func (yf *YFantasy) Rosters(leagueKey string) ([]*schema.Roster, error) {
 	return rosters, nil
 }
 
-// FindTeamByName searches the given league for a team with the provided team name.
+// Team searches the given league for a team with the provided team name.
 // If the team is not found an error is returned.
-func (yf *YFantasy) FindTeamByName(leagueKey, teamName string) (*schema.Team, error) {
+func (yf *YFantasy) Team(leagueKey, teamName string) (*schema.Team, error) {
 	fc, err := query.League().Key(leagueKey).Teams().Get(yf.client)
 	if err != nil {
 		return nil, err
@@ -93,9 +93,9 @@ func (yf *YFantasy) FindTeamByName(leagueKey, teamName string) (*schema.Team, er
 	return nil, fmt.Errorf("team %q not found", teamName)
 }
 
-// FindTeamRosterByName searches the given league for a team with the provided team name.
-// If the team is not found an error is returned.
-func (yf *YFantasy) FindTeamRosterByName(leagueKey, teamName string) (*schema.Roster, error) {
+// TeamRoster searches the given league for a team with the provided team name
+// and return's its roster. If the team is not found an error is returned.
+func (yf *YFantasy) TeamRoster(leagueKey, teamName string) (*schema.Roster, error) {
 	fc, err := query.League().Key(leagueKey).Teams().Roster().Get(yf.client)
 	if err != nil {
 		return nil, err
@@ -108,4 +108,105 @@ func (yf *YFantasy) FindTeamRosterByName(leagueKey, teamName string) (*schema.Ro
 	}
 
 	return nil, fmt.Errorf("team %q not found", teamName)
+}
+
+// TeamStats searches the given league for a team with the provided team name
+// and return's its stats. If the team is not found an error is returned.
+func (yf *YFantasy) TeamStats(leagueKey, teamName string) (*schema.TeamStats, error) {
+	fc, err := query.League().Key(leagueKey).Teams().Stats().Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, tm := range fc.League.Teams.Team {
+		if tm.Name == teamName {
+			return &tm.TeamStats, nil
+		}
+	}
+
+	return nil, fmt.Errorf("team %q not found", teamName)
+}
+
+// Player searches the given league for a player with the provided player name.
+// If the player is not found, an error is returned. name should contain at
+// least 3 letters.
+func (yf *YFantasy) Player(leagueKey, name string) (*schema.Player, error) {
+	if len(name) < 3 {
+		return nil, fmt.Errorf("name (%q) must contain at least 3 letters", name)
+	}
+
+	fc, err := query.League().Key(leagueKey).Players().Search(name).Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range fc.League.Players.Player {
+		if p.Name.Full == name {
+			return &p, nil
+		}
+	}
+
+	return nil, fmt.Errorf("player %q not found", name)
+}
+
+// SearchPlayers searches the given league for a players with the provided player
+// name. name should contain at least 3 letters.
+func (yf *YFantasy) SearchPlayers(leagueKey, name string) ([]*schema.Player, error) {
+	if len(name) < 3 {
+		return nil, fmt.Errorf("name (%q) must contain at least 3 letters", name)
+	}
+
+	fc, err := query.League().Key(leagueKey).Players().Search(name).Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	var players []*schema.Player
+	for _, p := range fc.League.Players.Player {
+		players = append(players, &p)
+	}
+
+	return players, nil
+}
+
+// PlayerStats searches the given league for a player with the provided player name.
+// and returns their stats. If the player is not found, an error is returned.
+// name should contain at least 3 letters.
+func (yf *YFantasy) PlayerStats(leagueKey, name string) (*schema.PlayerStats, error) {
+	if len(name) < 3 {
+		return nil, fmt.Errorf("name (%q) must contain at least 3 letters", name)
+	}
+	fc, err := query.League().Key(leagueKey).Players().Search(name).Stats().Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range fc.League.Players.Player {
+		if p.Name.Full == name {
+			return &p.PlayerStats, nil
+		}
+	}
+
+	return nil, fmt.Errorf("player %q not found", name)
+}
+
+// PlayerAdvancedStats searches the given league for a player with the provided
+// player name. and returns their advanced stats. If the player is not found, an
+// error is returned. name should contain at least 3 letters.
+func (yf *YFantasy) PlayerAdvancedStats(leagueKey, name string) (*schema.PlayerAdvancedStats, error) {
+	if len(name) < 3 {
+		return nil, fmt.Errorf("name (%q) must contain at least 3 letters", name)
+	}
+	fc, err := query.League().Key(leagueKey).Players().Search(name).Stats().Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range fc.League.Players.Player {
+		if p.Name.Full == name {
+			return &p.PlayerAdvancedStats, nil
+		}
+	}
+
+	return nil, fmt.Errorf("player %q not found", name)
 }

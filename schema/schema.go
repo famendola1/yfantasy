@@ -34,31 +34,32 @@ type User struct {
 
 // Player models a Yahoo player.
 type Player struct {
-	PlayerKey                string            `xml:"player_key"`
-	PlayerID                 int               `xml:"player_id"`
-	Name                     Name              `xml:"name"`
-	EditorialPlayerKey       string            `xml:"editorial_player_key"`
-	EditorialTeamKey         string            `xml:"editorial_team_key"`
-	EditorialTeamFullName    string            `xml:"editorial_team_full_name"`
-	EditorialTeamAbbr        string            `xml:"editorial_team_abbr"`
-	UniformNumber            int               `xml:"uniform_number"`
-	DisplayPosition          string            `xml:"display_position"`
-	Headshot                 Headshot          `xml:"headshot"`
-	ImageURL                 string            `xml:"image_url"`
-	IsUndroppable            bool              `xml:"is_undroppable"`
-	PositionType             string            `xml:"position_type"`
-	PrimaryPosition          string            `xml:"primary_position"`
-	EligiblePositions        EligiblePositions `xml:"eligible_positions"`
-	HasPlayerNotes           bool              `xml:"has_player_notes"`
-	PlayerNotesLastTimestamp uint64            `xml:"player_notes_last_timestamp"`
-	TransactionData          TransactionData   `xml:"transaction_data"`
-	PlayerStats              PlayerStats       `xml:"player_stats"`
-	Status                   string            `xml:"status"`
-	StatusFull               string            `xml:"status_full"`
-	InjuryNote               string            `xml:"injury_note"`
-	HasRecentPlayerNotes     string            `xml:"has_recent_player_notes"`
-	SelectedPosition         SelectedPosition  `xml:"selected_position"`
-	IsKeeper                 IsKeeper          `xml:"is_keeper"`
+	PlayerKey                string              `xml:"player_key"`
+	PlayerID                 int                 `xml:"player_id"`
+	Name                     Name                `xml:"name"`
+	EditorialPlayerKey       string              `xml:"editorial_player_key"`
+	EditorialTeamKey         string              `xml:"editorial_team_key"`
+	EditorialTeamFullName    string              `xml:"editorial_team_full_name"`
+	EditorialTeamAbbr        string              `xml:"editorial_team_abbr"`
+	UniformNumber            int                 `xml:"uniform_number"`
+	DisplayPosition          string              `xml:"display_position"`
+	Headshot                 Headshot            `xml:"headshot"`
+	ImageURL                 string              `xml:"image_url"`
+	IsUndroppable            bool                `xml:"is_undroppable"`
+	PositionType             string              `xml:"position_type"`
+	PrimaryPosition          string              `xml:"primary_position"`
+	EligiblePositions        EligiblePositions   `xml:"eligible_positions"`
+	HasPlayerNotes           bool                `xml:"has_player_notes"`
+	PlayerNotesLastTimestamp uint64              `xml:"player_notes_last_timestamp"`
+	TransactionData          TransactionData     `xml:"transaction_data"`
+	PlayerStats              PlayerStats         `xml:"player_stats"`
+	PlayerAdvancedStats      PlayerAdvancedStats `xml:"player_advanced_stats"`
+	Status                   string              `xml:"status"`
+	StatusFull               string              `xml:"status_full"`
+	InjuryNote               string              `xml:"injury_note"`
+	HasRecentPlayerNotes     string              `xml:"has_recent_player_notes"`
+	SelectedPosition         SelectedPosition    `xml:"selected_position"`
+	IsKeeper                 IsKeeper            `xml:"is_keeper"`
 }
 
 // Name contains information about a Player's name.
@@ -97,6 +98,13 @@ type PlayerStats struct {
 	CoverageType string `xml:"coverage_type"`
 	Season       string `xml:"season"`
 	Date         string `xml:"date"`
+	Stats        Stats  `xml:"stats"`
+}
+
+// PlayerAdvancedStats contains stat information for a Player.
+type PlayerAdvancedStats struct {
+	CoverageType string `xml:"coverage_type"`
+	Season       string `xml:"season"`
 	Stats        Stats  `xml:"stats"`
 }
 
@@ -266,6 +274,7 @@ type League struct {
 	IsFinished            bool       `xml:"is_finished"`
 	Standings             Standings  `xml:"standings"`
 	Teams                 Teams      `xml:"teams"`
+	Players               Players    `xml:"players"`
 	Scoreboard            Scoreboard `xml:"scoreboard"`
 	Settings              Settings   `xml:"settings"`
 }
