@@ -1,9 +1,11 @@
-package yfantasy
+package query
 
+// UserQuery can be used to query the /users Yahoo Fantasy endpoint.
 type UserQuery struct {
 	query
 }
 
+// Users returns a UserQuery for the /users endpoint.
 func Users() *UserQuery {
 	return &UserQuery{
 		query{
@@ -13,6 +15,7 @@ func Users() *UserQuery {
 	}
 }
 
+// Games returns a GameQuery for the /games subresource.
 func (u *UserQuery) Games() *GameQuery {
 	return &GameQuery{
 		query{
@@ -23,6 +26,7 @@ func (u *UserQuery) Games() *GameQuery {
 	}
 }
 
+// Leagues returns a GameQuery for the /leagues subresource.
 func (u *UserQuery) Leagues() *LeagueQuery {
 	return &LeagueQuery{
 		query{
@@ -33,6 +37,7 @@ func (u *UserQuery) Leagues() *LeagueQuery {
 	}
 }
 
+// Teams returns a TeamQuery for the /teams subresource.
 func (u *UserQuery) Teams() *TeamQuery {
 	return &TeamQuery{
 		query{

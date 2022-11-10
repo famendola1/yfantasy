@@ -1,4 +1,4 @@
-package yfantasy
+package query
 
 import (
 	"encoding/xml"

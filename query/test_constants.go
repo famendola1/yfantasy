@@ -1,4 +1,4 @@
-package yfantasy
+package query
 
 const (
 	rosterTestResp = `

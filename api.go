@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	query "github.com/famendola1/yfantasy/query"
-	schema "github.com/famendola1/yfantasy/schema"
+	"github.com/famendola1/yfantasy/query"
+	"github.com/famendola1/yfantasy/schema"
 )
 
 type YFantasy struct {

@@ -1,4 +1,4 @@
-package yfantasy
+package schema
 
 type FantasyContent struct {
 	Lang        string  `xml:"lang,attr"`
@@ -362,4 +362,16 @@ type Roster struct {
 	Date         string  `xml:"date"`
 	IsEditable   bool    `xml:"is_editable"`
 	Players      Players `xml:"players"`
+}
+
+type RosterPositions struct {
+	RosterPosition []RosterPosition `xml:"roster_position"`
+}
+
+type RosterPosition struct {
+	Position     string `xml:"position"`
+	Abbreviation string `xml:"abbreviation"`
+	DisplayName  string `xml:"display_name"`
+	PositionType string `xml:"position_type"`
+	IsBench      bool   `xml:"is_bench"`
 }

@@ -1,9 +1,9 @@
-package yfantasy
+package query
 
 import (
 	"testing"
 
-	"github.com/famendola1/yfantasy/schema"
+	schema "github.com/famendola1/yfantasy/schema"
 	"github.com/google/go-cmp/cmp"
 )
 

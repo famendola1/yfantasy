@@ -1,4 +1,4 @@
-package yfantasy
+package query
 
 import (
 	"bytes"
@@ -23,6 +23,7 @@ type query struct {
 	params       []string
 }
 
+// ToString generates the endpoint string for the query
 func (q *query) ToString() string {
 	uri := q.base
 
@@ -53,6 +54,8 @@ func (q *query) ToString() string {
 	return uri
 }
 
+// Get sends a get request to the Yahoo Fantasy endpoint that the query would
+// generate using the provided client.
 func (q *query) Get(client *http.Client) (*schema.FantasyContent, error) {
 	var fc schema.FantasyContent
 	if err := getAndParse(client, q.ToString(), "//fantasy_content", &fc); err != nil {

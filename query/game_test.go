@@ -1,4 +1,4 @@
-package yfantasy
+package query
 
 import "testing"
 
@@ -33,7 +33,7 @@ func TestGameQueryCollection(t *testing.T) {
 
 	gamesQuery.Reset()
 	want = "games;seasons=2022"
-	got = gamesQuery.Seasons([]string{"2022"}).ToString()
+	got = gamesQuery.Seasons([]int{2022}).ToString()
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
@@ -47,7 +47,7 @@ func TestGameQueryCollection(t *testing.T) {
 
 	gamesQuery.Reset()
 	want = "games;game_keys=223;is_available=1;game_codes=nba;seasons=2022,2021;game_types=full"
-	got = gamesQuery.IsAvailable().Codes([]string{"nba"}).Seasons([]string{"2022", "2021"}).Types([]string{"full"}).Keys([]string{"223"}).ToString()
+	got = gamesQuery.IsAvailable().Codes([]string{"nba"}).Seasons([]int{2022, 2021}).Types([]string{"full"}).Keys([]string{"223"}).ToString()
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
