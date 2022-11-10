@@ -170,13 +170,13 @@ func (yf *YFantasy) SearchPlayers(leagueKey, name string) ([]*schema.Player, err
 }
 
 // PlayerStats searches the given league for a player with the provided player name.
-// and returns their stats. If the player is not found, an error is returned.
-// name should contain at least 3 letters.
+// and returns their average stats for the current season. If the player is not
+// found, an error is returned. name should contain at least 3 letters.
 func (yf *YFantasy) PlayerStats(leagueKey, name string) (*schema.PlayerStats, error) {
 	if len(name) < 3 {
 		return nil, fmt.Errorf("name (%q) must contain at least 3 letters", name)
 	}
-	fc, err := query.League().Key(leagueKey).Players().Search(name).Stats().Get(yf.client)
+	fc, err := query.League().Key(leagueKey).Players().Search(name).Stats().CurrentSeasonAverage().Get(yf.client)
 	if err != nil {
 		return nil, err
 	}
