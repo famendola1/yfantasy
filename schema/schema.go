@@ -1,5 +1,6 @@
 package schema
 
+// FantasyContent models the top-level structure returned by the Yahoo Fantasy API.
 type FantasyContent struct {
 	Lang        string  `xml:"lang,attr"`
 	URI         string  `xml:"uri,attr"`
@@ -17,11 +18,13 @@ type FantasyContent struct {
 	Users       Users   `xml:"users"`
 }
 
+// Users is a list of users.
 type Users struct {
 	Count int  `xml:"count,attr"`
 	User  User `xml:"user"`
 }
 
+// User models a user in Users.
 type User struct {
 	GUID    string  `xml:"guid"`
 	Games   Games   `xml:"games"`
@@ -29,7 +32,7 @@ type User struct {
 	Teams   Teams   `xml:"teams"`
 }
 
-// Player represents a Yahoo player.
+// Player models a Yahoo player.
 type Player struct {
 	PlayerKey                string            `xml:"player_key"`
 	PlayerID                 int               `xml:"player_id"`
@@ -58,7 +61,7 @@ type Player struct {
 	IsKeeper                 IsKeeper          `xml:"is_keeper"`
 }
 
-// Name for Player
+// Name contains information about a Player's name.
 type Name struct {
 	Full       string `xml:"full"`
 	First      string `xml:"first"`
@@ -67,18 +70,18 @@ type Name struct {
 	ASCIILast  string `xml:"ascii_last"`
 }
 
-// Headshot for Player
+// Headshot contains information about a Player's Yahoo photo.
 type Headshot struct {
 	URL  string `xml:"url"`
 	Size string `xml:"size"`
 }
 
-// EligiblePositions for Player
+// EligiblePositions contains all the eligible positions a Player can play.
 type EligiblePositions struct {
 	Position []string `xml:"position"`
 }
 
-// TransactionData for Player
+// TransactionData contains transaction information for a Player.
 type TransactionData struct {
 	Type                string `xml:"type"`
 	SourceType          string `xml:"source_type"`
@@ -89,7 +92,7 @@ type TransactionData struct {
 	SourceTeamName      string `xml:"source_team_name"`
 }
 
-// PlayerStats for a Player.
+// PlayerStats contains stat information for a Player.
 type PlayerStats struct {
 	CoverageType string `xml:"coverage_type"`
 	Season       string `xml:"season"`
@@ -128,7 +131,7 @@ type Transaction struct {
 	Players        Players `xml:"players"`
 }
 
-// Matchups hold multiple Matchup.
+// Matchups is a list of matchups.
 type Matchups struct {
 	Matchup []Matchup `xml:"matchup"`
 }
@@ -147,7 +150,7 @@ type Matchup struct {
 	Teams         Teams       `xml:"teams"`
 }
 
-// StatWinners for Matchup
+// StatWinners is a list of stat winners.
 type StatWinners struct {
 	StatWinner []StatWinner `xml:"stat_winner"`
 }
@@ -159,32 +162,49 @@ type StatWinner struct {
 	IsTied        bool   `xml:"is_tied"`
 }
 
-// Stats holds multiple Stat
+// StatCategories contains the enabled stat categories for a league.
+type StatCategories struct {
+	Stats Stats `xml:"stats"`
+}
+
+// StatModifiers contains the modifiers for stats.
+type StatModifiers struct {
+	Stats Stats `xml:"stats"`
+}
+
+// Stats is a list of stats.
 type Stats struct {
 	Stat []Stat `xml:"stat"`
 }
 
 // Stat represents a stat category in Yahoo.
 type Stat struct {
-	StatID int    `xml:"stat_id"`
-	Value  string `xml:"value"`
+	StatID            int    `xml:"stat_id"`
+	Value             string `xml:"value"`
+	Enabled           bool   `xml:"enabled"`
+	Name              string `xml:"name"`
+	DisplayName       string `xml:"display_name"`
+	SortOrder         string `xml:"sort_order"`
+	PositionType      string `xml:"position_type"`
+	IsOnlyDisplayStat bool   `xml:"is_only_display_stat"`
 }
 
 // Game represents a Yahoo game
 type Game struct {
-	GameKey            string `xml:"game_key"`
-	GameID             int    `xml:"game_id"`
-	Name               string `xml:"name"`
-	Code               string `xml:"code"`
-	Type               string `xml:"type"`
-	URL                string `xml:"url"`
-	Season             string `xml:"season"`
-	IsRegistrationOver bool   `xml:"is_registration_over"`
-	IsGameOver         bool   `xml:"is_game_over"`
-	IsOffseason        bool   `xml:"is_offseason"`
+	GameKey            string          `xml:"game_key"`
+	GameID             int             `xml:"game_id"`
+	Name               string          `xml:"name"`
+	Code               string          `xml:"code"`
+	Type               string          `xml:"type"`
+	URL                string          `xml:"url"`
+	Season             string          `xml:"season"`
+	IsRegistrationOver bool            `xml:"is_registration_over"`
+	IsGameOver         bool            `xml:"is_game_over"`
+	IsOffseason        bool            `xml:"is_offseason"`
+	RosterPositions    RosterPositions `xml:"roster_positions"`
 }
 
-// Games holds a collection of Games.
+// Games is a list Games.
 type Games struct {
 	Count int    `xml:"count,attr"`
 	Game  []Game `xml:"game"`
@@ -220,14 +240,16 @@ type League struct {
 	Standings             Standings  `xml:"standings"`
 	Teams                 Teams      `xml:"teams"`
 	Scoreboard            Scoreboard `xml:"scoreboard"`
+	Settings              Settings   `xml:"settings"`
 }
 
-// Leagues contains multiple Leagues.
+// Leagues is a list Leagues.
 type Leagues struct {
 	Count  int      `xml:"count,attr"`
 	League []League `xml:"league"`
 }
 
+// Scoreboard contains all the matchups for a league.
 type Scoreboard struct {
 	Count    int      `xml:"count,attr"`
 	Matchups Matchups `xml:"matchups"`
@@ -238,7 +260,7 @@ type Standings struct {
 	Teams Teams `xml:"teams"`
 }
 
-// Teams holds multiple Team.
+// Teams is a list of teams.
 type Teams struct {
 	Count int    `xml:"count,attr"`
 	Team  []Team `xml:"team"`
@@ -269,31 +291,31 @@ type Team struct {
 	Matchups              Matchups           `xml:"matchups"`
 }
 
-// TeamLogos for Team.
+// TeamLogos contains a list of team logos.
 type TeamLogos struct {
 	TeamLogo []TeamLogo `xml:"team_logo"`
 }
 
-// TeamLogo for Team.
+// TeamLogo contains information on the logo for a team.
 type TeamLogo struct {
 	Size string `xml:"size"`
 	URL  string `xml:"url"`
 }
 
-// RosterAdds for Team.
+// RosterAdds contains roster add informatin for a team.
 type RosterAdds struct {
 	CoverageType  string `xml:"coverage_type"`
 	CoverageValue int    `xml:"coverage_value"`
 	Value         int    `xml:"value"`
 }
 
-// Managers for Team.
+// Managers is a list of managers.
 type Managers struct {
 	Count   int       `xml:"count,attr"`
 	Manager []Manager `xml:"manager"`
 }
 
-// Manager for Team.
+// Manager contains information about the manager of a team.
 type Manager struct {
 	ManagerID      int    `xml:"manager_id"`
 	Nickname       string `xml:"nickname"`
@@ -306,28 +328,28 @@ type Manager struct {
 	FeloTier       string `xml:"felo_tier"`
 }
 
-// TeamStats for Team.
+// TeamStats contains stats for a team.
 type TeamStats struct {
 	CoverageType string `xml:"coverage_type"`
 	Week         int    `xml:"week"`
 	Stats        Stats  `xml:"stats"`
 }
 
-// TeamPoints for Team.
+// TeamPoints contaons the points scored by a team.
 type TeamPoints struct {
 	CoverageType string `xml:"coverage_type"`
 	Week         int    `xml:"week"`
 	Total        int    `xml:"total"`
 }
 
-// TeamRemainingGames for Team.
+// TeamRemainingGames contains information on the remaining games of a team.
 type TeamRemainingGames struct {
 	CoverageType string `xml:"coverage_type"`
 	Week         int    `xml:"week"`
 	Total        Total  `xml:"total"`
 }
 
-// Total for TeamRemainingGames.
+// Total contains information on remaining games.
 type Total struct {
 	RemainingGames int `xml:"remaining_games"`
 	LiveGames      int `xml:"live_games"`
@@ -364,14 +386,46 @@ type Roster struct {
 	Players      Players `xml:"players"`
 }
 
+// RosterPositions contains a list of roster positions .
 type RosterPositions struct {
 	RosterPosition []RosterPosition `xml:"roster_position"`
 }
 
+// RosterPosition contains information about roster position.
 type RosterPosition struct {
 	Position     string `xml:"position"`
+	Count        int    `xml:"count"`
 	Abbreviation string `xml:"abbreviation"`
 	DisplayName  string `xml:"display_name"`
 	PositionType string `xml:"position_type"`
 	IsBench      bool   `xml:"is_bench"`
+}
+
+// Settings contains information about a league's settings.
+type Settings struct {
+	DraftType               string          `xml:"draft_type"`
+	ScoringType             string          `xml:"scoring_type"`
+	UsesPlayoff             bool            `xml:"uses_playoff"`
+	PlayoffStartWeek        int             `xml:"playoff_start_week"`
+	UsesPlayoffReseeding    bool            `xml:"uses_playoff_reseeding"`
+	UsesLockEliminatedTeams bool            `xml:"uses_lock_eliminated_teams"`
+	UsesFaab                bool            `xml:"uses_faab"`
+	TradeEndDate            string          `xml:"trade_end_date"`
+	TradeRatifyType         string          `xml:"trade_ratify_type"`
+	TradeRejectTime         string          `xml:"trade_reject_time"`
+	RosterPositions         RosterPositions `xml:"roster_positions"`
+	StatCategories          StatCategories  `xml:"stat_categories"`
+	StatModifiers           StatModifiers   `xml:"stat_modifiers"`
+	Divisions               Divisions       `xml:"divisions"`
+}
+
+// Divisions is a list of divisions.
+type Divisions struct {
+	Division []Division `xml:"division"`
+}
+
+// Division contains information about a division.
+type Division struct {
+	DivisionID int    `xml:"division_id"`
+	Name       string `xml:"name"`
 }
