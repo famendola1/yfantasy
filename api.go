@@ -75,3 +75,37 @@ func (yf *YFantasy) Rosters(leagueKey string) ([]*schema.Roster, error) {
 	}
 	return rosters, nil
 }
+
+// FindTeamByName searches the given league for a team with the provided team name.
+// If the team is not found an error is returned.
+func (yf *YFantasy) FindTeamByName(leagueKey, teamName string) (*schema.Team, error) {
+	fc, err := query.League().Key(leagueKey).Teams().Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, tm := range fc.League.Teams.Team {
+		if tm.Name == teamName {
+			return &tm, nil
+		}
+	}
+
+	return nil, fmt.Errorf("team %q not found", teamName)
+}
+
+// FindTeamRosterByName searches the given league for a team with the provided team name.
+// If the team is not found an error is returned.
+func (yf *YFantasy) FindTeamRosterByName(leagueKey, teamName string) (*schema.Roster, error) {
+	fc, err := query.League().Key(leagueKey).Teams().Roster().Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, tm := range fc.League.Teams.Team {
+		if tm.Name == teamName {
+			return &tm.Roster, nil
+		}
+	}
+
+	return nil, fmt.Errorf("team %q not found", teamName)
+}
