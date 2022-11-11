@@ -42,16 +42,32 @@ func TestLeaguesQuery(t *testing.T) {
 				"/leagues;league_keys=nba.l.12345;out=standings,scoreboard",
 			},
 			{
-				Leagues().Key("nba.l.12345").Teams(),
+				Leagues().Key("nba.l.12345").DraftResults(),
+				"/leagues;league_keys=nba.l.12345/draftresults",
+			},
+			{
+				Leagues().Key("nba.l.12345").TeamsWithDefaults(),
 				"/leagues;league_keys=nba.l.12345/teams",
 			},
 			{
-				Leagues().Key("nba.l.12345").Player().Key("253.p.7569"),
-				"/leagues;league_keys=nba.l.12345/player/253.p.7569",
+				Leagues().Key("nba.l.12345").PlayersWithDefaults(),
+				"/leagues;league_keys=nba.l.12345/players",
 			},
 			{
-				Leagues().Key("nba.l.12345").Players(),
-				"/leagues;league_keys=nba.l.12345/players",
+				Leagues().Key("nba.l.12345").TransactionsWithDefaults(),
+				"/leagues;league_keys=nba.l.12345/transactions",
+			},
+			{
+				Leagues().Key("nba.l.12345").Teams().Key("nba.l.12345.t.1"),
+				"/leagues;league_keys=nba.l.12345/teams;team_keys=nba.l.12345.t.1",
+			},
+			{
+				Leagues().Key("nba.l.12345").Players().Search("Kevin Durant"),
+				"/leagues;league_keys=nba.l.12345/players;search=Kevin+Durant",
+			},
+			{
+				Leagues().Key("nba.l.12345").Transactions().Types([]string{"add", "drop"}),
+				"/leagues;league_keys=nba.l.12345/transactions;types=add,drop",
 			},
 		})
 }
@@ -88,16 +104,32 @@ func TestLeagueQuery(t *testing.T) {
 				"/league/nba.l.12345;out=standings,scoreboard",
 			},
 			{
-				League().Key("nba.l.12345").Teams(),
+				League().Key("nba.l.12345").DraftResults(),
+				"/league/nba.l.12345/draftresults",
+			},
+			{
+				League().Key("nba.l.12345").TeamsWithDefaults(),
 				"/league/nba.l.12345/teams",
 			},
 			{
-				League().Key("nba.l.12345").Player().Key("253.p.7569"),
-				"/league/nba.l.12345/player/253.p.7569",
+				League().Key("nba.l.12345").PlayersWithDefaults(),
+				"/league/nba.l.12345/players",
 			},
 			{
-				League().Key("nba.l.12345").Players(),
-				"/league/nba.l.12345/players",
+				League().Key("nba.l.12345").TransactionsWithDefaults(),
+				"/league/nba.l.12345/transactions",
+			},
+			{
+				League().Key("nba.l.12345").Teams().Key("nba.l.12345.t.1"),
+				"/league/nba.l.12345/teams;team_keys=nba.l.12345.t.1",
+			},
+			{
+				League().Key("nba.l.12345").Players().Search("Kevin Durant"),
+				"/league/nba.l.12345/players;search=Kevin+Durant",
+			},
+			{
+				League().Key("nba.l.12345").Transactions().Types([]string{"add", "drop"}),
+				"/league/nba.l.12345/transactions;types=add,drop",
 			},
 		})
 }

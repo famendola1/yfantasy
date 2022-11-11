@@ -60,6 +60,9 @@ type Player struct {
 	HasRecentPlayerNotes     string              `xml:"has_recent_player_notes"`
 	SelectedPosition         SelectedPosition    `xml:"selected_position"`
 	IsKeeper                 IsKeeper            `xml:"is_keeper"`
+	PercentOwned             PercentOwned        `xml:"percent_owned"`
+	DraftAnalysis            DraftAnalysis       `xml:"draft_analysis"`
+	Ownership                Ownership           `xml:"ownership"`
 }
 
 // Name contains information about a Player's name.
@@ -127,6 +130,11 @@ type IsKeeper struct {
 type Players struct {
 	Count  int      `xml:"count,attr"`
 	Player []Player `xml:"player"`
+}
+
+// Transactions is a list of transactions.
+type Transactions struct {
+	Transaction Transaction `xml:"transactions"`
 }
 
 // Transaction represents a Yahoo fantasy transaction.
@@ -207,6 +215,7 @@ type Stat struct {
 	Abbr              string            `xml:"abbr"`
 	SortOrder         string            `xml:"sort_order"`
 	PositionType      string            `xml:"position_type"`
+	PositionTypes     PositionsTypes    `xml:"position_types"`
 	IsOnlyDisplayStat bool              `xml:"is_only_display_stat"`
 	StatPositionTypes StatPositionTypes `xml:"stat_position_types"`
 	Groups            Groups            `xml:"groups"`
@@ -237,6 +246,9 @@ type Game struct {
 	IsGameOver         bool            `xml:"is_game_over"`
 	IsOffseason        bool            `xml:"is_offseason"`
 	RosterPositions    RosterPositions `xml:"roster_positions"`
+	PositionsTypes     PositionsTypes  `xml:"position_types"`
+	GameWeeks          GameWeeks       `xml:"game_weeks"`
+	StatCategories     StatCategories  `xml:"stat_categories"`
 }
 
 // Games is a list Games.
@@ -247,36 +259,38 @@ type Games struct {
 
 // League represents a Yahoo league.
 type League struct {
-	LeagueKey             string     `xml:"league_key"`
-	LeagueID              int        `xml:"league_id"`
-	Name                  string     `xml:"name"`
-	URL                   string     `xml:"url"`
-	LogoURL               string     `xml:"logo_url"`
-	DraftStatus           string     `xml:"draft_status"`
-	NumTeams              int        `xml:"num_teams"`
-	EditKey               string     `xml:"edit_key"`
-	WeeklyDeadline        string     `xml:"weekly_deadline"`
-	LeagueUpdateTimestamp string     `xml:"league_update_timestamp"`
-	ScoringType           string     `xml:"scoring_type"`
-	LeagueType            string     `xml:"league_type"`
-	Renew                 string     `xml:"renew"`
-	ShortInvitationURL    string     `xml:"short_invitation_url"`
-	AllowAddToDlExtraPos  string     `xml:"allow_add_to_dl_extra_pos"`
-	IsProLeague           bool       `xml:"is_pro_league"`
-	IsCashLeague          bool       `xml:"is_cash_league"`
-	CurrentWeek           int        `xml:"current_week"`
-	StartWeek             int        `xml:"start_week"`
-	StartDate             string     `xml:"start_date"`
-	EndWeek               int        `xml:"end_week"`
-	EndDate               string     `xml:"end_date"`
-	GameCode              string     `xml:"game_code"`
-	Season                string     `xml:"season"`
-	IsFinished            bool       `xml:"is_finished"`
-	Standings             Standings  `xml:"standings"`
-	Teams                 Teams      `xml:"teams"`
-	Players               Players    `xml:"players"`
-	Scoreboard            Scoreboard `xml:"scoreboard"`
-	Settings              Settings   `xml:"settings"`
+	LeagueKey             string       `xml:"league_key"`
+	LeagueID              int          `xml:"league_id"`
+	Name                  string       `xml:"name"`
+	URL                   string       `xml:"url"`
+	LogoURL               string       `xml:"logo_url"`
+	DraftStatus           string       `xml:"draft_status"`
+	NumTeams              int          `xml:"num_teams"`
+	EditKey               string       `xml:"edit_key"`
+	WeeklyDeadline        string       `xml:"weekly_deadline"`
+	LeagueUpdateTimestamp string       `xml:"league_update_timestamp"`
+	ScoringType           string       `xml:"scoring_type"`
+	LeagueType            string       `xml:"league_type"`
+	Renew                 string       `xml:"renew"`
+	ShortInvitationURL    string       `xml:"short_invitation_url"`
+	AllowAddToDlExtraPos  string       `xml:"allow_add_to_dl_extra_pos"`
+	IsProLeague           bool         `xml:"is_pro_league"`
+	IsCashLeague          bool         `xml:"is_cash_league"`
+	CurrentWeek           int          `xml:"current_week"`
+	StartWeek             int          `xml:"start_week"`
+	StartDate             string       `xml:"start_date"`
+	EndWeek               int          `xml:"end_week"`
+	EndDate               string       `xml:"end_date"`
+	GameCode              string       `xml:"game_code"`
+	Season                string       `xml:"season"`
+	IsFinished            bool         `xml:"is_finished"`
+	Standings             Standings    `xml:"standings"`
+	Teams                 Teams        `xml:"teams"`
+	Players               Players      `xml:"players"`
+	Scoreboard            Scoreboard   `xml:"scoreboard"`
+	Settings              Settings     `xml:"settings"`
+	DraftResults          DraftResults `xml:"draft_results"`
+	Transactions          Transactions `xml:"transactions"`
 }
 
 // Leagues is a list Leagues.
@@ -486,4 +500,68 @@ type Divisions struct {
 type Division struct {
 	DivisionID int    `xml:"division_id"`
 	Name       string `xml:"name"`
+}
+
+// PositionsTypes is a list of position types.
+type PositionsTypes struct {
+	PositionType PositionType `xml:"position_type"`
+}
+
+// PositionType contains information on a position type.
+type PositionType struct {
+	Type        string `xml:"type"`
+	DisplayName string `xml:"display_name"`
+}
+
+// GameWeeks is a list of game weeks.
+type GameWeeks struct {
+	Count    int      `xml:"count,attr"`
+	GameWeek GameWeek `xml:"game_week"`
+}
+
+// GameWeek contains information on a week in a game.
+type GameWeek struct {
+	Week        int    `xml:"week"`
+	DisplayName string `xml:"display_name"`
+	Start       string `xml:"start"`
+	End         string `xml:"end"`
+}
+
+// PercentOwned contains information on the percent of teams that own a player
+// across Yahoo leagues.
+type PercentOwned struct {
+	CoverageType string `xml:"coverage_type"`
+	Week         int    `xml:"week"`
+	Value        int    `xml:"value"`
+	Delta        int    `xml:"delta"`
+}
+
+// DraftAnalysis contains information on how a player was drafted across Yahoo leagues.
+type DraftAnalysis struct {
+	AveragePick    string `xml:"average_pick"`
+	AverageRound   string `xml:"average_round"`
+	AverageCost    string `xml:"average_cost"`
+	PercentDrafted string `xml:"percent_drafted"`
+}
+
+// Ownership contains information on the ownership status of player within a league.
+type Ownership struct {
+	OwnershipType string `xml:"ownership_type"`
+	OwnerTeamKey  string `xml:"owner_team_key"`
+	OwnerTeamName string `xml:"owner_team_name"`
+	Team          Team   `xml:"team"`
+}
+
+// DraftResults is a list of draft results from a league's draft.
+type DraftResults struct {
+	Count       int         `xml:"count,attr"`
+	DraftResult DraftResult `xml:"draft_result"`
+}
+
+// DraftResult contains information about a draft pick from a league's draft.
+type DraftResult struct {
+	Pick      string `xml:"pick"`
+	Round     string `xml:"round"`
+	TeamKey   string `xml:"team_key"`
+	PlayerKey string `xml:"player_key"`
 }

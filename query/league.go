@@ -67,6 +67,41 @@ func (l *LeagueQuery) Standings() *LeagueQuery {
 	return l
 }
 
+// DraftResults adds the "draftresults" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. league/draftresults).
+func (l *LeagueQuery) DraftResults() *LeagueQuery {
+	l.outs = append(l.outs, "draftresults")
+	return l
+}
+
+// TeamsWithDefaults adds the "teams" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. league/teams).
+func (l *LeagueQuery) TeamsWithDefaults() *TeamQuery {
+	tm := Teams()
+	tm.base = l.ToString()
+	return tm
+}
+
+// PlayersWithDefaults adds the "players" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. league/players).
+func (l *LeagueQuery) PlayersWithDefaults() *PlayerQuery {
+	pl := Players()
+	pl.base = l.ToString()
+	return pl
+}
+
+// TransactionsWithDefaults adds the "teams" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. league/transactions).
+func (l *LeagueQuery) TransactionsWithDefaults() *TransactionQuery {
+	tr := Transactions()
+	tr.base = l.ToString()
+	return tr
+}
+
 // Teams returns a TeamQuery for the /teams subresource.
 func (l *LeagueQuery) Teams() *TeamQuery {
 	tm := Teams()
@@ -74,16 +109,16 @@ func (l *LeagueQuery) Teams() *TeamQuery {
 	return tm
 }
 
-// Player returns a PlayerQuery for the /player subresource.
-func (l *LeagueQuery) Player() *PlayerQuery {
-	pl := Player()
-	pl.base = l.ToString()
-	return pl
-}
-
 // Players returns a PlayerQuery for the /players subresource.
 func (l *LeagueQuery) Players() *PlayerQuery {
 	pl := Players()
 	pl.base = l.ToString()
 	return pl
+}
+
+// Transactions returns a TransactionQuery for the /transactions subresource.
+func (l *LeagueQuery) Transactions() *TransactionQuery {
+	tr := Transactions()
+	tr.base = l.ToString()
+	return tr
 }

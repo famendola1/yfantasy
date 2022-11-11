@@ -34,8 +34,28 @@ func TestGameQueryCollection(t *testing.T) {
 				"/games;game_keys=223",
 			},
 			{
-				Games().Key("224"),
+				Games().Key("223").Key("224"),
 				"/games;game_keys=224",
+			},
+			{
+				Games().Key("nba").RosterPositions(),
+				"/games;game_keys=nba/roster_positions",
+			},
+			{
+				Games().Key("nba").GameWeeks(),
+				"/games;game_keys=nba/game_weeks",
+			},
+			{
+				Games().Key("nba").PositionTypes(),
+				"/games;game_keys=nba/position_types",
+			},
+			{
+				Games().Key("nba").StatCategories(),
+				"/games;game_keys=nba/stat_categories",
+			},
+			{
+				Games().Key("nba").StatCategories().RosterPositions(),
+				"/games;game_keys=nba;out=stat_categories,roster_positions",
 			},
 			{
 				Games().IsAvailable().Codes([]string{"nba"}).Seasons([]int{2022, 2021}).Types([]string{"full"}).Keys([]string{"223"}),
@@ -62,6 +82,26 @@ func TestGameQueryResource(t *testing.T) {
 			{
 				Game().Key("nba").Teams(),
 				"/game/nba/teams",
+			},
+			{
+				Game().Key("nba").RosterPositions(),
+				"/game/nba/roster_positions",
+			},
+			{
+				Game().Key("nba").GameWeeks(),
+				"/game/nba/game_weeks",
+			},
+			{
+				Game().Key("nba").PositionTypes(),
+				"/game/nba/position_types",
+			},
+			{
+				Game().Key("nba").StatCategories(),
+				"/game/nba/stat_categories",
+			},
+			{
+				Game().Key("nba").StatCategories().RosterPositions(),
+				"/game/nba;out=stat_categories,roster_positions",
 			},
 		})
 }

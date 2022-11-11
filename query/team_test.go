@@ -38,11 +38,19 @@ func TestTeamsQuery(t *testing.T) {
 				"/teams;team_keys=nba.l.12345.t.1;out=roster,matchups",
 			},
 			{
-				Teams().Key("nba.l.12345.t.1").Stats(),
+				Teams().Key("nba.l.12345.t.1").DraftResults(),
+				"/teams;team_keys=nba.l.12345.t.1/draftresults",
+			},
+			{
+				Teams().Key("nba.l.12345.t.1").Standings(),
+				"/teams;team_keys=nba.l.12345.t.1/standings",
+			},
+			{
+				Teams().Key("nba.l.12345.t.1").StatsWithDefaults(),
 				"/teams;team_keys=nba.l.12345.t.1/stats",
 			},
 			{
-				Teams().Key("nba.l.12345.t.1").StatsWithDuration().LastWeek(),
+				Teams().Key("nba.l.12345.t.1").Stats().LastWeek(),
 				"/teams;team_keys=nba.l.12345.t.1/stats;type=lastweek",
 			},
 			{
@@ -88,11 +96,19 @@ func TestTeamQuery(t *testing.T) {
 				"/team/nba.l.12345.t.1;out=roster,matchups",
 			},
 			{
-				Team().Key("nba.l.12345.t.1").Stats(),
+				Team().Key("nba.l.12345.t.1").DraftResults(),
+				"/team/nba.l.12345.t.1/draftresults",
+			},
+			{
+				Team().Key("nba.l.12345.t.1").Standings(),
+				"/team/nba.l.12345.t.1/standings",
+			},
+			{
+				Team().Key("nba.l.12345.t.1").StatsWithDefaults(),
 				"/team/nba.l.12345.t.1/stats",
 			},
 			{
-				Team().Key("nba.l.12345.t.1").StatsWithDuration().LastWeek(),
+				Team().Key("nba.l.12345.t.1").Stats().LastWeek(),
 				"/team/nba.l.12345.t.1/stats;type=lastweek",
 			},
 			{

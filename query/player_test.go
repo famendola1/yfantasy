@@ -62,8 +62,28 @@ func TestPlayersQuery(t *testing.T) {
 				"/players;count=50",
 			},
 			{
-				Players().Key("253.p.4365").Stats(),
+				Players().Key("253.p.4365").Ownership(),
+				"/players;player_keys=253.p.4365/ownership",
+			},
+			{
+				Players().Key("253.p.4365").PercentOwned(),
+				"/players;player_keys=253.p.4365/percent_owned",
+			},
+			{
+				Players().Key("253.p.4365").DraftAnalysis(),
+				"/players;player_keys=253.p.4365/draft_analysis",
+			},
+			{
+				Players().Key("253.p.4365").Ownership().PercentOwned(),
+				"/players;player_keys=253.p.4365;out=ownership,percent_owned",
+			},
+			{
+				Players().Key("253.p.4365").StatsWithDefaults(),
 				"/players;player_keys=253.p.4365/stats",
+			},
+			{
+				Players().Key("253.p.4365").Stats().LastWeek(),
+				"/players;player_keys=253.p.4365/stats;type=lastweek",
 			},
 		})
 }
@@ -84,8 +104,28 @@ func TestPlayerQuery(t *testing.T) {
 				"/player/253.p.7569",
 			},
 			{
-				Player().Key("253.p.4365").Stats(),
+				Player().Key("253.p.4365").Stats().LastWeek(),
+				"/player/253.p.4365/stats;type=lastweek",
+			},
+			{
+				Player().Key("253.p.4365").Ownership(),
+				"/player/253.p.4365/ownership",
+			},
+			{
+				Player().Key("253.p.4365").PercentOwned(),
+				"/player/253.p.4365/percent_owned",
+			},
+			{
+				Player().Key("253.p.4365").DraftAnalysis(),
+				"/player/253.p.4365/draft_analysis",
+			},
+			{
+				Player().Key("253.p.4365").StatsWithDefaults(),
 				"/player/253.p.4365/stats",
+			},
+			{
+				Player().Key("253.p.4365").Stats().LastWeek(),
+				"/player/253.p.4365/stats;type=lastweek",
 			},
 		})
 }

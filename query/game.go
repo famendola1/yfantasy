@@ -59,6 +59,38 @@ func (g *GameQuery) Seasons(seasons []int) *GameQuery {
 	return g
 }
 
+// GameWeeks adds the "game_weeks" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. game/game_weeks).
+func (g *GameQuery) GameWeeks() *GameQuery {
+	g.outs = append(g.outs, "game_weeks")
+	return g
+}
+
+// StatCategories adds the "stat_categories" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. game/stat_categories).
+func (g *GameQuery) StatCategories() *GameQuery {
+	g.outs = append(g.outs, "stat_categories")
+	return g
+}
+
+// PositionTypes adds the "positions_types" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. game/position_types).
+func (g *GameQuery) PositionTypes() *GameQuery {
+	g.outs = append(g.outs, "position_types")
+	return g
+}
+
+// RosterPositions adds the "roster_positions" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. game/roster_positions).
+func (g *GameQuery) RosterPositions() *GameQuery {
+	g.outs = append(g.outs, "roster_positions")
+	return g
+}
+
 // Leagues returns a LeagueQuery for the /leagues subresource.
 func (g *GameQuery) Leagues() *LeagueQuery {
 	lg := Leagues()
@@ -71,4 +103,11 @@ func (g *GameQuery) Teams() *TeamQuery {
 	tm := Teams()
 	tm.base = g.ToString()
 	return tm
+}
+
+// Players returns a PlayerQuery for the /teams subresource.
+func (g *GameQuery) Players() *PlayerQuery {
+	p := Players()
+	p.base = g.ToString()
+	return p
 }

@@ -118,6 +118,38 @@ func (p *PlayerQuery) Count(count int) *PlayerQuery {
 	return p
 }
 
+// Ownership adds the "ownership" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. player/ownership).
+func (p *PlayerQuery) Ownership() *PlayerQuery {
+	p.outs = append(p.outs, "ownership")
+	return p
+}
+
+// PercentOwned adds the "percent_owned" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. player/percent_owned).
+func (p *PlayerQuery) PercentOwned() *PlayerQuery {
+	p.outs = append(p.outs, "percent_owned")
+	return p
+}
+
+// DraftAnalysis adds the "draft_analysis" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. player/draft_analysis).
+func (p *PlayerQuery) DraftAnalysis() *PlayerQuery {
+	p.outs = append(p.outs, "draft_analysis")
+	return p
+}
+
+// StatsWithDefaults adds the "stats" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. player/stats).
+func (p *PlayerQuery) StatsWithDefaults() *PlayerQuery {
+	p.outs = append(p.outs, "stats")
+	return p
+}
+
 // Stats returns a StatsQuery for the /stats subresource.
 func (p *PlayerQuery) Stats() *StatsQuery {
 	st := Stats()

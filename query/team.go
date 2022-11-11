@@ -64,14 +64,32 @@ func (t *TeamQuery) Matchups(weeks []int) *TeamQuery {
 	return t
 }
 
-// Stats returns a StatsQuery for the /stats subresource.
-func (t *TeamQuery) Stats() *TeamQuery {
+// Standings adds the "standings" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. team/standings).
+func (t *TeamQuery) Standings() *TeamQuery {
+	t.outs = append(t.outs, "standings")
+	return t
+}
+
+// DraftResults adds the "draftresults" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. team/draftresults).
+func (t *TeamQuery) DraftResults() *TeamQuery {
+	t.outs = append(t.outs, "draftresults")
+	return t
+}
+
+// StatsWithDefaults adds the "stats" subresource to the request. If combined with
+// other subresources, they are all combined into the "out" parameter, otherwise
+// it is added to the request path (i.e. team/stats).
+func (t *TeamQuery) StatsWithDefaults() *TeamQuery {
 	t.outs = append(t.outs, "stats")
 	return t
 }
 
-// StatsWithDuration returns a StatsQuery for the /stats subresource.
-func (t *TeamQuery) StatsWithDuration() *StatsQuery {
+// Stats returns a StatsQuery for the /stats subresource.
+func (t *TeamQuery) Stats() *StatsQuery {
 	st := Stats()
 	st.base = t.ToString()
 	return st
