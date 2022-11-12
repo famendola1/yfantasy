@@ -96,7 +96,7 @@ func (t *TeamQuery) Stats() *StatsQuery {
 }
 
 // RosterDay returns a TeamRosterQuery for the /roster subresource with the
-// "date" paramter set to the provided date. date is expected to be formatted as
+// "date" parameter set to the provided date. date is expected to be formatted as
 // YYYY-MM-DD.
 func (t *TeamQuery) RosterDay(date string) *TeamRosterQuery {
 	return &TeamRosterQuery{
@@ -109,7 +109,7 @@ func (t *TeamQuery) RosterDay(date string) *TeamRosterQuery {
 }
 
 // RosterWeek returns a TeamRosterQuery for the /roster subresource with the
-// "week" paramter set to the provided week. week is expected by Yahoo to be a
+// "week" parameter set to the provided week. week is expected by Yahoo to be a
 // positive integer.
 func (t *TeamQuery) RosterWeek(week int) *TeamRosterQuery {
 	return &TeamRosterQuery{
