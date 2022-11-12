@@ -24,13 +24,13 @@ func (s *StatsQuery) LastMonth() *StatsQuery {
 	return s
 }
 
-// LastWeek adds the "type=lastweek" parameter to the query.
+// LastWeekAverage adds the "type=average_lastweek" parameter to the query.
 func (s *StatsQuery) LastWeekAverage() *StatsQuery {
 	s.params = append(s.params, "type=average_lastweek")
 	return s
 }
 
-// LastMonth adds the "type=lastmonth" parameter to the query.
+// LastMonthAverage adds the "type=average_lastmonth" parameter to the query.
 func (s *StatsQuery) LastMonthAverage() *StatsQuery {
 	s.params = append(s.params, "type=average_lastmonth")
 	return s

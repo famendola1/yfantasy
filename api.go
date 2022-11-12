@@ -228,8 +228,14 @@ func (yf *YFantasy) PlayerStats(leagueKey, name string, statsType int) (*schema.
 	case StatsTypeLastWeek:
 		q = q.LastWeek()
 		break
+	case StatsTypeLastWeekAverage:
+		q = q.LastWeekAverage()
+		break
 	case StatsTypeLastMonth:
 		q = q.LastMonth()
+		break
+	case StatsTypeLastMonthAverage:
+		q = q.LastMonthAverage()
 		break
 	}
 
