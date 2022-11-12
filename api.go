@@ -8,6 +8,16 @@ import (
 	"github.com/famendola1/yfantasy/schema"
 )
 
+// Enum of types when requesting for stats.
+const (
+	StatsTypeUnknown = iota
+	StatsTypeSeason
+	StatsTypeAverageSeason
+	StatsTypeDate
+	StatsTypeLastWeek
+	StatsTypeLastMonth
+)
+
 // YFantasy is the client for the Yahoo Fantasy API.
 type YFantasy struct {
 	client *http.Client
@@ -108,8 +118,29 @@ func (yf *YFantasy) TeamRoster(leagueKey, teamName string) (*schema.Team, error)
 
 // TeamStats searches the given league for a team with the provided team name
 // and return's its stats. If the team is not found an error is returned.
-func (yf *YFantasy) TeamStats(leagueKey, teamName string) (*schema.Team, error) {
-	fc, err := query.League().Key(leagueKey).Teams().Stats().Get(yf.client)
+func (yf *YFantasy) TeamStats(leagueKey, teamName string, statsType int) (*schema.Team, error) {
+	q := query.League().Key(leagueKey).Teams().Stats()
+	switch statsType {
+	case StatsTypeUnknown:
+		return nil, fmt.Errorf("unknown stats type requested")
+	case StatsTypeSeason:
+		q = q.CurrentSeason()
+		break
+	case StatsTypeAverageSeason:
+		q = q.CurrentSeasonAverage()
+		break
+	case StatsTypeDate:
+		q = q.Today()
+		break
+	case StatsTypeLastWeek:
+		q = q.LastWeek()
+		break
+	case StatsTypeLastMonth:
+		q = q.LastMonth()
+		break
+	}
+
+	fc, err := q.Get(yf.client)
 	if err != nil {
 		return nil, err
 	}
@@ -168,11 +199,33 @@ func (yf *YFantasy) SearchPlayers(leagueKey, name string) ([]*schema.Player, err
 // PlayerStats searches the given league for a player with the provided player name.
 // and returns their average stats for the current season. If the player is not
 // found, an error is returned. name should contain at least 3 letters.
-func (yf *YFantasy) PlayerStats(leagueKey, name string) (*schema.Player, error) {
+func (yf *YFantasy) PlayerStats(leagueKey, name string, statsType int) (*schema.Player, error) {
 	if len(name) < 3 {
 		return nil, fmt.Errorf("name (%q) must contain at least 3 letters", name)
 	}
-	fc, err := query.League().Key(leagueKey).Players().Search(name).Stats().CurrentSeasonAverage().Get(yf.client)
+
+	q := query.League().Key(leagueKey).Players().Search(name).Stats()
+	switch statsType {
+	case StatsTypeUnknown:
+		return nil, fmt.Errorf("unknown stats type requested")
+	case StatsTypeSeason:
+		q = q.CurrentSeason()
+		break
+	case StatsTypeAverageSeason:
+		q = q.CurrentSeasonAverage()
+		break
+	case StatsTypeDate:
+		q = q.Today()
+		break
+	case StatsTypeLastWeek:
+		q = q.LastWeek()
+		break
+	case StatsTypeLastMonth:
+		q = q.LastMonth()
+		break
+	}
+
+	fc, err := q.Get(yf.client)
 	if err != nil {
 		return nil, err
 	}
