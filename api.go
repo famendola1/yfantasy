@@ -15,7 +15,9 @@ const (
 	StatsTypeAverageSeason
 	StatsTypeDate
 	StatsTypeLastWeek
+	StatsTypeLastWeekAverage
 	StatsTypeLastMonth
+	StatsTypeLastMonthAverage
 )
 
 // YFantasy is the client for the Yahoo Fantasy API.
@@ -135,8 +137,14 @@ func (yf *YFantasy) TeamStats(leagueKey, teamName string, statsType int) (*schem
 	case StatsTypeLastWeek:
 		q = q.LastWeek()
 		break
+	case StatsTypeLastWeekAverage:
+		q = q.LastWeekAverage()
+		break
 	case StatsTypeLastMonth:
 		q = q.LastMonth()
+		break
+	case StatsTypeLastMonthAverage:
+		q = q.LastMonthAverage()
 		break
 	}
 

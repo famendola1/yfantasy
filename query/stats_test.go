@@ -18,6 +18,14 @@ func TestStatsQuery(t *testing.T) {
 				"/stats;type=lastmonth",
 			},
 			{
+				Stats().LastWeekAverage(),
+				"/stats;type=average_lastweek",
+			},
+			{
+				Stats().LastMonthAverage(),
+				"/stats;type=average_lastmonth",
+			},
+			{
 				Stats().Today(),
 				"/stats;type=date",
 			},
