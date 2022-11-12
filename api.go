@@ -259,3 +259,20 @@ func (yf *YFantasy) PlayerAdvancedStats(leagueKey, name string) (*schema.Player,
 
 	return nil, fmt.Errorf("player %q not found", name)
 }
+
+// PlayerOwnership searches the league for a player with the provided named and
+// returns their ownership status.
+func (yf *YFantasy) PlayerOwnership(leagueKey, name string) (*schema.Player, error) {
+	fc, err := query.League().Key(leagueKey).Players().Search(name).Ownership().Get(yf.client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range fc.League.Players.Player {
+		if p.Name.Full == name {
+			return &p, nil
+		}
+	}
+
+	return nil, fmt.Errorf("player %q not found", name)
+}
