@@ -1,8 +1,11 @@
-# Yahoo Fantasy API Client for Go
+# (Deprecated) Yahoo Fantasy API Client for Go
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/famendola1/yfantasy.svg)](https://pkg.go.dev/github.com/famendola1/yfantasy)
 ![License](https://img.shields.io/badge/License-Apache-green)
 [![Go Report Card](https://goreportcard.com/badge/github.com/famendola1/yfantasy)](https://goreportcard.com/report/github.com/famendola1/yfantasy)
+
+## Notice
+This package has been replaced by the [yfquery](https://pkg.go.dev/github.com/famendola1/yfquery) and [yflib](https://pkg.go.dev/github.com/famendola1/yflib) packages.
 
 ## Installation
 ~~~bash
