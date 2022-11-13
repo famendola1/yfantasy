@@ -3,6 +3,7 @@ package yfantasy
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/famendola1/yfantasy/query"
 	"github.com/famendola1/yfantasy/schema"
@@ -154,7 +155,7 @@ func (yf *YFantasy) TeamStats(leagueKey, teamName string, statsType int) (*schem
 	}
 
 	for _, tm := range fc.League.Teams.Team {
-		if tm.Name == teamName {
+		if strings.ToLower(tm.Name) == strings.ToLower(teamName) {
 			return &tm, nil
 		}
 	}
@@ -176,7 +177,7 @@ func (yf *YFantasy) Player(leagueKey, name string) (*schema.Player, error) {
 	}
 
 	for _, p := range fc.League.Players.Player {
-		if p.Name.Full == name {
+		if strings.ToLower(p.Name.Full) == strings.ToLower(name) {
 			return &p, nil
 		}
 	}
