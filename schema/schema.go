@@ -139,12 +139,21 @@ type Transactions struct {
 
 // Transaction represents a Yahoo fantasy transaction.
 type Transaction struct {
-	TransactionKey string  `xml:"transaction_key"`
-	TransactionID  int     `xml:"transaction_id"`
-	Type           string  `xml:"type"`
-	Status         string  `xml:"status"`
-	Timestamp      uint64  `xml:"timestamp"`
-	Players        Players `xml:"players"`
+	TransactionKey    string  `xml:"transaction_key"`
+	TransactionID     int     `xml:"transaction_id"`
+	Type              string  `xml:"type"`
+	Status            string  `xml:"status"`
+	Timestamp         uint64  `xml:"timestamp"`
+	WaiverPlayerKey   string  `xml:"waiver_player_key"`
+	WaiverTeamKey     string  `xml:"waiver_team_key"`
+	WaiverDate        string  `xml:"waiver_date"`
+	WaiverPriority    int     `xml:"waiver_priority"`
+	TraderTeamKey     string  `xml:"trader_team_key"`
+	TradeeTeamKey     string  `xml:"tradee_team_key"`
+	TradeProposedTime uint64  `xml:"trade_proposed_time"`
+	TradeNode         string  `xml:"trade_note"`
+	VoterTeamKey      string  `xml:"voter_team_key"`
+	Players           Players `xml:"players"`
 }
 
 // Matchups is a list of matchups.

@@ -22,8 +22,7 @@ const (
         </player>
       </players>
     </transaction>
-  </fantasy_content>
-  `
+  </fantasy_content>`
 
 	addTransaction = `
   <fantasy_content>
@@ -37,7 +36,7 @@ const (
         </transaction_data>
       </player>
     </transaction>
-</fantasy_content>`
+  </fantasy_content>`
 
 	dropTransaction = `
   <fantasy_content>
@@ -50,6 +49,53 @@ const (
           <source_team_key>%s</source_team_key>
         </transaction_data>
       </player>
+    </transaction>
+  </fantasy_content>`
+
+	updateWaiverPriorFAABTransaction = `
+  <fantasy_content>
+    <transaction>
+      <transaction_key>%s</transaction_key>
+      <type>waiver</type>
+      <waiver_priority>%d</waiver_priority>
+      <faab_bid>%d</faab_bid>
+    </transaction>
+  </fantasy_content>`
+
+	updateWaiverPriorTransaction = `
+  <fantasy_content>
+    <transaction>
+      <transaction_key>%s</transaction_key>
+      <type>waiver</type>
+      <waiver_priority>%d</waiver_priority>
+    </transaction>
+  </fantasy_content>`
+
+	updateWaiverFAABTransaction = `
+  <fantasy_content>
+    <transaction>
+      <transaction_key>%s</transaction_key>
+      <type>waiver</type>
+      <faab_bid>%d</faab_bid>
+    </transaction>
+  </fantasy_content>`
+
+	tradeTransaction = `
+  <fantasy_content>
+    <transaction>
+      <transaction_key>%s</transaction_key>
+      <type>pending_trade</type>
+      <action>%s</action>
+      <trade_note>%s</trade_note>
+      <voter_team_key>%s</voter_team_key>
+    </transaction>
+  </fantasy_content>`
+
+	cancelTransaction = `
+  <fantasy_content>
+    <transaction>
+      <transaction_key>%s</transaction_key>
+      <type>%s</type>
     </transaction>
   </fantasy_content>`
 )

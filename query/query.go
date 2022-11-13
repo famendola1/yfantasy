@@ -21,6 +21,7 @@ type query struct {
 	keys         []string
 	outs         []string
 	params       []string
+	payload      string
 }
 
 // ToString generates the endpoint string for the query
@@ -61,62 +62,83 @@ func (q *query) ToString() string {
 	return uri
 }
 
-// Get sends a get request to the Yahoo Fantasy endpoint that the query would
+// Get sends a "GET" request to the Yahoo Fantasy endpoint that the query would
 // generate using the provided client.
 func (q *query) Get(client *http.Client) (*schema.FantasyContent, error) {
-	var fc schema.FantasyContent
-	if err := getAndParse(client, q.ToString(), "//fantasy_content", &fc); err != nil {
-		return nil, err
-	}
-	return &fc, nil
+	return sendRequest(client, "GET", q.ToString(), "")
+}
+
+// Post sends a "POST" request to the Yahoo Fantasy endpoint that the query would
+// generate using the provided client along with the payload.
+func (q *query) Post(client *http.Client) (*schema.FantasyContent, error) {
+	return sendRequest(client, "POST", q.ToString(), q.payload)
+}
+
+// Put sends a "PUT" request to the Yahoo Fantasy endpoint that the query would
+// generate using the provided client along with the payload.
+func (q *query) Put(client *http.Client) (*schema.FantasyContent, error) {
+	return sendRequest(client, "PUT", q.ToString(), q.payload)
+}
+
+// Delete sends a "DELETE" request to the Yahoo Fantasy endpoint that the query would
+// generate using the provided client along with the payload.
+func (q *query) Delete(client *http.Client) (*schema.FantasyContent, error) {
+	return sendRequest(client, "DELETE", q.ToString(), q.payload)
 }
 
 func (q *query) Reset() {
 	q.keys = []string{}
 	q.outs = []string{}
 	q.params = []string{}
+	q.payload = ""
 }
 
-// get sends a GET request to the provided URI and returns the repsone as a
-// string.
-func get(client *http.Client, uri string) (string, error) {
-	resp, err := client.Get((endpoint + uri))
+func sendRequest(client *http.Client, method, uri, payload string) (*schema.FantasyContent, error) {
+	var fc schema.FantasyContent
+	var err error
+	var resp *http.Response
+
+	switch method {
+	case "GET":
+		resp, err = client.Get((endpoint + uri))
+		break
+	case "POST":
+		resp, err = client.Post((endpoint + uri), "application/xml", strings.NewReader(payload))
+		break
+	case "PUT":
+		req, err2 := http.NewRequest("PUT", (endpoint + uri), strings.NewReader(payload))
+		if err2 != nil {
+			return nil, err2
+		}
+		req.Header.Add("content-type", "application/xml")
+		resp, err = client.Do(req)
+		break
+	case "DELETE":
+		req, err2 := http.NewRequest("DELETE", (endpoint + uri), strings.NewReader(payload))
+		if err2 != nil {
+			return nil, err2
+		}
+		req.Header.Add("content-type", "application/xml")
+		resp, err = client.Do(req)
+		break
+	}
+
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", handleError(resp)
+		return nil, handleError(resp)
 	}
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
-	return buf.String(), nil
-}
 
-func getAndParse(client *http.Client, uri, expr string, out any) error {
-	rawResp, err := get(client, uri)
-	if err != nil {
-		return err
+	if err = parse(buf.String(), "//fantasy_content", &fc); err != nil {
+		return nil, err
 	}
 
-	return parse(rawResp, expr, out)
-}
-
-// post sends a POST request to the provided URI and returns the response as a
-// string.
-func post(client *http.Client, uri, data string) error {
-	resp, err := client.Post(fmt.Sprintf("%s/%s", endpoint, uri),
-		"application/xml", strings.NewReader(data))
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return handleError(resp)
-	}
-
-	return nil
+	return &fc, nil
 }
 
 // handleError returns an error containing the error message in the response.
