@@ -94,7 +94,7 @@ func (yf *YFantasy) Team(leagueKey, teamName string) (*schema.Team, error) {
 	}
 
 	for _, tm := range fc.League.Teams.Team {
-		if tm.Name == teamName {
+		if strings.ToLower(tm.Name) == strings.ToLower(teamName) {
 			return &tm, nil
 		}
 	}
@@ -111,7 +111,7 @@ func (yf *YFantasy) TeamRoster(leagueKey, teamName string) (*schema.Team, error)
 	}
 
 	for _, tm := range fc.League.Teams.Team {
-		if tm.Name == teamName {
+		if strings.ToLower(tm.Name) == strings.ToLower(teamName) {
 			return &tm, nil
 		}
 	}
@@ -246,7 +246,7 @@ func (yf *YFantasy) PlayerStats(leagueKey, name string, statsType int) (*schema.
 	}
 
 	for _, p := range fc.League.Players.Player {
-		if p.Name.Full == name {
+		if strings.ToLower(p.Name.Full) == strings.ToLower(name) {
 			return &p, nil
 		}
 	}
@@ -267,7 +267,7 @@ func (yf *YFantasy) PlayerAdvancedStats(leagueKey, name string) (*schema.Player,
 	}
 
 	for _, p := range fc.League.Players.Player {
-		if p.Name.Full == name {
+		if strings.ToLower(p.Name.Full) == strings.ToLower(name) {
 			return &p, nil
 		}
 	}
@@ -284,7 +284,7 @@ func (yf *YFantasy) PlayerOwnership(leagueKey, name string) (*schema.Player, err
 	}
 
 	for _, p := range fc.League.Players.Player {
-		if p.Name.Full == name {
+		if strings.ToLower(p.Name.Full) == strings.ToLower(name) {
 			return &p, nil
 		}
 	}
